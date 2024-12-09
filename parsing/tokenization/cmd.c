@@ -21,7 +21,7 @@ void check_cmd(t_scanner *self)
 		compare_token(&self->next, "export") == 0 ||
 		compare_token(&self->next, "env") == 0)
 	{
-		self->next.type = BUILT_IN;
+		self->next.type = COMMAND;
 	}
 	else
 	{

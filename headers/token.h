@@ -3,7 +3,7 @@
 
 typedef enum e_token_type // good to have an order like below
 {
-	BUILT_IN,        		// 0 These are the commands we need to create ("echo, cd, pwd, export, unset, env, exit")
+	COMMAND,        		// 0 These are the commands we need to create ("echo, cd, pwd, export, unset, env, exit")
 	ENV_VAR,        		// 1 Environment variable are words that start with $ (e.g., "$HOME", "$USER"), we do error handling for this after the tokenizing and node creation
 	ABS_PATH,           	// 2 A path starting with / (e.g., /directory/directory/  or /directory/file ) is an absolute path and refers to the exact location of the file or command file system staring from root directory
 	REL_PATH,           	// 3 A path that doesn’t start with ./ or ../ It is relative to the current working directory. (example ./directory/directory/  or ../directory/directory/  or ../directory/directory/ or ../directory/file )

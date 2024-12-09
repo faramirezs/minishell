@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 15:17:33 by alramire          #+#    #+#             */
-/*   Updated: 2024/11/27 13:06:08 by alramire         ###   ########.fr       */
+/*   Updated: 2024/12/09 17:01:37 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,21 @@
 // CALL VALGRIND SUPPRESSION:
 // valgrind --suppressions=readline.supp --leak-check=full --show-leak-kinds=all ./minishell
 
-// ANSI color codes (added them just to test for now, we shouldn't lose time with making it pretty)
-#define COLOR_GREEN  "\x1b[32m"
-#define COLOR_RED    "\x1b[31m"
-#define COLOR_YELLOW "\x1b[33m"
-#define COLOR_BLUE "\x1b[34m"
-#define COLOR_RESET  "\x1b[0m"
+#define COLOR_RESET "\001\033[0m\002"
+#define COLOR_RED "\001\033[31m\002"
+#define COLOR_GREEN "\001\033[32m\002"
+#define COLOR_YELLOW "\001\033[33m\002"
+#define COLOR_BLUE "\001\033[34m\002"
+#define COLOR_MAGENTA "\001\033[35m\002"
+#define COLOR_CYAN "\001\033[36m\002"
+#define COLOR_WHITE "\001\033[37m\002"
+#define COLOR_BOLD "\001\033[1m\002"
 
 // Parsing headers
 #include	"token.h" // token structs and functions
-#include	"node.h" // node structs and node handling functions
+//#include	"node.h" // node structs and node handling functions
+#include	"tree_node.h"
+#include	"tree_parser.h"
 
 //Execution headers
 #include	"built_in.h" // this already should include all the builtins headers inside
