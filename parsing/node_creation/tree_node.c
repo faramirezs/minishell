@@ -43,6 +43,7 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 t_tree_node *parse_exec(t_scanner *scanner)
 {
 	t_tree_node *node;
+	t_token next_token;
 	t_token peek_token;
 	//size_t length;
 	//char *str1;
@@ -55,23 +56,35 @@ t_tree_node *parse_exec(t_scanner *scanner)
 	node->data.exec_u.cmd = ft_strndup(scanner->next.lexeme.start, scanner->next.lexeme.length);
 	if (scanner_has_next(scanner))
 	{
-		if(scanner_peek(scanner).type == WORD || scanner_peek(scanner).type == OPTION)
+		peek_token = scanner_peek(scanner);
+		printf("peek token type %i\n", peek_token.type);
+		printf("Token Type: %d, Token Value: %.*s\n", peek_token.type, (int)peek_token.lexeme.length, peek_token.lexeme.start);
+		//printf("Token Type: %d, Token Value: %s\n", peek_token.type, new_token->value);
+		if(peek_token.type == WORD || peek_token.type == OPTION)
 		{
-			peek_token = scanner_next(scanner);
+			next_token = scanner_next(scanner);
 			//length = length + peek_token.lexeme.length;
-			node->data.exec_u.args = ft_strndup(peek_token.lexeme.start, peek_token.lexeme.length);
+			node->data.exec_u.args = ft_strndup(next_token.lexeme.start, next_token.lexeme.length);
+			printf("Args, con ft_strndup is %s\n", node->data.exec_u.args);
 			//node->data.exec_u.args = OOM_GUARD(malloc(sizeof(char) * length + 1), __FILE__, __LINE__);
 		}
 		else if (scanner_peek(scanner).type == PIPE)
 		{
+			printf("Is a Pipe, Args NULL\n");
 			node->data.exec_u.args = NULL;
 			parse_pipe(node, scanner);
 		}
 		else
+		{
+			printf("Args NULL, no pipe, no word, no option\n");
 			node->data.exec_u.args = NULL;
+		}
 	}
 	else
+	{
+		printf("Args NULL, scanner has no next.\n");
 		node->data.exec_u.args = NULL;
+	}
 	return (node);
 }
 
