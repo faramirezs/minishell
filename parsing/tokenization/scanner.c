@@ -42,7 +42,8 @@ t_token scanner_next(t_scanner *self)
 	}
 	return (self->next);
 }
-
+// In this moment peek is also consuming the token, it is not just only peeking.. it also advance the iterator along the string.
+// We need tocheck if this can be problematic for the use of the parser.
 t_token scanner_peek(t_scanner *self)
 {
 	char c;

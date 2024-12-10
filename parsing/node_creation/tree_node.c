@@ -20,7 +20,9 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 	//if scanner_has_next....
 
 	node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
-	scanner->next = scanner_next(scanner);
+	if (scanner_has_next(scanner))
+		scanner->next = scanner_next(scanner);
+	printf("Next token type: %d, Next token value: %.*s\n", scanner->next.type, (int)scanner->next.lexeme.length, scanner->next.lexeme.start);
 	node = parse_exec(scanner);
 	return(node);
 	/* if (scanner->next.type == COMMAND)
@@ -43,7 +45,7 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 t_tree_node *parse_exec(t_scanner *scanner)
 {
 	t_tree_node *node;
-	t_token next_token;
+	//t_token next_token;
 	t_token peek_token;
 	//size_t length;
 	//char *str1;
@@ -56,15 +58,17 @@ t_tree_node *parse_exec(t_scanner *scanner)
 	node->data.exec_u.cmd = ft_strndup(scanner->next.lexeme.start, scanner->next.lexeme.length);
 	if (scanner_has_next(scanner))
 	{
-		peek_token = scanner_peek(scanner);
-		printf("peek token type %i\n", peek_token.type);
-		printf("Token Type: %d, Token Value: %.*s\n", peek_token.type, (int)peek_token.lexeme.length, peek_token.lexeme.start);
+		//printf("Scanner has next\n");
+		peek_token = scanner_next(scanner);
+		//printf("peek token type %i\n", peek_token.type);
+		printf("Peek token Type: %d, Peek token Value: %.*s\n", peek_token.type, (int)peek_token.lexeme.length, peek_token.lexeme.start);
 		//printf("Token Type: %d, Token Value: %s\n", peek_token.type, new_token->value);
 		if(peek_token.type == WORD || peek_token.type == OPTION)
 		{
-			next_token = scanner_next(scanner);
+			//next_token = scanner_next(scanner);
+			//printf("Next token Type: %d, Next token Value: %.*s\n", next_token.type, (int)next_token.lexeme.length, next_token.lexeme.start);
 			//length = length + peek_token.lexeme.length;
-			node->data.exec_u.args = ft_strndup(next_token.lexeme.start, next_token.lexeme.length);
+			node->data.exec_u.args = ft_strndup(peek_token.lexeme.start, peek_token.lexeme.length);
 			printf("Args, con ft_strndup is %s\n", node->data.exec_u.args);
 			//node->data.exec_u.args = OOM_GUARD(malloc(sizeof(char) * length + 1), __FILE__, __LINE__);
 		}
