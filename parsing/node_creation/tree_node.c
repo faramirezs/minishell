@@ -58,6 +58,13 @@ t_tree_node *parse_exec(t_scanner *scanner)
 	node->data.exec_u.cmd = ft_strndup(scanner->next.lexeme.start, scanner->next.lexeme.length);
 	printf("Node type: %d\n", node->type);
 	printf("Node command: %s\n", node->data.exec_u.cmd);
+	// I think I need to create a while loop, to: A. Scan and collect all the tokens that are not pipe into one array, then when the array is complete decide if: 1. Is a node command or is a branch of a pipe node.
+	
+
+
+
+
+
 	if (scanner_has_next(scanner))
 	{
 		//printf("Scanner has next\n");
