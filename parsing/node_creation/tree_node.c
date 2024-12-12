@@ -56,6 +56,8 @@ t_tree_node *parse_exec(t_scanner *scanner)
 	node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
 	node->type = N_EXEC;
 	node->data.exec_u.cmd = ft_strndup(scanner->next.lexeme.start, scanner->next.lexeme.length);
+	printf("Node type: %d\n", node->type);
+	printf("Node command: %s\n", node->data.exec_u.cmd);
 	if (scanner_has_next(scanner))
 	{
 		//printf("Scanner has next\n");

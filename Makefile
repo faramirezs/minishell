@@ -10,7 +10,7 @@ TOKENIZATION =	./parsing/tokenization/char_itr.c \
 
 NODE_CREATION =	./parsing/node_creation/tree_node.c
 
-EXECUTION	=
+EXECUTION	= ./execution/exec.c
 
 SRC	= main.c \
 	$(TOKENIZATION) \
