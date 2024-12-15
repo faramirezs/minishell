@@ -6,17 +6,20 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 16:33:18 by alramire          #+#    #+#             */
-/*   Updated: 2024/12/04 18:39:45 by alramire         ###   ########.fr       */
+/*   Updated: 2024/12/15 17:08:37 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CHAR_ITR_H
 #define CHAR_ITR_H
 
+#include <stddef.h>
 
 #define WHITESPACES " \t\r\n\a\""
 #define SYMBOLS "\\;()#&`*~|"
 #define NOBRKSYMS "_.?:-+="
+
+
 
 typedef struct s_chart_itr
 {

@@ -6,6 +6,7 @@
 #include "../../headers/scanner.h"
 #include "../../headers/token.h"
 #include "../../headers/minishell.h"
+#include "../../headers/args.h"
 
 //YouTube video min 7:45 https://youtu.be/sUxFE32tXF0?si=73UiqQEYAERD3fdD
 
@@ -45,27 +46,32 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 t_tree_node *parse_exec(t_scanner *scanner)
 {
 	t_tree_node *node;
-	//t_token next_token;
 	t_token peek_token;
-	//size_t length;
-	//char *str1;
-	//char *str2;
+	t_args *args;
 
-	//length = 0;
-	//node = malloc(sizeof(t_node));
 	node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
+	args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
+	args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
+	//after every arg_collection, we need to also parse redirs. That is the way bash does it.
 	node->type = N_EXEC;
+	printf("Lexeme length: %li\n", scanner->next.lexeme.length);
+	//Lexeme includes null terminated char
 	node->data.exec_u.cmd = ft_strndup(scanner->next.lexeme.start, scanner->next.lexeme.length);
 	printf("Node type: %d\n", node->type);
 	printf("Node command: %s\n", node->data.exec_u.cmd);
+	*(args->count) = 1;
 	// I think I need to create a while loop, to: A. Scan and collect all the tokens that are not pipe into one array, then when the array is complete decide if: 1. Is a node command or is a branch of a pipe node.
-	
+	while(scanner_has_next(scanner))
+	{
 
-
-
-
-
-	if (scanner_has_next(scanner))
+		printf("While scanner has next loop.\n");
+		peek_token = scanner_next(scanner);
+		printf("After peek token\n");
+		args_collector(&peek_token, args);
+		(*(args->count))++;
+	}
+	node->data.exec_u.args = args->words;
+	/* if (scanner_has_next(scanner))
 	{
 		//printf("Scanner has next\n");
 		peek_token = scanner_next(scanner);
@@ -97,7 +103,7 @@ t_tree_node *parse_exec(t_scanner *scanner)
 	{
 		printf("Args NULL, scanner has no next.\n");
 		node->data.exec_u.args = NULL;
-	}
+	} */
 	return (node);
 }
 
@@ -164,7 +170,8 @@ void visit_node (const t_tree_node *node, size_t spaces)
 	{
 		printf("Exec node\n");
 		printf("CMD: %s\n", node->data.exec_u.cmd);
-		printf("ARGS: %s\n", node->data.exec_u.args);
+		printf("ARGS: args[0]=%s, args[1]=%s \n", node->data.exec_u.args[0], node->data.exec_u.args[1]);
+
 	}
 	else if(node->type == N_REDIR)
 	{

@@ -20,8 +20,9 @@ static void exec_command(t_tree_node *node)
 	if (fork() == FORKED_CHILD)
 	{
 		printf("Fork 0");
-		char *argv[2] = { "ls", 0};
-		execvp(argv[0], argv);
+		//char *argv[2] = { "ls", 0};
+		//execvp(argv[0], argv);
+		execvp(node->data.exec_u.cmd, node->data.exec_u.args);
 	}
 	wait(NULL);
 }

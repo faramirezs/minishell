@@ -34,7 +34,7 @@ struct s_execcmd
 	//char *argv[MAXARGS];
 	//char *eargv[MAXARGS];
 	char *cmd;
-	char *args;
+	char **args;
 };
 
 struct s_redircmd

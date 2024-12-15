@@ -8,7 +8,8 @@ TOKENIZATION =	./parsing/tokenization/char_itr.c \
 				./parsing/tokenization/token_list.c \
 				./parsing/tokenization/guards.c
 
-NODE_CREATION =	./parsing/node_creation/tree_node.c
+NODE_CREATION =	./parsing/node_creation/tree_node.c \
+				./parsing/node_creation/args.c
 
 EXECUTION	= ./execution/exec.c
 

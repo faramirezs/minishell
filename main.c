@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 16:26:03 by jslusark          #+#    #+#             */
-/*   Updated: 2024/12/12 11:25:12 by alramire         ###   ########.fr       */
+/*   Updated: 2024/12/15 17:02:17 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	main(int argc, char **argv)
 			scanner = scanner_value(itr);
 			//tokens = init_token_list(&scanner);
 			tree_node = parse_tree_node(&scanner);
-			printf("Tree Node: type=%d, cmd=%s, args=%s\n", tree_node->type, tree_node->data.exec_u.cmd, tree_node->data.exec_u.args);
+			printf("Tree Node: type=%d, cmd=%s, args[0]=%s, args[1]=%s \n", tree_node->type, tree_node->data.exec_u.cmd, tree_node->data.exec_u.args[0], tree_node->data.exec_u.args[1] );
 			exec(tree_node);
 			//visit_node(tree_node, 0);
 		}

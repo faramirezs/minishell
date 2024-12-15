@@ -6,13 +6,14 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 15:17:33 by alramire          #+#    #+#             */
-/*   Updated: 2024/12/12 11:05:18 by alramire         ###   ########.fr       */
+/*   Updated: 2024/12/15 17:06:31 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+#include	<stddef.h>
 #include	<stdio.h>
 #include	<stdlib.h>
 #include	<string.h>
@@ -41,6 +42,9 @@
 //#include	"node.h" // node structs and node handling functions
 #include	"tree_node.h"
 #include	"tree_parser.h"
+
+//Args collector
+#include "args.h"
 
 //Execution headers
 #include	"built_in.h" // this already should include all the builtins headers inside
