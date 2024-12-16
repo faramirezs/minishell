@@ -6,7 +6,7 @@ static void exec_command(t_tree_node *node);
 
 void exec(t_tree_node *node)
 {
-	printf("exec()\n");
+	printf("exec() in file %s at line %d\n", __FILE__, __LINE__);
 	if (node->type == N_EXEC)
 		exec_command(node);
 	else
@@ -16,7 +16,7 @@ void exec(t_tree_node *node)
 static void exec_command(t_tree_node *node)
 {
 	(void)node; //To silence unused parameter alert.
-	printf("exec_command()\n");
+	printf("exec_command() in file %s at line %d\n", __FILE__, __LINE__);
 	if (fork() == FORKED_CHILD)
 	{
 		printf("Fork 0");

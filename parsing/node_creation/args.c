@@ -29,8 +29,9 @@ void args_collector(t_token *token, t_args *args)
 
 		//Here, always args count is equal to 1
 		args->words = OOM_GUARD(malloc(*(args->count)* sizeof(char *)), __FILE__, __LINE__);
-		args->words[*(args->count)] = OOM_GUARD(malloc(token->lexeme.length * sizeof(char)), __FILE__, __LINE__);
-		ft_strlcpy(args->words[*(args->count)], token->lexeme.start, token->lexeme.length);
+		args->words[(*(args->count)) - 1] = OOM_GUARD(malloc(token->lexeme.length * sizeof(char)), __FILE__, __LINE__);
+		ft_strlcpy(args->words[(*(args->count)) - 1], token->lexeme.start, token->lexeme.length);
+		printf("Token lexeme start: %s, length: %zu\n", token->lexeme.start, token->lexeme.length);
 		printf("Last string from words is %s\n", args->words[*(args->count)]);
 		//the case there the words array is empty...?
 		//

@@ -46,7 +46,7 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 t_tree_node *parse_exec(t_scanner *scanner)
 {
 	t_tree_node *node;
-	t_token peek_token;
+	//t_token peek_token;
 	t_args *args;
 
 	node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
@@ -60,14 +60,17 @@ t_tree_node *parse_exec(t_scanner *scanner)
 	printf("Node type: %d\n", node->type);
 	printf("Node command: %s\n", node->data.exec_u.cmd);
 	*(args->count) = 1;
+	args_collector(&scanner->next, args);
 	// I think I need to create a while loop, to: A. Scan and collect all the tokens that are not pipe into one array, then when the array is complete decide if: 1. Is a node command or is a branch of a pipe node.
 	while(scanner_has_next(scanner))
 	{
 
 		printf("While scanner has next loop.\n");
-		peek_token = scanner_next(scanner);
-		printf("After peek token\n");
-		args_collector(&peek_token, args);
+		scanner_next(scanner);
+		args_collector(&scanner->next, args);
+		//peek_token = scanner_next(scanner);
+		//printf("After peek token\n");
+		//args_collector(&peek_token, args);
 		(*(args->count))++;
 	}
 	node->data.exec_u.args = args->words;
