@@ -60,13 +60,13 @@ t_token scanner_peek(t_scanner *self)
 			return (redir_in_token(self));
 		else if (c == '$')
 			return (env_var_token(self));
-		else if (c == '/')
+		/* else if (c == '/')
 			return (abs_path_token(self));
 		else if (c == '.' && ((*(self->char_itr.cursor + 1) == '/') || (*(self->char_itr.cursor + 1) == '.' && *(self->char_itr.cursor + 2) == '/')))
 			return (rel_path_token(self));
 		else if (c == '-')
-			return (option_token(self));
-		else if (ft_isalnum(c))
+			return (option_token(self)); */
+		else if (ft_isalnum(c) || ft_strchr(NOBRKSYMS, *self->char_itr.cursor))
 			return (word_token(self));
 		else
 			return (tmp_unknown_token(self));

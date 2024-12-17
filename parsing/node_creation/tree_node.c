@@ -46,6 +46,7 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 t_tree_node *parse_exec(t_scanner *scanner)
 {
 	t_tree_node *node;
+	//Why we are declaring another poiner to tree_node? in parse_tree_node, we just declared and alloced the memory.
 	//t_token peek_token;
 	t_args *args;
 
@@ -56,22 +57,21 @@ t_tree_node *parse_exec(t_scanner *scanner)
 	node->type = N_EXEC;
 	printf("Lexeme length: %li\n", scanner->next.lexeme.length);
 	//Lexeme includes null terminated char
-	node->data.exec_u.cmd = ft_strndup(scanner->next.lexeme.start, scanner->next.lexeme.length);
-	printf("Node type: %d\n", node->type);
-	printf("Node command: %s\n", node->data.exec_u.cmd);
+	//node->data.exec_u.cmd = ft_strndup(scanner->next.lexeme.start, scanner->next.lexeme.length);
+	//printf("Node type: %d\n", node->type);
+	//printf("Node command: %s\n", node->data.exec_u.cmd);
 	*(args->count) = 1;
 	args_collector(&scanner->next, args);
-	// I think I need to create a while loop, to: A. Scan and collect all the tokens that are not pipe into one array, then when the array is complete decide if: 1. Is a node command or is a branch of a pipe node.
 	while(scanner_has_next(scanner))
 	{
-
+		(*(args->count))++;
 		printf("While scanner has next loop.\n");
 		scanner_next(scanner);
 		args_collector(&scanner->next, args);
 		//peek_token = scanner_next(scanner);
 		//printf("After peek token\n");
 		//args_collector(&peek_token, args);
-		(*(args->count))++;
+		//(*(args->count))++;
 	}
 	node->data.exec_u.args = args->words;
 	/* if (scanner_has_next(scanner))

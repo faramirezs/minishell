@@ -36,8 +36,8 @@ int is_whitespace (t_char_itr *self)
 //Returns true when there are aditional chars to consume on the iterable range
 int char_itr_has_next(const t_char_itr *self)
 {
-	//I have some doubts about this function... Not sure if instead of self->cursor i need to go fo self->cursor + 1. To see what is the next one... But when doing so Am i advancing the iterator? Should i create a copy?
-	//printf("Itr has more chars? R: %i\n", self->cursor < self->sentinel1);
+	printf("Itr has more chars? R: %i\n", self->cursor < self->sentinel1);
+	//printf("Char: %c, in file %s at line %d\n", *self->cursor, __FILE__, __LINE__);
 	return(self->cursor < self->sentinel1);
 }
 //peek and return the next character. Do not advance the cursor. Will crash out of bound if no more chars to consume

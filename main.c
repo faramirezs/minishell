@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 16:26:03 by jslusark          #+#    #+#             */
-/*   Updated: 2024/12/15 17:02:17 by alramire         ###   ########.fr       */
+/*   Updated: 2024/12/17 17:08:58 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ int	main(int argc, char **argv)
 			exec(tree_node);
 			//visit_node(tree_node, 0);
 		}
-		//if(!tokens)
 		if(!tree_node)
 		{
 			free(input);
