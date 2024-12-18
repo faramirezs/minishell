@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 16:26:03 by jslusark          #+#    #+#             */
-/*   Updated: 2024/12/17 17:08:58 by alramire         ###   ########.fr       */
+/*   Updated: 2024/12/17 17:30:21 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,11 @@
 int	main(int argc, char **argv)
 {
 	char			*input;
-	//t_token_list	*tokens;
-	//t_node			*node_list;
 	t_char_itr		itr;
 	t_scanner		scanner;
 	t_tree_node		*tree_node;
-	(void)argc; // this silences compilation warnings when we do not use argc
-	(void)argv; // this silences compilation warnings when we do not use argv
+	(void)argc;
+	(void)argv;
 
 	while (1)
 	{
@@ -32,12 +30,8 @@ int	main(int argc, char **argv)
 		{
 			add_history(input);
 			itr = char_itr_value(input, ft_strlen(input));
-			//if(check_start_uknown(itr.cursor)== 1)
-			//printf("Minishell: unknown command '%c' \n", itr.cursor[0]);
 			scanner = scanner_value(itr);
-			//tokens = init_token_list(&scanner);
 			tree_node = parse_tree_node(&scanner);
-			printf("Tree Node: type=%d, cmd=%s, args[0]=%s, args[1]=%s \n", tree_node->type, tree_node->data.exec_u.cmd, tree_node->data.exec_u.args[0], tree_node->data.exec_u.args[1] );
 			exec(tree_node);
 			//visit_node(tree_node, 0);
 		}

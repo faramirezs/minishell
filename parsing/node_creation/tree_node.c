@@ -16,14 +16,14 @@
 t_tree_node *parse_tree_node (t_scanner *scanner)
 {
 	t_tree_node *node;
-	//t_token token;
-	//t_token next_token;
-	//if scanner_has_next....
 
 	node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
 	if (scanner_has_next(scanner))
 		scanner->next = scanner_next(scanner);
 	printf("Next token type: %d, Next token value: %.*s\n", scanner->next.type, (int)scanner->next.lexeme.length, scanner->next.lexeme.start);
+	//parse_redir
+	/* if(scanner->next.type == REDIR_IN || scanner->next.type == REDIR_OUT || scanner->next.type == HEREDOC || scanner->next.type == APPEND_OUT)
+		node = parse_redir; */
 	node = parse_exec(scanner);
 	return(node);
 	/* if (scanner->next.type == COMMAND)
@@ -43,11 +43,29 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 	// 		parse redir
 }
 
+/* t_tree_node *parse_redir(t_scanner *scanner)
+{
+	t_tree_node *node;
+	//Why we are declaring another poiner to tree_node? in parse_tree_node, we just declared and alloced the memory.
+	t_args *args;
+
+	node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
+	args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
+	args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
+	node->type = N_REDIR;
+	printf("Lexeme length: %li\n", scanner->next.lexeme.length);
+	args_collector(&scanner->next, args);
+	if (scanner_has_next(scanner))
+		scanner_next(scanner);
+	else
+		printf("No file");
+
+} */
+
 t_tree_node *parse_exec(t_scanner *scanner)
 {
 	t_tree_node *node;
 	//Why we are declaring another poiner to tree_node? in parse_tree_node, we just declared and alloced the memory.
-	//t_token peek_token;
 	t_args *args;
 
 	node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
@@ -65,13 +83,8 @@ t_tree_node *parse_exec(t_scanner *scanner)
 	while(scanner_has_next(scanner))
 	{
 		(*(args->count))++;
-		printf("While scanner has next loop.\n");
 		scanner_next(scanner);
 		args_collector(&scanner->next, args);
-		//peek_token = scanner_next(scanner);
-		//printf("After peek token\n");
-		//args_collector(&peek_token, args);
-		//(*(args->count))++;
 	}
 	node->data.exec_u.args = args->words;
 	/* if (scanner_has_next(scanner))
@@ -125,6 +138,8 @@ t_tree_node *parse_exec(t_scanner *scanner)
 	node->data.error = msg;
 } */
 
+// Take a look here https://www.youtube.com/watch?v=-J-nX4aiSP4&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=64
+// and here https://www.youtube.com/watch?v=KbhDPYHRqkY&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=65
 t_tree_node *parse_pipe (t_tree_node *node, t_scanner *scanner)
 {
 	t_tree_node	*pipe_node;
@@ -158,6 +173,9 @@ t_tree_node *pipe_node_new(t_tree_node *left, t_tree_node *right)
 
 
 // Video used to get until this point: https://www.youtube.com/watch?v=sUxFE32tXF0&t=995s&ab_channel=KrisJordan
+
+
+
 
 
 void visit_node (const t_tree_node *node, size_t spaces)

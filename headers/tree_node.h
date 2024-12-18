@@ -100,6 +100,7 @@ void node_drop(t_tree_node *self); //To free up any memory that is allocated wit
 
 t_tree_node *parse_tree_node (t_scanner *scanner);
 t_tree_node *parse_exec (t_scanner *scanner);
+t_tree_node *parse_redir (t_scanner *scanner);
 // t_tree_node *parse_redir ();
 t_tree_node *parse_pipe (t_tree_node *node, t_scanner *scanner);
 //t_tree_node *error_node(const char *msg);
