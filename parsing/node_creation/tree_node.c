@@ -24,6 +24,7 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 	//parse_redir
 	/* if(scanner->next.type == REDIR_IN || scanner->next.type == REDIR_OUT || scanner->next.type == HEREDOC || scanner->next.type == APPEND_OUT)
 		node = parse_redir; */
+	//if(scanner->next.type != PIPE)
 	node = parse_exec(scanner);
 	return(node);
 	/* if (scanner->next.type == COMMAND)
@@ -80,11 +81,19 @@ t_tree_node *parse_exec(t_scanner *scanner)
 	//printf("Node command: %s\n", node->data.exec_u.cmd);
 	*(args->count) = 1;
 	args_collector(&scanner->next, args);
-	while(scanner_has_next(scanner))
+	while(scanner_has_next(scanner) && scanner->next.type != PIPE)
 	{
 		(*(args->count))++;
 		scanner_next(scanner);
-		args_collector(&scanner->next, args);
+		if(scanner->next.type != PIPE)
+			args_collector(&scanner->next, args);
+		else
+		{
+			node->type = N_PIPE;
+			node->data.pipe_u.left->data.exec_u.args = args->words;
+			//If {args} then PIPE we are talking about left
+			//If PIPE then {args} we are talking about right
+		}
 	}
 	node->data.exec_u.args = args->words;
 	/* if (scanner_has_next(scanner))

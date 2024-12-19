@@ -10,47 +10,80 @@ typedef struct s_context
 	int fd_close; // Close an fd? -1 if not
 } t_context;
 
-static void exec_node(t_tree_node *node, t_context *ctx);
-static void exec_command(t_tree_node *node, t_context *ctx);
-static void exec_pipe(t_tree_node *node, t_context *ctx);
+static int exec_node(t_tree_node *node, t_context *ctx);
+static int exec_command(t_tree_node *node, t_context *ctx);
+static int exec_pipe(t_tree_node *node, t_context *ctx);
 
-static void exec_node(t_tree_node *node, t_context *ctx)
+static int exec_node(t_tree_node *node, t_context *ctx)
 {
 	if (node->type == N_EXEC)
-		exec_command(node, ctx);
+		return (exec_command(node, ctx));
 	else if (node->type == N_PIPE)
-		exec_pipe(node, ctx);
+		return (exec_pipe(node, ctx));
 	else
 	{
 		printf("in file %s at line %d\n", __FILE__, __LINE__);
 		printf("It is not a EXE_N node\n");
+		return (0);
 	}
 }
 
 
 void exec(t_tree_node *node)
 {
+	t_context ctx;
+	int children;
+	int i;
 
-
+	i = 0;
+	children = 0;
+	ctx.fd[0] = STDIN_FILENO;
+	ctx.fd[1] = STDOUT_FILENO;
+	ctx.fd_close = -1;
+	children = exec_node(node, &ctx);
+	while(i < children)
+	{
+		wait(NULL);
+		i++;
+	}
 }
 
-static void exec_command(t_tree_node *node, t_context *ctx)
+static int exec_command(t_tree_node *node, t_context *ctx)
 {
 	if (fork() == FORKED_CHILD)
+	{
+		//evaluate the context and act on
+		dup2(ctx->fd[STDIN_FILENO], STDIN_FILENO);
+		dup2(ctx->fd[STDOUT_FILENO], STDOUT_FILENO);
+		if(ctx->fd_close >= 0)
+			close(ctx->fd_close);
 		execvp(node->data.exec_u.args[0], node->data.exec_u.args);
-	wait(NULL);
+	}
+	return (1);
 }
 
-static void exec_pipe(t_tree_node *node, t_context *ctx)
+static int exec_pipe(t_tree_node *node, t_context *ctx)
 {
 	t_tree_node *lhs;
 	t_tree_node *rhs;
-
+	t_context lhs_ctx;
+	t_context rhs_ctx;
 	int p[2];
-	pipe(p)
+	int children;
 
+	children = 0;
+	pipe(p);
 	lhs = node->data.pipe_u.left;
-	exec(lhs);
+	lhs_ctx = *ctx;
+	lhs_ctx.fd[STDOUT_FILENO] = p[STDOUT_FILENO];
+	lhs_ctx.fd_close = p[STDIN_FILENO];
+	children += exec_node(lhs, &lhs_ctx);
 	rhs = node->data.pipe_u.right;
-	exec(rhs);
+	rhs_ctx = *ctx;
+	rhs_ctx.fd[STDIN_FILENO] = p[STDIN_FILENO];
+	rhs_ctx.fd_close = p[STDOUT_FILENO];
+	children += exec_node(rhs, &rhs_ctx);
+	close(p[STDIN_FILENO]);
+	close(p[STDOUT_FILENO]);
+	return (children);
 }
