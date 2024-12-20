@@ -12,8 +12,122 @@
 
 
 
-
 t_tree_node *parse_tree_node (t_scanner *scanner)
+{
+	t_tree_node	*node;
+	t_args		*args;
+	int			pipe_flag;
+
+	pipe_flag = 0;
+	node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
+	args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
+	args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
+	printf("Next token type: %d, Next token value: %.*s\n", scanner->next.type, (int)scanner->next.lexeme.length, scanner->next.lexeme.start);
+	//Logic when we call again the parse function and the first token is a PIPE
+	//This can happen in two cases: 1 when the user input starts with PIPE, this is not valid (we should handle this somewhere else)
+	//Or when before the pipe, we already collect arguments for the pipe left node
+	if(scanner->next.type == PIPE && scanner_has_next(scanner))
+	{
+		scanner->next = scanner_next(scanner);
+		//parse redir.
+		*(args->count) = 1;
+		while(scanner->next.type != PIPE && scanner_has_next(scanner))
+		{
+			//How to integrate parse_redir?
+			args_collector(&scanner->next, args);
+			scanner->next = scanner_next(scanner);
+			//parse redir.
+		}
+		node->type = N_PIPE;
+		node->data.pipe_u.right->data.exec_u.args = args->words;
+		printf("Node type PIPE right\n");
+		return(node);
+	}
+	else if(scanner_has_next(scanner))
+	{
+		//This if check is met if right pipe node or command_node.
+		scanner->next = scanner_next(scanner);
+		if(scanner->next.type == PIPE && scanner_has_next(scanner))
+			parse_tree_node(scanner);
+		*(args->count) = 1;
+		while(scanner->next.type != PIPE && scanner_has_next(scanner))
+		{
+			args_collector(&scanner->next, args);
+			scanner->next = scanner_next(scanner);
+			if(scanner->next.type == PIPE)
+			{
+				pipe_flag++;
+				break;
+			}
+			//parse redir
+		}
+		if(pipe_flag > 0)
+		{
+			printf("Node type PIPE left\n");
+			return(parse_exec(args));
+		}
+		else
+		{
+			node->type = N_EXEC;
+			node->data.exec_u.args = args->words;
+			printf("Node type EXEC\n");
+			return(node);
+		}
+	}
+	else if(scanner->next.type == PIPE)
+	{
+		printf("last token can not be a PIPE\n");
+		return(node);
+	}
+	else
+	{
+		printf("last ELSE check\n");
+		return(node);
+	}
+}
+t_tree_node *parse_exec(t_args *args)
+{
+	t_tree_node *node;
+	//Why we are declaring another poiner to tree_node? in parse_tree_node, we just declared and alloced the memory.
+	//t_args *args;
+
+	node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
+	//args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
+	//args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
+	node->type = N_EXEC;
+	print_args(args);
+	node->data.exec_u.args = copy_string_array(args->words, args->count);
+	return(node);
+}
+
+
+
+t_tree_node *parse_pipe (t_token *scanner, t_args *args)
+{
+	t_tree_node	*pipe_node;
+	//t_token		*token;
+
+	pipe_node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
+	pipe_node->type = N_PIPE;
+	pipe_node->data.pipe_u.left = parse_exec(args);
+	pipe_node->data.pipe_u.right = parse_tree_node(scanner);
+	return (pipe_node);
+
+	// This function will be called by parse.
+	// On the left side I will add the first cmd + args and on the right one the second cmd + args
+	// How can I put on the left side what I got before executing the pipe?
+}
+
+
+
+
+
+
+
+
+
+//Last version of parse_tree_node
+/* t_tree_node *parse_tree_node (t_scanner *scanner)
 {
 	t_tree_node *node;
 
@@ -22,27 +136,12 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 		scanner->next = scanner_next(scanner);
 	printf("Next token type: %d, Next token value: %.*s\n", scanner->next.type, (int)scanner->next.lexeme.length, scanner->next.lexeme.start);
 	//parse_redir
-	/* if(scanner->next.type == REDIR_IN || scanner->next.type == REDIR_OUT || scanner->next.type == HEREDOC || scanner->next.type == APPEND_OUT)
-		node = parse_redir; */
+	//if(scanner->next.type == REDIR_IN || scanner->next.type == REDIR_OUT || scanner->next.type == HEREDOC || scanner->next.type == APPEND_OUT)
+	//	node = parse_redir;
 	//if(scanner->next.type != PIPE)
 	node = parse_exec(scanner);
 	return(node);
-	/* if (scanner->next.type == COMMAND)
-		return(parse_exec(scanner));
-	else if (scanner->next.type == PIPE)
-		return(parse_pipe(scanner)); */
-
-
-
-
-
-	//if peek = cmd?
-	//		parse_exec
-	//else if peek = |
-	//		parse_pipe
-	//else if peek = redir
-	// 		parse redir
-}
+} */
 
 /* t_tree_node *parse_redir(t_scanner *scanner)
 {
