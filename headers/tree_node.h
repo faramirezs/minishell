@@ -2,6 +2,7 @@
 #define TREE_NODE_H
 
 #include "../headers/scanner.h"
+#include "../headers/args.h"
 
 typedef struct s_cmd t_cmd;
 typedef struct s_execcmd t_execcmd;
@@ -102,7 +103,7 @@ t_tree_node *parse_tree_node (t_scanner *scanner);
 t_tree_node *parse_exec(t_args *args);
 t_tree_node *parse_redir (t_scanner *scanner);
 // t_tree_node *parse_redir ();
-t_tree_node *parse_pipe (t_tree_node *node, t_scanner *scanner);
+t_tree_node *parse_pipe (t_scanner *scanner, t_args *args);
 //t_tree_node *error_node(const char *msg);
 void indent_node (size_t spaces);
 void visit_node (const t_tree_node *node, size_t spaces);

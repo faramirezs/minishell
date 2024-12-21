@@ -71,13 +71,12 @@ void free_string_array(char **array)
 		{
 			printf("Clearing words\n");
 			i = 0;
-			while (i < *(array) - 1)
+			while (array[i] != NULL)
 			{
-				free(array[j]);
+				free(array[i]);
 				i++;
 			}
 			free(array);
-
 		}
 }
 void print_args(t_args *args)
