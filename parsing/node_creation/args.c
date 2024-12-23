@@ -14,16 +14,12 @@ void args_collector(t_token *token, t_args *args)
 	if (*(args->count) > 1)
 	{
 		temp = OOM_GUARD(malloc(*(args->count)* sizeof(char *)), __FILE__, __LINE__);
-		while(i < *(args->count) - 1)
+		while(i < *(args->count))
 		{
-			temp[i] = args->words[i];
+			temp[i] = OOM_GUARD(malloc((token->lexeme.length + 1) * sizeof(char)), __FILE__, __LINE__);
+			ft_strlcpy(temp[i], token->lexeme.start, token->lexeme.length + 1);
 			i++;
 		}
-		temp[(*(args->count)) - 1] = OOM_GUARD(malloc(token->lexeme.length * sizeof(char)), __FILE__, __LINE__);
-		ft_strlcpy(temp[(*(args->count)) - 1], token->lexeme.start, token->lexeme.length);
-		//printf("Token lexeme length: %zu in file %s at line %d\n", token->lexeme.length, __FILE__, __LINE__);
-		//printf("Last string from temp is %s\n", temp[(*(args->count)) - 1]);
-		//printf("in file %s at line %d\n", __FILE__, __LINE__);
 		free(args->words);
 		args->words = temp;
 	}
@@ -31,8 +27,8 @@ void args_collector(t_token *token, t_args *args)
 	{
 		// Here, always args count is equal to 1
 		args->words = OOM_GUARD(malloc(*(args->count) * sizeof(char *)), __FILE__, __LINE__);
-		args->words[(*(args->count)) - 1] = OOM_GUARD(malloc(token->lexeme.length * sizeof(char)), __FILE__, __LINE__);
-		ft_strlcpy(args->words[(*(args->count)) - 1], token->lexeme.start, token->lexeme.length);
+		args->words[(*(args->count)) - 1] = OOM_GUARD(malloc((token->lexeme.length + 1) * sizeof(char)), __FILE__, __LINE__);
+		ft_strlcpy(args->words[(*(args->count)) - 1], token->lexeme.start, token->lexeme.length + 1);
 		// printf("Token lexeme length: %zu in file %s at line %d\n", token->lexeme.length, __FILE__, __LINE__);
 		// printf("Last string from words is %s\n", args->words[(*(args->count)) - 1]);
 		// printf("in file %s at line %d\n", __FILE__, __LINE__);
@@ -40,18 +36,18 @@ void args_collector(t_token *token, t_args *args)
 }
 
 
-char **copy_string_array(char **array, int count)
+char **copy_string_array(t_args *args)
 {
-	// Allocate memory for the new array of pointers
-	char **new_array = OOM_GUARD(malloc(count * sizeof(char *)), __FILE__, __LINE__);
 	int i;
+	// Allocate memory for the new array of pointers
+	char **new_array = OOM_GUARD(malloc((*args->count) * sizeof(char *)), __FILE__, __LINE__);
 	// Copy each string
 	i = 0;
-	while (i < count)
+	while (i < *args->count)
 	{
-		if (array[i] != NULL)
+		if (args->words[i] != NULL)
 		{
-			new_array[i] = OOM_GUARD(ft_strdup(array[i]), __FILE__, __LINE__); // Duplicate the string
+			new_array[i] = OOM_GUARD(ft_strdup(args->words[i]), __FILE__, __LINE__); // Duplicate the string
 		}
 		else
 		{
@@ -59,7 +55,7 @@ char **copy_string_array(char **array, int count)
 		}
 		i++;
 	}
-	free_string_array(new_array);
+	free_args(args);
 	return (new_array);
 }
 
@@ -78,6 +74,31 @@ void free_string_array(char **array)
 			}
 			free(array);
 		}
+}
+
+void free_args(t_args *args)
+{
+	int i;
+
+	if (args)
+	{
+		if (args->words)
+		{
+			i = 0;
+			while (i < *(args->count))
+			{
+				free(args->words[i]);
+				i++;
+			}
+			free(args->words);
+		}
+		if (args->count)
+		{
+			free(args->count);
+		}
+		free(args);
+		//args = NULL;
+	}
 }
 void print_args(t_args *args)
 {

@@ -31,7 +31,11 @@ int scanner_has_next(const t_scanner *self)
 t_token scanner_next(t_scanner *self)
 {
 	skip_whitespaces(&self->char_itr);
-	if (scanner_has_next(self))
+	//For the case of all the input being spaces, we could include a if check with char, to see if after removing whitespaces, we still have a valid char.
+	//If we execute this function when
+	self->next.lexeme.length = 0;
+	self->next = scanner_peek(self);
+/* 	if (scanner_has_next(self))
 	{
 		self->next.lexeme.length = 0;
 		self->next = scanner_peek(self);
@@ -39,11 +43,11 @@ t_token scanner_next(t_scanner *self)
 	else
 	{
 		self->next = end_token(self);
-	}
+	} */
 	return (self->next);
 }
 // In this moment peek is also consuming the token, it is not just only peeking.. it also advance the iterator along the string.
-// We need tocheck if this can be problematic for the use of the parser.
+// We need to check if this can be problematic for the use of the parser.
 t_token scanner_peek(t_scanner *self)
 {
 	char c;

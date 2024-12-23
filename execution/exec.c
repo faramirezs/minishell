@@ -50,6 +50,7 @@ void exec(t_tree_node *node)
 
 static int exec_command(t_tree_node *node, t_context *ctx)
 {
+	printf("Exec command entered\n");
 	if (fork() == FORKED_CHILD)
 	{
 		//evaluate the context and act on

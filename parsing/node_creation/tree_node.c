@@ -27,15 +27,17 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 	//This can happen in two cases: 1 when the user input starts with PIPE, this is not valid (we should handle this somewhere else)
 	//Or when before the pipe, we already collect arguments for the pipe left node
 	scanner->next = scanner_next(scanner);
-/* 	if(scanner_has_next(scanner))
-	{ */
-		*(args->count) = 1;
+	//what happend if the token is not valid? or if the input is all whitespaces?
+	*(args->count) = 1;
+	args_collector(&scanner->next, args);
+	if(scanner_has_next(scanner))
+	{
+		*(args->count) = 2;
 		while(scanner->next.type != PIPE && scanner_has_next(scanner))
 			{
 
-				args_collector(&scanner->next, args);
-				printf("Estamos aqui\n");
 				scanner->next = scanner_next(scanner);
+				args_collector(&scanner->next, args);
 				if(scanner->next.type == PIPE)
 				{
 					pipe_flag++;
@@ -63,12 +65,12 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 				printf("Node type EXEC\n");
 				return(parse_exec(args));
 			}
-/* 	}
+	}
 	else
 	{
-		printf("Scanner has not next\n");
-		return (node);
-	} */
+		printf("Node type EXEC just one command.\n");
+		return(parse_exec(args));
+	}
 
 }
 t_tree_node *parse_exec(t_args *args)
@@ -80,7 +82,8 @@ t_tree_node *parse_exec(t_args *args)
 	//args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
 	node->type = N_EXEC;
 	print_args(args);
-	node->data.exec_u.args = copy_string_array(args->words, *args->count);
+	node->data.exec_u.args = copy_string_array(args);
+	print_args(args);
 	return(node);
 }
 

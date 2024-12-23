@@ -14,8 +14,9 @@ typedef struct s_args
 
 
 void args_collector(t_token *token, t_args *args);
-char **copy_string_array(char **array, int count);
+char **copy_string_array(t_args *args);
 void free_string_array(char **array);
+void free_args(t_args *args);
 void print_args(t_args *args);
 
 

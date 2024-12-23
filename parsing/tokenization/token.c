@@ -66,9 +66,9 @@ t_token redir_in_token (t_scanner *self)
 t_token word_token (t_scanner *self)
 {
 	self->next.lexeme.start = self->char_itr.cursor;
-	self->next.lexeme.length = 1;
+	//self->next.lexeme.length = 1;
 	//while(self->char_itr.cursor && ft_isalnum(*self->char_itr.cursor))
-	while(self->char_itr.cursor && (ft_isalnum(*self->char_itr.cursor) || ft_strchr(NOBRKSYMS, *self->char_itr.cursor)))
+	while(self->char_itr.cursor && *self->char_itr.cursor != '\0' && (ft_isalnum(*self->char_itr.cursor) || ft_strchr(NOBRKSYMS, *self->char_itr.cursor)))
 	{
 		/* printf("Char: %c, isalnum: %d, strchr: %p, Token lexeme length: %zu in file %s at line %d\n",
 			*self->char_itr.cursor,
