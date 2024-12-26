@@ -83,7 +83,7 @@ t_tree_node *parse_exec(t_args *args)
 	node->type = N_EXEC;
 	print_args(args);
 	node->data.exec_u.args = copy_string_array(args);
-	print_args(args);
+	//print_args(args);
 	return(node);
 }
 

@@ -14,12 +14,13 @@ void args_collector(t_token *token, t_args *args)
 	if (*(args->count) > 1)
 	{
 		temp = OOM_GUARD(malloc(*(args->count)* sizeof(char *)), __FILE__, __LINE__);
-		while(i < *(args->count))
+		while(i < *(args->count) - 1)
 		{
-			temp[i] = OOM_GUARD(malloc((token->lexeme.length + 1) * sizeof(char)), __FILE__, __LINE__);
-			ft_strlcpy(temp[i], token->lexeme.start, token->lexeme.length + 1);
+			temp[i] = OOM_GUARD(ft_strdup(args->words[i]), __FILE__, __LINE__);
 			i++;
 		}
+		temp[i] = OOM_GUARD(malloc((token->lexeme.length + 1) * sizeof(char)), __FILE__, __LINE__);
+		ft_strlcpy(temp[i], token->lexeme.start, token->lexeme.length + 1);
 		free(args->words);
 		args->words = temp;
 	}
@@ -97,7 +98,7 @@ void free_args(t_args *args)
 			free(args->count);
 		}
 		free(args);
-		//args = NULL;
+		args = NULL;
 	}
 }
 void print_args(t_args *args)
