@@ -22,7 +22,7 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 	node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
 	args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
 	args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
-	printf("Next token type: %d, Next token value: %.*s\n", scanner->next.type, (int)scanner->next.lexeme.length, scanner->next.lexeme.start);
+	//printf("Next token type: %d, Next token value: %.*s\n", scanner->next.type, (int)scanner->next.lexeme.length, scanner->next.lexeme.start);
 	//Logic when we call again the parse function and the first token is a PIPE
 	//This can happen in two cases: 1 when the user input starts with PIPE, this is not valid (we should handle this somewhere else)
 	//Or when before the pipe, we already collect arguments for the pipe left node
@@ -32,11 +32,10 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 	args_collector(&scanner->next, args);
 	if(scanner_has_next(scanner))
 	{
-		*(args->count) = 2;
 		while(scanner->next.type != PIPE && scanner_has_next(scanner))
 			{
-
 				scanner->next = scanner_next(scanner);
+				(*(args->count))++;
 				args_collector(&scanner->next, args);
 				if(scanner->next.type == PIPE)
 				{

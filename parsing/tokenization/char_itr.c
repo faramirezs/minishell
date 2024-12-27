@@ -36,7 +36,7 @@ int is_whitespace (t_char_itr *self)
 //Returns true when there are aditional chars to consume on the iterable range
 int char_itr_has_next(const t_char_itr *self)
 {
-	printf("Itr has more chars? R: %i\n", self->cursor < self->sentinel1);
+	//printf("Itr has more chars? R: %i\n", self->cursor < self->sentinel1);
 	//printf("Char: %c, in file %s at line %d\n", *self->cursor, __FILE__, __LINE__);
 	return(self->cursor < self->sentinel1);
 }

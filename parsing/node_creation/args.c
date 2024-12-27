@@ -21,21 +21,22 @@ void args_collector(t_token *token, t_args *args)
 		}
 		temp[i] = OOM_GUARD(malloc((token->lexeme.length + 1) * sizeof(char)), __FILE__, __LINE__);
 		ft_strlcpy(temp[i], token->lexeme.start, token->lexeme.length + 1);
-		free(args->words);
+		temp[i + 1] = NULL;
+		free_string_array(&args->words);
 		args->words = temp;
 	}
 	else
 	{
 		// Here, always args count is equal to 1
-		args->words = OOM_GUARD(malloc(*(args->count) * sizeof(char *)), __FILE__, __LINE__);
-		args->words[(*(args->count)) - 1] = OOM_GUARD(malloc((token->lexeme.length + 1) * sizeof(char)), __FILE__, __LINE__);
-		ft_strlcpy(args->words[(*(args->count)) - 1], token->lexeme.start, token->lexeme.length + 1);
+		args->words = OOM_GUARD(malloc(2 * sizeof(char *)), __FILE__, __LINE__);
+		args->words[0] = OOM_GUARD(malloc((token->lexeme.length + 1) * sizeof(char)), __FILE__, __LINE__);
+		ft_strlcpy(args->words[0], token->lexeme.start, token->lexeme.length + 1);
 		// printf("Token lexeme length: %zu in file %s at line %d\n", token->lexeme.length, __FILE__, __LINE__);
 		// printf("Last string from words is %s\n", args->words[(*(args->count)) - 1]);
 		// printf("in file %s at line %d\n", __FILE__, __LINE__);
+		args->words[1] = NULL;
 	}
 }
-
 
 char **copy_string_array(t_args *args)
 {
@@ -56,49 +57,50 @@ char **copy_string_array(t_args *args)
 		}
 		i++;
 	}
-	free_args(args);
+	free_args(&args);
 	return (new_array);
 }
 
-void free_string_array(char **array)
+void free_string_array(char ***array)
 {
 	int i;
 
-	if (array)
+	if (array && *array)
 		{
 			printf("Clearing words\n");
 			i = 0;
-			while (array[i] != NULL)
+			while ((*array)[i] != NULL)
 			{
-				free(array[i]);
+				free((*array)[i]);
 				i++;
 			}
-			free(array);
+			free((*array));
+			(*array) = NULL;
 		}
 }
 
-void free_args(t_args *args)
+void free_args(t_args **args)
 {
 	int i;
 
-	if (args)
+	if (args && *args)
 	{
-		if (args->words)
+		if ((*args)->words)
 		{
 			i = 0;
-			while (i < *(args->count))
+			while (i < *((*args)->count))
 			{
-				free(args->words[i]);
+				free((*args)->words[i]);
 				i++;
 			}
-			free(args->words);
+			free((*args)->words);
 		}
-		if (args->count)
+		if ((*args)->count)
 		{
-			free(args->count);
+			free((*args)->count);
 		}
-		free(args);
-		args = NULL;
+		free(*args);
+		*args = NULL;
 	}
 }
 void print_args(t_args *args)
