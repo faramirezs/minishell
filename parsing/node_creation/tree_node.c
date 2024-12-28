@@ -35,13 +35,13 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 		while(scanner->next.type != PIPE && scanner_has_next(scanner))
 			{
 				scanner->next = scanner_next(scanner);
-				(*(args->count))++;
-				args_collector(&scanner->next, args);
 				if(scanner->next.type == PIPE)
 				{
 					pipe_flag++;
 					break;
 				}
+				(*(args->count))++;
+				args_collector(&scanner->next, args);
 				//parse redir
 			}
 		if(pipe_flag > 0)
@@ -67,7 +67,9 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 	}
 	else
 	{
-		printf("Node type EXEC just one command.\n");
+		//printf("++++Node type EXEC just one command++++\n");
+		//check_null_array(args->words);
+		//print_args(args);
 		return(parse_exec(args));
 	}
 
@@ -80,8 +82,10 @@ t_tree_node *parse_exec(t_args *args)
 	//args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
 	//args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
 	node->type = N_EXEC;
-	print_args(args);
+	//printf("++++parse_exec++++\n");
+	//print_args(args);
 	node->data.exec_u.args = copy_string_array(args);
+	//print_array(node->data.exec_u.args);
 	//print_args(args);
 	return(node);
 }
