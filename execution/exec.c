@@ -68,6 +68,7 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 		if(ctx->fd_close >= 0)
 			close(ctx->fd_close);
 		printf("Exec_command()word1: %s, word2: %s, word3: %s\n", node->data.exec_u.args[0], node->data.exec_u.args[1], node->data.exec_u.args[2]);
+		check_null_array(node->data.exec_u.args);
 		execvp(node->data.exec_u.args[0], node->data.exec_u.args);
 	}
 	return (1);
