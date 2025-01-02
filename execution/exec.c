@@ -12,6 +12,7 @@
 	130	- Script interrupted (SIGINT): Process terminated via Ctrl+C. */
 
 //From this video https://www.youtube.com/watch?v=KbhDPYHRqkY&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=67
+// Execute pipe node https://www.youtube.com/watch?v=KbhDPYHRqkY&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=65
 
 typedef struct s_context
 {
@@ -22,6 +23,9 @@ typedef struct s_context
 static int exec_node(t_tree_node *node, t_context *ctx);
 static int exec_command(t_tree_node *node, t_context *ctx);
 static int exec_pipe(t_tree_node *node, t_context *ctx);
+
+// Executing command https://www.youtube.com/watch?v=HzAQCUB9Ifw&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=63&t=826s
+//
 
 static int exec_node(t_tree_node *node, t_context *ctx)
 {
