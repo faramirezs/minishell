@@ -56,6 +56,7 @@ void exec(t_tree_node *node)
 	children = exec_node(node, &ctx);
 	while(i < children)
 	{
+		printf("Value of i: %i, wait()\n", i);
 		wait(NULL);
 		i++;
 	}
@@ -63,9 +64,13 @@ void exec(t_tree_node *node)
 
 static int exec_command(t_tree_node *node, t_context *ctx)
 {
-	//printf("Exec command entered\n");
-	if (fork() == FORKED_CHILD)
+	pid_t pid;
+
+	pid = fork();
+	sleep(500);
+	if (pid == FORKED_CHILD)
 	{
+		printf("Child pID: %d\n", getpid());
 		//evaluate the context and act on
 		dup2(ctx->fd[STDIN_FILENO], STDIN_FILENO);
 		dup2(ctx->fd[STDOUT_FILENO], STDOUT_FILENO);
@@ -74,6 +79,10 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 		//printf("+++Exec_command()check+++\n");
 		//check_null_array(node->data.exec_u.args);
 		execvp(node->data.exec_u.args[0], node->data.exec_u.args);
+	}
+	else if (pid > 0)
+	{
+		printf("Parent pID: %d\n", getpid());
 	}
 	return (1);
 }
