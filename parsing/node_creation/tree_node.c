@@ -17,59 +17,73 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 	t_tree_node	*node;
 	t_args		*args;
 	int			pipe_flag;
+	int			redir_i;
 
 	pipe_flag = 0;
+	redir_i = 0;
 	node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
 	args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
 	args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
-	//printf("Next token type: %d, Next token value: %.*s\n", scanner->next.type, (int)scanner->next.lexeme.length, scanner->next.lexeme.start);
-	//Logic when we call again the parse function and the first token is a PIPE
-	//This can happen in two cases: 1 when the user input starts with PIPE, this is not valid (we should handle this somewhere else)
-	//Or when before the pipe, we already collect arguments for the pipe left node
+
 	scanner->next = scanner_next(scanner);
-	//what happend if the token is not valid? or if the input is all whitespaces?
 	*(args->count) = 1;
+
+	// Check if it's a redirection before collecting args
+	if (scanner->next.type == REDIR_IN || scanner->next.type == REDIR_OUT ||
+		scanner->next.type == APPEND_OUT || scanner->next.type == HEREDOC)
+	{
+		node->type = N_REDIR;
+		return parse_redir(scanner);
+	}
+
 	args_collector(&scanner->next, args);
+
 	if(scanner_has_next(scanner))
 	{
 		while(scanner->next.type != PIPE && scanner_has_next(scanner))
+		{
+			scanner->next = scanner_next(scanner);
+			if(scanner->next.type == PIPE)
 			{
-				scanner->next = scanner_next(scanner);
-				if(scanner->next.type == PIPE)
-				{
-					pipe_flag++;
-					break;
-				}
-				(*(args->count))++;
-				args_collector(&scanner->next, args);
-				//parse redir
+				pipe_flag++;
+				break;
 			}
+
+			// Check for redirections after initial args
+			if (scanner->next.type == REDIR_IN || scanner->next.type == REDIR_OUT ||
+				scanner->next.type == APPEND_OUT || scanner->next.type == HEREDOC)
+			{
+				node->type = N_REDIR;
+				node->data.redir_u.cmd = parse_exec(args);  // Store current args as command
+				return parse_redir(scanner);
+			}
+
+			(*(args->count))++;
+			args_collector(&scanner->next, args);
+		}
 		if(pipe_flag > 0)
+		{
+			if(scanner_has_next(scanner))
 			{
-				if(scanner_has_next(scanner))
-				{
-					//scanner->next = scanner_next(scanner); //skip pipe token
-					printf("Node type PIPE\n");
-					pipe_flag = 0;
-					return(parse_pipe(scanner, args));
-				}
-				else
-				{
-					printf("No arguments after pipe\n");
-					return(node);
-				}
+				//scanner->next = scanner_next(scanner); //skip pipe token
+				printf("Node type PIPE\n");
+				pipe_flag = 0;
+				return(parse_pipe(scanner, args));
 			}
-		else //pipe_flag = 0;
+			else
 			{
-				printf("Node type EXEC\n");
+				printf("No arguments after pipe\n");
+				return(node);
+			}
+		}
+		else
+			{
+				//printf("Node type EXEC\n");
 				return(parse_exec(args));
 			}
 	}
 	else
 	{
-		//printf("++++Node type EXEC just one command++++\n");
-		//check_null_array(args->words);
-		//print_args(args);
 		return(parse_exec(args));
 	}
 

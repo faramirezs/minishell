@@ -40,12 +40,26 @@ struct s_execcmd
 
 struct s_redircmd
 {
-	//t_node_type type;
-	t_cmd *cmd;
-	char *file;
-	char *efile;
-	int mode;
-	int fd;
+	struct s_redir *prev;
+	int     redir_type;      // REDIR_IN, REDIR_OUT, APPEND_OUT, HEREDOC
+	int     redir_i;         // Order of redirection
+	char    *target;         // Filename or delimiter
+	int     target_type;     // TARGET_FILENAME, TARGET_PATHNAME, TARGET_ENV_PATHNAME, TARGET_DELIMITER
+	int     target_token_type;
+	char *cmd;
+	// Execution data
+	char    *exec_path;      // Path for execution
+	char    *exec_file;      // Actual file to execute on
+	char    *file_input;     // File content as single string
+	char    **split_input;   // File content as lines
+
+	// File handling
+	int     flags;          // O_RDONLY, O_WRONLY, O_APPEND, etc.
+	int     fd;            // File descriptor
+	int    close_fd;      // Resource management flag
+	int     error_code;    // For storing specific error states
+
+	struct s_redir *next;
 };
 
 struct s_pipecmd
@@ -107,5 +121,6 @@ t_tree_node *parse_pipe (t_scanner *scanner, t_args *args);
 //t_tree_node *error_node(const char *msg);
 void indent_node (size_t spaces);
 void visit_node (const t_tree_node *node, size_t spaces);
+
 
 #endif
