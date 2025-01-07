@@ -46,19 +46,18 @@ void exec(t_tree_node *node)
 {
 	t_context ctx;
 	int children;
-	int i;
+	int status;
 
-	i = 0;
-	children = 0;
 	ctx.fd[0] = STDIN_FILENO;
 	ctx.fd[1] = STDOUT_FILENO;
 	ctx.fd_close = -1;
+
 	children = exec_node(node, &ctx);
-	while(i < children)
-	{
-		printf("Value of i: %i, wait()\n", i);
-		wait(NULL);
-		i++;
+
+	// Wait for all child processes to complete
+	while (children > 0) {
+		wait(&status);
+		children--;
 	}
 }
 
@@ -109,17 +108,26 @@ static int exec_pipe(t_tree_node *node, t_context *ctx)
 		perror("pipe");
 		exit(EXIT_FAILURE);
 	}
+
+	// Set up left side of pipe
 	lhs = node->data.pipe_u.left;
 	lhs_ctx = *ctx;
-	lhs_ctx.fd[STDOUT_FILENO] = p[STDOUT_FILENO];
-	lhs_ctx.fd_close = p[STDIN_FILENO];
+	lhs_ctx.fd[STDOUT_FILENO] = p[1];
+	lhs_ctx.fd_close = p[0];
 	children += exec_node(lhs, &lhs_ctx);
+
+	// Close write end in parent
+	close(p[1]);
+
+	// Set up right side of pipe
 	rhs = node->data.pipe_u.right;
 	rhs_ctx = *ctx;
-	rhs_ctx.fd[STDIN_FILENO] = p[STDIN_FILENO];
-	rhs_ctx.fd_close = p[STDOUT_FILENO];
+	rhs_ctx.fd[STDIN_FILENO] = p[0];
+	rhs_ctx.fd_close = -1;
 	children += exec_node(rhs, &rhs_ctx);
-	close(p[STDIN_FILENO]);
-	close(p[STDOUT_FILENO]);
+
+	// Close read end in parent
+	close(p[0]);
+
 	return (children);
 }
