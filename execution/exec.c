@@ -67,7 +67,6 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 	pid_t pid;
 
 	pid = fork();
-	sleep(500);
 	if (pid == FORKED_CHILD)
 	{
 		printf("Child pID: %d\n", getpid());
@@ -79,12 +78,20 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 		//printf("+++Exec_command()check+++\n");
 		//check_null_array(node->data.exec_u.args);
 		execvp(node->data.exec_u.args[0], node->data.exec_u.args);
+		perror("execvp"); // If execvp fails
+        exit(EXIT_FAILURE);
 	}
 	else if (pid > 0)
 	{
 		printf("Parent pID: %d\n", getpid());
+		return (1);
 	}
-	return (1);
+	else
+	{
+		perror("fork");
+		exit(EXIT_FAILURE);
+	}
+
 }
 
 static int exec_pipe(t_tree_node *node, t_context *ctx)
@@ -97,7 +104,11 @@ static int exec_pipe(t_tree_node *node, t_context *ctx)
 	int children;
 
 	children = 0;
-	pipe(p);
+	if (pipe(p) == -1)
+	{
+		perror("pipe");
+		exit(EXIT_FAILURE);
+	}
 	lhs = node->data.pipe_u.left;
 	lhs_ctx = *ctx;
 	lhs_ctx.fd[STDOUT_FILENO] = p[STDOUT_FILENO];
