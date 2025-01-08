@@ -17,10 +17,10 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 	t_tree_node	*node;
 	t_args		*args;
 	int			pipe_flag;
-	int			redir_i;
+	//int			redir_i;
 
 	pipe_flag = 0;
-	redir_i = 0;
+	//redir_i = 0;
 	node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
 	args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
 	args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
@@ -54,7 +54,7 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 				scanner->next.type == APPEND_OUT || scanner->next.type == HEREDOC)
 			{
 				node->type = N_REDIR;
-				node->data.redir_u.cmd = parse_exec(args);  // Store current args as command
+				node->data.redir_u.args = parse_exec(args);  // Store current args as command
 				return parse_redir(scanner);
 			}
 
@@ -119,6 +119,34 @@ t_tree_node *parse_pipe (t_scanner *scanner, t_args *args)
 	return (pipe_node);
 }
 
+t_tree_node *parse_redir (t_scanner *scanner)
+{
+	t_tree_node	*redir_node;
+	t_args		*args;
+
+	redir_node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
+	redir_node->type = N_REDIR;
+	args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
+	args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
+	redir_node->data.redir_u.redir_type = scanner->next.type;
+	//*(args->count) = 1;
+	//args_collector(&scanner->next, args);
+	if(scanner_has_next(scanner))
+	{
+		scanner->next = scanner_next(scanner);
+		*(args->count) = 1;
+		args_collector(&scanner->next, args);
+	}
+	else
+	{
+		printf("Nothing after redir token/N");
+	}
+	/* pipe_node->data.pipe_u.left = parse_exec(args);
+	printf("Left args\n");
+	pipe_node->data.pipe_u.right = parse_tree_node(scanner);
+	printf("Right args\n"); */
+	return (redir_node);
+}
 
 void visit_node (const t_tree_node *node, size_t spaces)
 {

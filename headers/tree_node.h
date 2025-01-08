@@ -34,7 +34,7 @@ struct s_execcmd
 	//t_node_type type;
 	//char *argv[MAXARGS];
 	//char *eargv[MAXARGS];
-	char *cmd;
+	//char *cmd;
 	char **args;
 };
 
@@ -46,7 +46,7 @@ struct s_redircmd
 	char    *target;         // Filename or delimiter
 	int     target_type;     // TARGET_FILENAME, TARGET_PATHNAME, TARGET_ENV_PATHNAME, TARGET_DELIMITER
 	int     target_token_type;
-	char *cmd;
+	t_tree_node	*args;
 	// Execution data
 	char    *exec_path;      // Path for execution
 	char    *exec_file;      // Actual file to execute on
