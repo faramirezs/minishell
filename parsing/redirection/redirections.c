@@ -37,9 +37,18 @@ t_tree_node *parse_redir(t_scanner *scanner, t_args *cmd_args)
     redir_node->data.redir_u.target_type = determine_target_type(file_args->words[0]);
     redir_node->data.redir_u.target_token_type = scanner->next.type;
 
-    // Set execution paths
-    redir_node->data.redir_u.exec_path = get_exec_path(file_args->words[0]);
-    redir_node->data.redir_u.exec_file = get_exec_file(file_args->words[0]);
+    // Handle heredoc case
+    if (redir_node->data.redir_u.redir_type == HEREDOC)
+    {
+        // Collect heredoc input until the delimiter is encountered
+        char *heredoc_input = collect_heredoc_input(file_args->words[0]);
+        redir_node->data.redir_u.file_input = heredoc_input;
+    }
+    else
+    {
+        // Set execution paths for other redirection types
+        redir_node->data.redir_u.exec_file = get_exec_file(file_args->words[0]);
+    }
 
     // Set file handling flags based on redirection type
     redir_node->data.redir_u.flags = get_redir_flags(redir_node->data.redir_u.redir_type);

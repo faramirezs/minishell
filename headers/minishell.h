@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 15:17:33 by alramire          #+#    #+#             */
-/*   Updated: 2024/12/15 17:06:31 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/09 18:18:54 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 #include	"../libft/libft.h"
 #include	"stdbool.h" // ADDED THIS TO HANDLE TRUE / FALSE SITUATIONS - instead than using 0 or 1 (we can use it, yeah?)
 #include	<sys/wait.h>
+#include	<fcntl.h>
 
 // CALL VALGRIND SUPPRESSION:
 // valgrind --suppressions=readline.supp --leak-check=full --show-leak-kinds=all ./minishell

@@ -1,6 +1,10 @@
 #ifndef REDIRECTIONS_H
 # define REDIRECTIONS_H
 
+#define TARGET_PATHNAME 1
+#define TARGET_ENV_PATHNAME 2
+#define TARGET_FILENAME 3
+
 typedef struct s_redircmd t_redircmd;
 
 struct s_redircmd
@@ -13,7 +17,7 @@ struct s_redircmd
 	int     target_token_type;
 	char	**args;
 	// Execution data
-	char    *exec_path;      // Path for execution
+	//char    *exec_path;      // Path for execution
 	char    *exec_file;      // Actual file to execute on
 	char    *file_input;     // File content as single string
 	char    **split_input;   // File content as lines
@@ -28,5 +32,6 @@ struct s_redircmd
 };
 
 t_tree_node *parse_redir(t_scanner *scanner, t_args *cmd_args);
+
 
 #endif
