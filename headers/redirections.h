@@ -1,21 +1,32 @@
-/*
-Header for redirection execution folder.
-Was thinking we might have also these headers:
+#ifndef REDIRECTIONS_H
+# define REDIRECTIONS_H
 
-redirection_output.h
-redirection_input.h
-redirection_heredoc.h
-redirection_append.h
+typedef struct s_redircmd t_redircmd;
 
-And group them here like this 👇
-*/
+struct s_redircmd
+{
+	struct s_redir *prev;
+	int     redir_type;      // REDIR_IN, REDIR_OUT, APPEND_OUT, HEREDOC
+	int     redir_i;         // Order of redirection
+	char    *target;         // Filename or delimiter
+	int     target_type;     // TARGET_FILENAME, TARGET_PATHNAME, TARGET_ENV_PATHNAME, TARGET_DELIMITER
+	int     target_token_type;
+	char	**args;
+	// Execution data
+	char    *exec_path;      // Path for execution
+	char    *exec_file;      // Actual file to execute on
+	char    *file_input;     // File content as single string
+	char    **split_input;   // File content as lines
 
-// #ifndef REDIRECTIONS_H
-// # define REDIRECTIONS_H
+	// File handling
+	int     flags;          // O_RDONLY, O_WRONLY, O_APPEND, etc.
+	int     fd;            // File descriptor
+	int    close_fd;      // Resource management flag
+	int     error_code;    // For storing specific error states
 
-// #include	"redirection_output.h"
-// #include	"redirection_input.h"
-// #include	"redirection_heredoc.h"
-// #include	"redirection_append.h"
+	struct s_redir *next;
+};
 
-// #endif
+t_tree_node *parse_redir(t_scanner *scanner, t_args *cmd_args);
+
+#endif

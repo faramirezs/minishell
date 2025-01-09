@@ -1,5 +1,6 @@
 {
 	"files.associations": {
-		"guards.h": "c"
+		"guards.h": "c",
+		"tree_node.h": "c"
 	}
 }

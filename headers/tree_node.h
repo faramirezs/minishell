@@ -46,7 +46,7 @@ struct s_redircmd
 	char    *target;         // Filename or delimiter
 	int     target_type;     // TARGET_FILENAME, TARGET_PATHNAME, TARGET_ENV_PATHNAME, TARGET_DELIMITER
 	int     target_token_type;
-	t_tree_node	*args;
+	char	**args;
 	// Execution data
 	char    *exec_path;      // Path for execution
 	char    *exec_file;      // Actual file to execute on
@@ -115,7 +115,7 @@ void node_drop(t_tree_node *self); //To free up any memory that is allocated wit
 
 t_tree_node *parse_tree_node (t_scanner *scanner);
 t_tree_node *parse_exec(t_args *args);
-t_tree_node *parse_redir (t_scanner *scanner);
+t_tree_node *parse_redir (t_scanner *scanner, t_args *args);
 // t_tree_node *parse_redir ();
 t_tree_node *parse_pipe (t_scanner *scanner, t_args *args);
 //t_tree_node *error_node(const char *msg);
