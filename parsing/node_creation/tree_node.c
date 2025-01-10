@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/10 17:35:21 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/10 19:13:04 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,7 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 	*(args->count) = 1;
 
 	// Check if it's a redirection before collecting args
-	if (scanner->next.type == REDIR_IN || scanner->next.type == REDIR_OUT ||
-		scanner->next.type == APPEND_OUT || scanner->next.type == HEREDOC)
+	if (check_redir(scanner))
 	{
 		node->type = N_REDIR;
 		return parse_redir(scanner, NULL);

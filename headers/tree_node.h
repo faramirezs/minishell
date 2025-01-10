@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:26:14 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/10 18:04:04 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/10 19:14:30 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,15 @@ typedef enum e_target_type
 	TARGET_DELIMITER
 }							t_target_type;
 
+struct						s_redircmd {
+    t_token_type redir_type;          // Use enum for redirection types (e.g., input, output, append).
+    char *target;            // Target file or stream.
+    int target_fd;           // Target file descriptor.
+    int flags;               // File open flags.
+    int error_code;          // Error code during processing.
+};
+
+/*
 struct						s_redircmd
 {
 	struct s_redir			*prev;
@@ -60,7 +69,7 @@ struct						s_redircmd
 
 	struct s_redir			*next;
 };
-
+ */
 struct						s_execcmd
 {
 	char					**args;
