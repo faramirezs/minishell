@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   args.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/10 17:32:06 by alramire          #+#    #+#             */
+/*   Updated: 2025/01/10 17:32:21 by alramire         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../headers/args.h"
 #include "../../headers/minishell.h"
 
-//Where this function is being called, we need to initialize word count to 1.
 void args_collector(t_token *token, t_args *args)
 {
 	char **temp;

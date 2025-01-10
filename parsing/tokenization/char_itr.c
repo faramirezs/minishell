@@ -1,74 +1,55 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   char_itr.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/10 17:47:57 by alramire          #+#    #+#             */
+/*   Updated: 2025/01/10 17:53:09 by alramire         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../headers/minishell.h"
 
-// value lifetime dependes of the start reference
-t_char_itr char_itr_value(const char *star, size_t length)
+t_char_itr	char_itr_value(const char *star, size_t length)
 {
-	t_char_itr itr;
+	t_char_itr	itr;
+
 	itr.cursor = star;
 	itr.sentinel1 = star + length;
-	return(itr);
+	return (itr);
 }
-//skip_ function advances the cursor to the first non whitespace occurrence.
-void skip_whitespaces (t_char_itr *self)
+void	skip_whitespaces(t_char_itr *self)
 {
-	char whitespaces[] = WHITESPACES; //token delimiters
-	//const char *start = self->cursor;
-	//int count = 0;
-	while(self->cursor && self->cursor < self->sentinel1 && ft_strchr(whitespaces, *self->cursor))
+	// char whitespaces[] = WHITESPACES;
+	while (self->cursor && self->cursor < self->sentinel1
+		&& ft_strchr(WHITESPACES, *self->cursor))
 	{
-			//printf("Space found at %p\n", self->cursor);
-			//if (char_itr_has_next(self) == 1)
-			char_itr_next(self);
-			 // We need to validate for END, because the cursor is advancing even after the last space from the input string.
-			//count++;
+		char_itr_next(self);
 	}
-	//if (count > 0)
-	//printf("Skipped %d whitespaces from %p to %p\n", count, start, self->cursor);
-	}
-
-int is_whitespace (t_char_itr *self)
-{
-	char whitespaces[] = WHITESPACES; //token delimiters
-	return(self->cursor && self->cursor < self->sentinel1 && ft_strchr(whitespaces, *self->cursor));
 }
 
-//Returns true when there are aditional chars to consume on the iterable range
-int char_itr_has_next(const t_char_itr *self)
+int	is_whitespace(t_char_itr *self)
 {
-	//printf("Itr has more chars? R: %i\n", self->cursor < self->sentinel1);
-	//printf("Char: %c, in file %s at line %d\n", *self->cursor, __FILE__, __LINE__);
-	return(self->cursor < self->sentinel1);
-}
-//peek and return the next character. Do not advance the cursor. Will crash out of bound if no more chars to consume
-char char_itr_peek(const t_char_itr *self)
-{
-	if(char_itr_has_next(self))
-	{
-		//printf("Cursor peek: %p | char %c\n", self->cursor, *self->cursor);
-		return(*self->cursor);
-	}
-	else if(self->cursor == self->sentinel1)
-	{
-		//printf("cursor and sentinel are equals\n");
-		return(*self->cursor);
-	}
-	else
-	{
-		//printf("Cursor %p, Sentinel %p", self->cursor, self->sentinel1);
-		fprintf(stderr, "%s:%d - Out of Bounds\n", __FILE__, __LINE__);
-		exit(EXIT_FAILURE);
-	}
-
+	// char whitespaces[] = WHITESPACES;
+	return (self->cursor && self->cursor < self->sentinel1
+		&& ft_strchr(WHITESPACES, *self->cursor));
 }
 
-//read next char and advance cursor. Will crash out of bound if no more chars to consume
-char char_itr_next(t_char_itr *self)
+int	char_itr_has_next(const t_char_itr *self)
 {
-	if(char_itr_has_next(self))
+	return (self->cursor < self->sentinel1);
+}
+char	char_itr_peek(const t_char_itr *self)
+{
+	if (char_itr_has_next(self))
 	{
-		//printf("Cursor current: %p | char %c\n", self->cursor, *self->cursor);
-		return(*self->cursor++);
+		return (*self->cursor);
+	}
+	else if (self->cursor == self->sentinel1)
+	{
+		return (*self->cursor);
 	}
 	else
 	{
@@ -77,9 +58,20 @@ char char_itr_next(t_char_itr *self)
 	}
 }
 
-//Returns pointer to the current location of iterator cursor porinter.
-const char* char_itr_cursor(const t_char_itr *self)
+char	char_itr_next(t_char_itr *self)
 {
-	//printf("Cursor current: %p | char %c\n", self->cursor, *self->cursor);
-	return(self->cursor);
+	if (char_itr_has_next(self))
+	{
+		return (*self->cursor++);
+	}
+	else
+	{
+		fprintf(stderr, "%s:%d - Out of Bounds\n", __FILE__, __LINE__);
+		exit(EXIT_FAILURE);
+	}
+}
+
+const char	*char_itr_cursor(const t_char_itr *self)
+{
+	return (self->cursor);
 }

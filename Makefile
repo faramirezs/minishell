@@ -5,11 +5,11 @@ TOKENIZATION =	./parsing/tokenization/char_itr.c \
 				./parsing/tokenization/scanner.c \
 				./parsing/tokenization/token.c \
 				./parsing/tokenization/cmd.c \
-				./parsing/tokenization/token_list.c \
 				./parsing/tokenization/guards.c
 
 NODE_CREATION =	./parsing/node_creation/tree_node.c \
-				./parsing/node_creation/args.c
+				./parsing/node_creation/args.c \
+				./parsing/redirection/redirections.c
 
 EXECUTION	= ./execution/exec.c
 
@@ -23,11 +23,9 @@ HEADERS	= ./headers/minishell.h \
 		./headers/guards.h \
 		./headers/scanner.h \
 		./headers/token.h \
-		./headers/token_list.h \
 		./headers/cmd.h \
-		./headers/tree_node.h
-#./headers/parser.h \
-
+		./headers/tree_node.h \
+		./headers/redirections.h
 
 OBJS = $(SRC:.c=.o)
 

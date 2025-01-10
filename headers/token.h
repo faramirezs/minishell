@@ -1,8 +1,19 @@
-#ifndef TOKEN_H
-#define TOKEN_H
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   token.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/10 17:23:09 by alramire          #+#    #+#             */
+/*   Updated: 2025/01/10 17:23:55 by alramire         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-typedef enum e_token_type // good to have an order like below
-{
+#ifndef TOKEN_H
+# define TOKEN_H
+
+/*
 	COMMAND,        		// 0 These are the commands we need to create ("echo, cd, pwd, export, unset, env, exit")
 	ENV_VAR,        		// 1 Environment variable are words that start with $ (e.g., "$HOME", "$USER"), we do error handling for this after the tokenizing and node creation
 	ABS_PATH,           	// 2 A path starting with / (e.g., /directory/directory/  or /directory/file ) is an absolute path and refers to the exact location of the file or command file system staring from root directory
@@ -33,26 +44,42 @@ typedef enum e_token_type // good to have an order like below
 	// SUBSHELL,       		// we do not need to handle subshell
 	// COMMENT,        		// we do not need to handle comments
 	// PATH_EXP,			// we do not need this
-} t_token_type;
+ */
+
+typedef enum e_token_type // good to have an order like below
+{
+	COMMAND,
+	ENV_VAR,
+	ABS_PATH,
+	REL_PATH,
+	REDIR_IN,
+	REDIR_OUT,
+	APPEND_OUT,
+	HEREDOC,
+	PIPE,
+	STRING_D_QUOTES,
+	STRING_S_QUOTES,
+	WORD,
+	UNKNOWN,
+	END,
+}					t_token_type;
 
 typedef struct s_slice
 {
-	const char *start; //Pointer to the start of the lexeme. (For 'echo' start is pointing to the 'e')
-	size_t length; //Lexeme length.
-} t_slice;
+	const char		*start;
+	size_t			length;
+}					t_slice;
 
 typedef struct s_token
 {
-	t_token_type type;
-	t_slice lexeme;
-} t_token;
+	t_token_type	type;
+	t_slice			lexeme;
+}					t_token;
 
-t_token new_token (t_token_type type, char *start, size_t length);
+t_token				new_token(t_token_type type, char *start, size_t length);
 
-void print_token(const t_token token);
+void				print_token(const t_token token);
 
-int compare_token(const t_token *token, const char *str);
+int					compare_token(const t_token *token, const char *str);
 
 #endif
-
-

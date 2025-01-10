@@ -1,5 +1,14 @@
-#include <stdlib.h>
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tree_node.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
+/*   Updated: 2025/01/10 17:35:21 by alramire         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../headers/tree_node.h"
 #include "../../headers/guards.h"
@@ -9,8 +18,6 @@
 #include "../../headers/args.h"
 
 //YouTube video min 7:45 https://youtu.be/sUxFE32tXF0?si=73UiqQEYAERD3fdD
-
-
 
 t_tree_node *parse_tree_node (t_scanner *scanner)
 {
@@ -102,8 +109,6 @@ t_tree_node *parse_exec(t_args *args)
 	return(node);
 }
 
-
-
 t_tree_node *parse_pipe (t_scanner *scanner, t_args *args)
 {
 	t_tree_node	*pipe_node;
@@ -134,7 +139,7 @@ void visit_node (const t_tree_node *node, size_t spaces)
 	}
 	else if(node->type == N_REDIR)
 	{
-
+		printf("Redir node\n");
 	}
 }
 

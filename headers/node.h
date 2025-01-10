@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 12:34:31 by jslusark          #+#    #+#             */
-/*   Updated: 2024/11/27 13:24:45 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/10 17:11:59 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,7 @@
 	struct s_token_list *next; // Pointer to the next token in the linked list
 }			t_token_list; */
 
-typedef enum e_target_type
-{
-	TARGET_FILENAME, 		// 0 - if token_type of the target is word or cmd
-	TARGET_PATHNAME, 		// 1 - if token is REL, ABS path (which can end or not with a file)
-	TARGET_ENV_PATHNAME,	// 2 - if token is an env_variable (once we have the nodes we check if the env_var is a valid path, like $PATH/file for example)
-	TARGET_DELIMITER		// 3 - if redir_type is HEREDOC
-} t_target_type;
+
 
 typedef struct s_redir
 {

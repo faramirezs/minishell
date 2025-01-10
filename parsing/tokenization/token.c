@@ -138,7 +138,7 @@ t_token rel_path_token(t_scanner *self)
 	}
 	return (self->next);
 }
-
+/*
 t_token option_token(t_scanner *self)
 {
 	self->next.type = OPTION;
@@ -147,7 +147,7 @@ t_token option_token(t_scanner *self)
 	self->char_itr.cursor++;
 	return (self->next);
 }
-
+ */
 t_token append_out_token(t_scanner *self)
 {
 	self->next.type = APPEND_OUT;
