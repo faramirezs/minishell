@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tree_node.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:26:14 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/10 19:14:30 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/12 19:11:11 by alejandrora      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,10 @@
 
 # include "../headers/args.h"
 # include "../headers/scanner.h"
+#include <sys/types.h>
+//# include "../headers/minishell.h"
+
+
 
 typedef struct s_redircmd	t_redircmd;
 typedef struct s_execcmd	t_execcmd;
@@ -41,13 +45,19 @@ typedef enum e_target_type
 	TARGET_DELIMITER
 }							t_target_type;
 
-struct						s_redircmd {
-    t_token_type redir_type;          // Use enum for redirection types (e.g., input, output, append).
-    char *target;            // Target file or stream.
-    int target_fd;           // Target file descriptor.
-    int flags;               // File open flags.
-    int error_code;          // Error code during processing.
+struct s_redircmd {
+    t_token_type redir_type;     // Current redirection type (REDIR_IN, REDIR_OUT, etc.)
+    char *target;                // Target file/delimiter
+    t_target_type target_type;   // Type of target (filename, pathname, env var, delimiter)
+    int source_fd;               // Source file descriptor (usually 0 for input, 1 for output)
+    int target_fd;               // Target file descriptor
+    int flags;                   // Open flags for the file
+    mode_t mode;                 // File permissions when creating new files
+    t_tree_node *cmd;           // Command to be redirected
+    int error_code;             // Error tracking
 };
+
+
 
 /*
 struct						s_redircmd

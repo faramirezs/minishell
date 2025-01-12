@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tree_node.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/10 19:13:04 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/12 18:48:00 by alejandrora      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,7 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 			}
 
 			// Check for redirections after initial args
-			if (scanner->next.type == REDIR_IN || scanner->next.type == REDIR_OUT ||
-				scanner->next.type == APPEND_OUT || scanner->next.type == HEREDOC)
+			if (check_redir(scanner))
 			{
 				return parse_redir(scanner, args);
 			}
