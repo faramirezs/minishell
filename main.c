@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 16:26:03 by jslusark          #+#    #+#             */
-/*   Updated: 2024/12/17 17:30:21 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/13 22:04:03 by alejandrora      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "headers/minishell.h"
-//#include "include/node.h"
-//#include "include/parser.h"
+#include "headers/tree_node.h" // Include the header for tree_node
 
 int	main(int argc, char **argv)
 {
@@ -33,6 +32,7 @@ int	main(int argc, char **argv)
 			scanner = scanner_value(itr);
 			tree_node = parse_tree_node(&scanner);
 			exec(tree_node);
+			free_tree_node(tree_node); // Free the AST after execution
 			//visit_node(tree_node, 0);
 		}
 		if(!tree_node)

@@ -6,7 +6,7 @@
 /*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/12 19:19:19 by alejandrora      ###   ########.fr       */
+/*   Updated: 2025/01/13 09:50:17 by alejandrora      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,14 +55,6 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 		printf("Set execution paths for other redirection types\n");
 		// Set execution paths for other redirection types
 		// redir_node->data.redir_u.exec_file = get_exec_file(file_args->words[0]);
-		if (redir_node->data.redir_u.redir_type == REDIR_IN)
-		{
-			if (handle_input_redirection(&redir_node->data.redir_u) < 0)
-			{
-				printf("Error handling input redirection\n");
-				return (NULL);
-			}
-		}
 	}
 	printf("Set file handling flags based on redirection type\n");
 	redir_node->data.redir_u.flags = get_redir_flags(redir_node->data.redir_u.redir_type);
@@ -83,6 +75,7 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 	free(file_args);
 	return (redir_node);
 }
+
 int	determine_target_type(const char *target)
 {
 	if (ft_strchr(target, '/'))
@@ -123,7 +116,6 @@ int handle_input_redirection(t_redircmd *rcmd) {
     if (rcmd->target_type == TARGET_FILENAME) {
         fd = open(rcmd->target, rcmd->flags, rcmd->mode);
     } else if (rcmd->target_type == TARGET_ENV_PATHNAME) {
-
 		printf("TARGET_ENV_PATHNAME\n");
 		// Handle environment variable expansion
         //char *expanded_path = expand_env_var(rcmd->target);

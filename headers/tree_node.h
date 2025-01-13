@@ -6,7 +6,7 @@
 /*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:26:14 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/12 19:11:11 by alejandrora      ###   ########.fr       */
+/*   Updated: 2025/01/13 22:04:08 by alejandrora      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,5 +125,7 @@ t_tree_node					*parse_redir(t_scanner *scanner, t_args *args);
 t_tree_node					*parse_pipe(t_scanner *scanner, t_args *args);
 void						indent_node(size_t spaces);
 void						visit_node(const t_tree_node *node, size_t spaces);
+
+void						free_tree_node(t_tree_node *node);
 
 #endif

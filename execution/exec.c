@@ -23,9 +23,28 @@ typedef struct s_context
 static int exec_node(t_tree_node *node, t_context *ctx);
 static int exec_command(t_tree_node *node, t_context *ctx);
 static int exec_pipe(t_tree_node *node, t_context *ctx);
+static int exec_redir(t_tree_node *node, t_context *ctx);
 
 // Executing command https://www.youtube.com/watch?v=HzAQCUB9Ifw&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=63&t=826s
 //
+
+static int exec_redir(t_tree_node *node, t_context *ctx)
+{
+    t_redircmd *rcmd = &node->data.redir_u;
+
+    if (rcmd->redir_type == REDIR_IN)
+    {
+        if (handle_input_redirection(rcmd) < 0)
+        {
+            printf("Error handling input redirection\n");
+            return -1;
+        }
+    }
+    // Handle other redirection types (REDIR_OUT, APPEND_OUT, HEREDOC) here
+    // ...
+
+    return exec_node(rcmd->cmd, ctx);
+}
 
 static int exec_node(t_tree_node *node, t_context *ctx)
 {
@@ -33,6 +52,8 @@ static int exec_node(t_tree_node *node, t_context *ctx)
 		return (exec_command(node, ctx));
 	else if (node->type == N_PIPE)
 		return (exec_pipe(node, ctx));
+	else if (node->type == N_REDIR)
+		return (exec_redir(node, ctx));
 	else
 	{
 		printf("in file %s at line %d\n", __FILE__, __LINE__);

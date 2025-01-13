@@ -6,7 +6,7 @@
 /*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/12 18:48:00 by alejandrora      ###   ########.fr       */
+/*   Updated: 2025/01/13 22:05:32 by alejandrora      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,5 +154,29 @@ void indent_node (size_t spaces)
 	}
 }
 
+void free_tree_node(t_tree_node *node)
+{
+	if (!node)
+		return;
+
+	if (node->type == N_PIPE)
+	{
+		free_tree_node(node->data.pipe_u.left);
+		free_tree_node(node->data.pipe_u.right);
+	}
+	else if (node->type == N_REDIR)
+	{
+		free(node->data.redir_u.target);
+		free_tree_node(node->data.redir_u.cmd);
+	}
+	else if (node->type == N_EXEC)
+	{
+		for (int i = 0; node->data.exec_u.args[i]; i++)
+			free(node->data.exec_u.args[i]);
+		free(node->data.exec_u.args);
+	}
+
+	free(node);
+}
 
 
