@@ -6,7 +6,7 @@
 /*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/13 22:05:32 by alejandrora      ###   ########.fr       */
+/*   Updated: 2025/01/13 22:07:59 by alejandrora      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,8 +171,12 @@ void free_tree_node(t_tree_node *node)
 	}
 	else if (node->type == N_EXEC)
 	{
-		for (int i = 0; node->data.exec_u.args[i]; i++)
+		int i = 0;
+		while (node->data.exec_u.args[i])
+		{
 			free(node->data.exec_u.args[i]);
+			i++;
+		}
 		free(node->data.exec_u.args);
 	}
 
