@@ -34,7 +34,7 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
 
     if (rcmd->redir_type == REDIR_IN)
     {
-        if (handle_input_redirection(rcmd) < 0)
+        if (handle_input_redirection(rcmd, ctx) < 0)
         {
             printf("Error handling input redirection\n");
             return -1;
