@@ -20,5 +20,5 @@ t_tree_node					*parse_redir(t_scanner *scanner, t_args *cmd_args);
 int							check_redir(t_scanner *scanner);
 int							determine_target_type(const char *target);
 int							get_redir_flags(int redir_type);
-int							handle_input_redirection(t_redircmd *rcmd);
+int							handle_input_redirection(t_redircmd *rcmd, t_context *ctx);
 #endif
