@@ -108,7 +108,7 @@ int	check_redir(t_scanner *scanner)
 			|| scanner->next.type == HEREDOC));
 }
 
-int handle_input_redirection(t_redircmd *rcmd) {
+int handle_input_redirection(t_redircmd *rcmd, t_context *ctx) {
     int fd;
 
 	fd = -1;
