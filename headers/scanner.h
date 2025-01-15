@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   scanner.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:18:38 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/10 17:20:12 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/15 19:10:34 by alejandrora      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ clasifying nodes.
 # include "char_itr.h"
 # include "token.h"
 
-# include <stdbool.h>
+
+# include "minishell.h"
 
 /*
 The scanner is like an interator

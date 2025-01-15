@@ -11,7 +11,7 @@ unset.h
 
 And group them here like this 👇
 
-mell: 
+mell:
 ---+++++**********+++++---
 
 pls let's have just one buitin.h header file for all builtins
@@ -33,11 +33,7 @@ pls let's have just one buitin.h header file for all builtins
 #ifndef BUILT_IN_H
 # define BUILT_IN_H
 
-# include <stddef.h>
-# include <stdbool.h>
-# include <limits.h>
-# include <stdio.h>
-# include <unistd.h>
+# include "minishell.h"
 
 typedef struct bld_in {
     char    *name;               // Name of the builtin (e.g., "echo")

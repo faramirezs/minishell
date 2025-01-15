@@ -3,26 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   tree_node.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:26:14 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/10 18:04:04 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/15 19:38:53 by alejandrora      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TREE_NODE_H
 # define TREE_NODE_H
 
-# include "../headers/args.h"
-# include "../headers/scanner.h"
+# include "minishell.h"
 
+/*
 typedef struct s_redircmd	t_redircmd;
 typedef struct s_execcmd	t_execcmd;
 typedef struct s_pipecmd	t_pipecmd;
 typedef union u_node_value	t_node_value;
 typedef struct s_tree_node	t_tree_node;
+*/
 
 // node selector, like pick one and put it on the node struct (saves memory).
+/*
 typedef enum e_node_type
 {
 	// N_ERR = -1, just an idea for now
@@ -32,6 +34,7 @@ typedef enum e_node_type
 	// N_LIST, //for `;` `&&` and `||`
 	// N_BACK
 }							t_node_type;
+*/
 
 typedef enum e_target_type
 {
@@ -40,7 +43,7 @@ typedef enum e_target_type
 	TARGET_ENV_PATHNAME,
 	TARGET_DELIMITER
 }							t_target_type;
-
+/*
 struct						s_redircmd
 {
 	struct s_redir			*prev;
@@ -84,7 +87,7 @@ struct						s_tree_node
 	t_node_type				type;
 	t_node_value			data;
 };
-
+ */
 /* typedef struct s_listcmd
 {
 	t_node_type type;

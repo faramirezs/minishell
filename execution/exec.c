@@ -14,11 +14,6 @@
 //From this video https://www.youtube.com/watch?v=KbhDPYHRqkY&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=67
 // Execute pipe node https://www.youtube.com/watch?v=KbhDPYHRqkY&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=65
 
-typedef struct s_context
-{
-	int fd[2]; //for stdin and stdout
-	int fd_close; // Close an fd? -1 if not
-} t_context;
 
 static int exec_node(t_tree_node *node, t_context *ctx);
 static int exec_command(t_tree_node *node, t_context *ctx);
@@ -69,16 +64,23 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 	if (pid == FORKED_CHILD)
 	{
 		printf("Child pID: %d\n", getpid());
-		//evaluate the context and act on
-		dup2(ctx->fd[STDIN_FILENO], STDIN_FILENO);
-		dup2(ctx->fd[STDOUT_FILENO], STDOUT_FILENO);
-		if(ctx->fd_close >= 0)
-			close(ctx->fd_close);
-		//printf("+++Exec_command()check+++\n");
-		//check_null_array(node->data.exec_u.args);
-		execvp(node->data.exec_u.args[0], node->data.exec_u.args);
-		perror("execvp"); // If execvp fails
-        exit(EXIT_FAILURE);
+        // Evaluate the context and act on
+        dup2(ctx->fd[STDIN_FILENO], STDIN_FILENO);
+        dup2(ctx->fd[STDOUT_FILENO], STDOUT_FILENO);
+        if (ctx->fd_close >= 0)
+            close(ctx->fd_close);
+
+        if (is_builtin(node))
+        {
+            execute_builtin(node, msh);
+            exit(EXIT_SUCCESS); // Exit after executing the builtin
+        }
+        else
+        {
+            execvp(node->data.exec_u.args[0], node->data.exec_u.args);
+            perror("execvp"); // If execvp fails
+            exit(EXIT_FAILURE);
+        }
 	}
 	else if (pid > 0)
 	{

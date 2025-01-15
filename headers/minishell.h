@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 15:17:33 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/10 17:30:17 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/15 19:21:36 by alejandrora      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <string.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# include <stdbool.h> //Not sure if we can use this, check used in t_scanner
 
 // CALL VALGRIND SUPPRESSION:
 // valgrind --suppressions=readline.supp --leak-check=full --show-leak-kinds=all ./minishell
@@ -37,11 +38,19 @@
 # define COLOR_WHITE "\001\033[37m\002"
 # define COLOR_BOLD "\001\033[1m\002"
 
+//structs
+# include "structs.h"
 // Parsing headers
 # include "token.h" // token structs and functions
 //#include	"node.h" // node structs and node handling functions
 # include "tree_node.h"
 # include "tree_parser.h"
+
+
+
+//builtins
+#include "built_in.h"
+
 
 // Args collector
 # include "args.h"

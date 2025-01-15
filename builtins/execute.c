@@ -1,9 +1,9 @@
 #include "../headers/structs.h"
 #include "../headers/built_in.h"
+#include "minishell.h"
 
 
-
-int is_builtin(struct t_tree_node *node)
+int is_builtin(t_tree_node *node)
 {
     if (node->type == N_EXEC && node->data.exec_u.args[0] != NULL) //I have to dig more to check up what's wrong here :(
     {
@@ -17,10 +17,10 @@ int is_builtin(struct t_tree_node *node)
     return (0);
 }
 
-void execute_builtin(struct t_tree_node *node)
+void execute_builtin(t_tree_node *node)
 {
     char **args;
-	
+
 	args = node->data.exec_u.args;
 
     if (strcmp(args[0], "cd") == 0)
