@@ -30,20 +30,105 @@ static int exec_redir(t_tree_node *node, t_context *ctx);
 
 static int exec_redir(t_tree_node *node, t_context *ctx)
 {
-    t_redircmd *rcmd = &node->data.redir_u;
+    t_redircmd *rcmd;
+	int saved_stdin;
+	int saved_stdout;
+	int result;
+	int fd;
 
-    if (rcmd->redir_type == REDIR_IN)
-    {
-        if (handle_input_redirection(rcmd, ctx) < 0)
+
+	rcmd = &node->data.redir_u;
+	saved_stdin = dup(STDIN_FILENO);
+	saved_stdout = dup(STDOUT_FILENO);
+	result = 0;
+
+	if (saved_stdin == -1 || saved_stdout == -1)
+	{
+		perror("dup");
+		cleanup(node, 1);
+	}
+	if (rcmd->redir_type == REDIR_IN)
+	{
+		fd = open(rcmd->target, O_RDONLY);
+        if (fd < 0)
         {
-            printf("Error handling input redirection\n");
-            return -1;
+            perror("open");
+            close(saved_stdin);
+            close(saved_stdout);
+            cleanup(node, 1); // General error
         }
+        if (dup2(fd, STDIN_FILENO) == -1)
+        {
+            perror("dup2");
+            close(fd);
+            close(saved_stdin);
+            close(saved_stdout);
+            cleanup(node, 1); // General error
+        }
+        close(fd);
+/*
+		if (handle_input_redirection(rcmd) < 0)
+		{
+			printf("Error handling input redirection\n");
+			close(saved_stdin);
+			close(saved_stdout);
+			cleanup(node, 1);
+		}
+ */
+	}
+	else if (rcmd->redir_type == REDIR_OUT)
+    {
+        fd = open(rcmd->target, rcmd->flags, rcmd->mode);
+        if (fd < 0)
+        {
+            perror("open");
+            close(saved_stdin);
+            close(saved_stdout);
+            cleanup(node, 1); // General error
+        }
+        if (dup2(fd, STDOUT_FILENO) == -1)
+        {
+            perror("dup2");
+            close(fd);
+            close(saved_stdin);
+            close(saved_stdout);
+            cleanup(node, 1); // General error
+        }
+        close(fd);
     }
-    // Handle other redirection types (REDIR_OUT, APPEND_OUT, HEREDOC) here
-    // ...
-
-    return exec_node(rcmd->cmd, ctx);
+	else if (rcmd->redir_type == APPEND_OUT)
+    {
+        fd = open(rcmd->target, rcmd->flags, rcmd->mode);
+        if (fd < 0)
+        {
+            perror("open");
+            close(saved_stdin);
+            close(saved_stdout);
+            cleanup(node, 1); // General error
+        }
+        if (dup2(fd, STDOUT_FILENO) == -1)
+        {
+            perror("dup2");
+            close(fd);
+            close(saved_stdin);
+            close(saved_stdout);
+            cleanup(node, 1); // General error
+        }
+        close(fd);
+    }
+	// Handle other redirection types (REDIR_OUT, APPEND_OUT, HEREDOC) here
+	// ...
+	result = exec_node(rcmd->cmd, ctx);
+	if (dup2(saved_stdin, STDIN_FILENO) == -1 || dup2(saved_stdout, STDOUT_FILENO) == -1)
+	{
+		perror("dup2");
+		close(saved_stdin);
+		close(saved_stdout);
+		cleanup(node, 1);
+	}
+	close(saved_stdin);
+	close(saved_stdout);
+	return (result);
 }
 
 static int exec_node(t_tree_node *node, t_context *ctx)
@@ -89,7 +174,7 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 	pid = fork();
 	if (pid == FORKED_CHILD)
 	{
-		printf("Child pID: %d\n", getpid());
+		//printf("Child pID: %d\n", getpid());
 		//evaluate the context and act on
 		dup2(ctx->fd[STDIN_FILENO], STDIN_FILENO);
 		dup2(ctx->fd[STDOUT_FILENO], STDOUT_FILENO);
@@ -103,7 +188,7 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 	}
 	else if (pid > 0)
 	{
-		printf("Parent pID: %d\n", getpid());
+		//printf("Parent pID: %d\n", getpid());
 		return (1);
 	}
 	else
@@ -151,4 +236,11 @@ static int exec_pipe(t_tree_node *node, t_context *ctx)
 	close(p[0]);
 
 	return (children);
+}
+
+void cleanup(t_tree_node *node, int exit_code)
+{
+	free_tree_node(node);
+	clear_history();
+	exit(exit_code);
 }

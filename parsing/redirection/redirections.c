@@ -6,7 +6,7 @@
 /*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/13 09:50:17 by alejandrora      ###   ########.fr       */
+/*   Updated: 2025/01/15 17:48:41 by alejandrora      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,11 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 		// Set execution paths for other redirection types
 		// redir_node->data.redir_u.exec_file = get_exec_file(file_args->words[0]);
 	}
-	printf("Set file handling flags based on redirection type\n");
+	//printf("Set file handling flags based on redirection type\n");
 	redir_node->data.redir_u.flags = get_redir_flags(redir_node->data.redir_u.redir_type);
 	//redir_node->data.redir_u.close_fd = 1; // Default to true
 	// Store command args if provided
-	if (cmd_args)
+	if (cmd_args->words)
 		redir_node->data.redir_u.cmd = parse_exec(cmd_args);
 	// Continue parsing if there are more tokens
 	if (scanner_has_next(scanner))
@@ -108,7 +108,7 @@ int	check_redir(t_scanner *scanner)
 			|| scanner->next.type == HEREDOC));
 }
 
-int handle_input_redirection(t_redircmd *rcmd, t_context *ctx) {
+/* int handle_input_redirection(t_redircmd *rcmd) {
     int fd;
 
 	fd = -1;
@@ -137,4 +137,4 @@ int handle_input_redirection(t_redircmd *rcmd, t_context *ctx) {
 
     close(fd);
     return 0;
-}
+} */

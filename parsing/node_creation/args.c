@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   args.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:32:06 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/10 17:32:21 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/15 15:50:29 by alejandrora      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void free_string_array(char ***array)
 
 	if (array && *array)
 		{
-			printf("Clearing words\n");
+			//printf("Clearing words\n");
 			i = 0;
 			while ((*array)[i] != NULL)
 			{

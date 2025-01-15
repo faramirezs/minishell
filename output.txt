@@ -1,0 +1,16 @@
+0_Project_notes
+Makefile
+README.md
+execution
+file.txt
+headers
+libft
+main.c
+main.o
+minishell
+minishell_tester
+output.txt
+parsing
+readline.supp
+redirections.c
+Hello World
