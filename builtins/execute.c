@@ -17,9 +17,10 @@ int is_builtin(t_tree_node *node)
     return (0);
 }
 
-void execute_builtin(t_tree_node *node)
+void execute_builtin(t_tree_node *node, t_context *ctx)
 {
     char **args;
+    (void)ctx;
 
 	args = node->data.exec_u.args;
 

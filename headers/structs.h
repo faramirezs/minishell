@@ -6,11 +6,61 @@
 
 # include "minishell.h"
 
-typedef struct s_redircmd	t_redircmd;
-typedef struct s_execcmd	t_execcmd;
-typedef struct s_pipecmd	t_pipecmd;
-typedef union u_node_value	t_node_value;
-typedef struct s_tree_node	t_tree_node;
+typedef struct s_chart_itr		t_char_itr;
+typedef struct s_scanner		t_scanner;
+typedef union u_node_value		t_node_value;
+typedef struct s_redircmd		t_redircmd;
+typedef struct s_execcmd		t_execcmd;
+typedef struct s_pipecmd		t_pipecmd;
+typedef struct s_tree_node		t_tree_node;
+typedef struct s_redircmd_mell	t_redircmd_mell;
+
+struct s_chart_itr
+{
+	const char	*cursor;
+	const char	*sentinel1;
+};
+
+typedef enum e_token_type
+{
+	COMMAND,
+	ENV_VAR,
+	ABS_PATH,
+	REL_PATH,
+	OPTION,
+	REDIR_IN,
+	REDIR_OUT,
+	APPEND_OUT,
+	HEREDOC,
+	PIPE,
+	STRING_D_QUOTES,
+	STRING_S_QUOTES,
+	WORD,
+	UNKNOWN,
+	END
+} t_token_type;
+
+typedef struct s_slice
+{
+	const char		*start;
+	size_t			length;
+}					t_slice;
+
+typedef struct s_token
+{
+	t_token_type	type;
+	t_slice			lexeme;
+}					t_token;
+
+struct s_scanner
+{
+	t_char_itr		char_itr;
+	char			char_next;
+	t_token			next;
+	bool			in_s_quote;  // Inside single quotes
+	bool			in_d_quote;  // Inside double quotes
+	bool			in_escape;   // Escaping the next character
+};
 
 typedef struct s_args
 {
@@ -54,36 +104,7 @@ typedef struct s_node
 	struct s_node *next;    // Next node
 } t_node;
 
-typedef enum e_token_type
-{
-	COMMAND,
-	ENV_VAR,
-	ABS_PATH,
-	REL_PATH,
-	OPTION,
-	REDIR_IN,
-	REDIR_OUT,
-	APPEND_OUT,
-	HEREDOC,
-	PIPE,
-	STRING_D_QUOTES,
-	STRING_S_QUOTES,
-	WORD,
-	UNKNOWN,
-	END
-} t_token_type;
 
-typedef struct s_slice
-{
-	const char		*start;
-	size_t			length;
-}					t_slice;
-
-typedef struct s_token
-{
-	t_token_type	type;
-	t_slice			lexeme;
-}					t_token;
 
 typedef struct s_token_mell
 {
@@ -109,9 +130,22 @@ typedef enum e_target_type
 	TARGET_DELIMITER
 }							t_target_type;
 
-struct s_redircmd
+struct						s_redircmd
 {
-	struct s_redir			*prev;
+    t_token_type redir_type;     // Current redirection type (REDIR_IN, REDIR_OUT, etc.)
+    char *target;                // Target file/delimiter
+    t_target_type target_type;   // Type of target (filename, pathname, env var, delimiter)
+    int source_fd;               // Source file descriptor (usually 0 for input, 1 for output)
+    int target_fd;               // Target file descriptor
+    int flags;                   // Open flags for the file
+    mode_t mode;                 // File permissions when creating new files
+    t_tree_node *cmd;           // Command to be redirected
+    int error_code;             // Error tracking
+};
+
+struct				s_redircmd_mell
+{
+	t_redircmd_mell			*prev;
 	int						redir_type;
 	int						redir_i;
 	char					*target;
@@ -126,18 +160,12 @@ struct s_redircmd
 	int						close_fd;
 	int						error_code;
 
-	struct s_redir			*next;
+	t_redircmd_mell			*next;
 };
 
 struct				s_execcmd
 {
 	char					**args;
-};
-
-struct				s_tree_node
-{
-	t_node_type				type;
-	t_node_value			data;
 };
 
 struct 				s_pipecmd
@@ -146,11 +174,19 @@ struct 				s_pipecmd
 	t_tree_node				*right;
 };
 
+
 union				u_node_value
 {
 	t_execcmd				exec_u;
 	t_redircmd				redir_u;
 	t_pipecmd				pipe_u;
 };
+
+struct				s_tree_node
+{
+	t_node_type				type;
+	t_node_value			data;
+};
+
 
 #endif

@@ -1,35 +1,3 @@
-/*
-Header for builtins in the execution/builtins folder.
-Was thinking we could also have a header for each type of builtin:
-
-cd.h
-echo.h
-exit.h
-export.h
-pwd.h
-unset.h
-
-And group them here like this 👇
-
-mell:
----+++++**********+++++---
-
-pls let's have just one buitin.h header file for all builtins
-
----+++++**********+++++---
-*/
-
-// #ifndef BUILT_IN_H
-// # define BUILT_IN_H
-
-// #include	"cd.h"
-// #include	"echo.h"
-// #include	"exit.h"
-// #include	"export.h"
-// #include	"pwd.h"
-// #include	"unset.h"
-
-// #endif
 #ifndef BUILT_IN_H
 # define BUILT_IN_H
 
@@ -53,6 +21,8 @@ int		handle_pwd(char **av);
 int		handle_unset(char **av);
 int		handle_env(char **av);
 void	free_builtins(bld_in *head);
+int     is_builtin(t_tree_node *node);
+void    execute_builtin(t_tree_node *node, t_context *ctx);
 
 #endif
 

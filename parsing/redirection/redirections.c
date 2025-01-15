@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/10 18:37:19 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/15 22:13:23 by alejandrora      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,13 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 	file_args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
 	// Store redirection type
 	redir_node->data.redir_u.redir_type = scanner->next.type;
+    if(scanner->next.type == REDIR_IN)
+		redir_node->data.redir_u.source_fd = STDIN_FILENO;
+	else
+		redir_node->data.redir_u.source_fd = STDOUT_FILENO;
+    redir_node->data.redir_u.flags = get_redir_flags(scanner->next.type);
+    redir_node->data.redir_u.mode = 0644;  // Default file permissions
+
 	// Move to the file/delimiter token
 	if (!scanner_has_next(scanner))
 	{
@@ -35,7 +42,6 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 	// Set target and its properties
 	redir_node->data.redir_u.target = file_args->words[0];
 	redir_node->data.redir_u.target_type = determine_target_type(file_args->words[0]);
-	redir_node->data.redir_u.target_token_type = scanner->next.type;
 	// Handle heredoc case
 	if (redir_node->data.redir_u.redir_type == HEREDOC)
 	{
@@ -50,12 +56,12 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 		// Set execution paths for other redirection types
 		// redir_node->data.redir_u.exec_file = get_exec_file(file_args->words[0]);
 	}
-	printf("Set file handling flags based on redirection type\n");
+	//printf("Set file handling flags based on redirection type\n");
 	redir_node->data.redir_u.flags = get_redir_flags(redir_node->data.redir_u.redir_type);
-	redir_node->data.redir_u.close_fd = 1; // Default to true
+	//redir_node->data.redir_u.close_fd = 1; // Default to true
 	// Store command args if provided
-	if (cmd_args)
-		redir_node->data.redir_u.args = copy_string_array(cmd_args);
+	if (cmd_args->words)
+		redir_node->data.redir_u.cmd = parse_exec(cmd_args);
 	// Continue parsing if there are more tokens
 	if (scanner_has_next(scanner))
 	{
@@ -69,9 +75,10 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 	free(file_args);
 	return (redir_node);
 }
+
 int	determine_target_type(const char *target)
 {
-	if (strchr(target, '/'))
+	if (ft_strchr(target, '/'))
 		return (TARGET_PATHNAME);
 	if (target[0] == '$')
 		return (TARGET_ENV_PATHNAME);

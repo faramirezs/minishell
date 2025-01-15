@@ -1,7 +1,7 @@
 #include "../../headers/built_in.h"
 #include "../../headers/structs.h"
 
-static void add_builtin(bld_in **head, char *name, int (*func)(char **))
+void add_builtin(bld_in **head, const char *name, int (*func)(char **av))
 {
 	bld_in  *new_node;
 

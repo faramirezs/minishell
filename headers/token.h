@@ -6,7 +6,7 @@
 /*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:23:09 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/15 19:08:42 by alejandrora      ###   ########.fr       */
+/*   Updated: 2025/01/15 22:54:36 by alejandrora      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define TOKEN_H
 
 #include "minishell.h"
+#include "struct.h"
 
 /*
 	COMMAND,        		// 0 These are the commands we need to create ("echo, cd, pwd, export, unset, env, exit")

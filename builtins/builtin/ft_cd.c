@@ -1,7 +1,7 @@
 #include "../headers/built_in.h"
 #include "../headers/structs.h"
 
-void	set_pwd(t_msh *msh, char *av, char *c)
+void	set_pwd(t_context *msh, char *av, char *c)
 {
 	char	*string;
 
@@ -10,7 +10,7 @@ void	set_pwd(t_msh *msh, char *av, char *c)
 	free (string);
 }
 
-int	handle_cd(struct s_tree_node *node, t_msh *msh)
+int	handle_cd(struct s_tree_node *node, t_context *msh)
 {
 	char	cwd[1024];
 	char	*dir;

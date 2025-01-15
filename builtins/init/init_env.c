@@ -1,7 +1,7 @@
 #include "../../headers/structs.h"
 #include "../../headers/env_var.h"
 
-void	check_shlvl(t_msh *t_msh)
+void	check_shlvl(t_context *t_msh)
 {
 	char	*var;
 	char	*value;
@@ -35,7 +35,7 @@ void	check_shlvl(t_msh *t_msh)
 	free (new_var);
 }
 
-void	init_env(char **env, t_msh *t_msh)
+void	init_env(char **env, t_context *t_msh)
 {
 	int i;
 

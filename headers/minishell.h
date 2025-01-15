@@ -6,7 +6,7 @@
 /*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 15:17:33 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/15 19:21:36 by alejandrora      ###   ########.fr       */
+/*   Updated: 2025/01/15 22:30:33 by alejandrora      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@
 # define COLOR_CYAN "\001\033[36m\002"
 # define COLOR_WHITE "\001\033[37m\002"
 # define COLOR_BOLD "\001\033[1m\002"
+
+
 
 //structs
 # include "structs.h"

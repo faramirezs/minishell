@@ -6,7 +6,7 @@
 /*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:18:38 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/15 19:10:34 by alejandrora      ###   ########.fr       */
+/*   Updated: 2025/01/15 21:29:33 by alejandrora      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,9 @@ clasifying nodes.
 #ifndef TOKEN_ITR_H
 # define TOKEN_ITR_H
 
-# include "char_itr.h"
-# include "token.h"
-
-
 # include "minishell.h"
+# include "structs.h"
+
 
 /*
 The scanner is like an interator
@@ -31,15 +29,7 @@ Char itr is producing a char at a time, the scanner is producing a token at a ti
 It looks like the mock token linked list? Can we create a linked list here?
  */
 
-typedef struct s_scanner
-{
-	t_char_itr		char_itr;
-	char			char_next;
-	t_token			next;
-	bool			in_s_quote;  // Inside single quotes
-	bool			in_d_quote;  // Inside double quotes
-	bool			in_escape;   // Escaping the next character
-}				t_scanner;
+
 
 // Initializing the scanner struct.
 t_scanner		scanner_value(t_char_itr char_itr);

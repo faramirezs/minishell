@@ -13,10 +13,24 @@ NODE_CREATION =	./parsing/node_creation/tree_node.c \
 
 EXECUTION	= ./execution/exec.c
 
+BUILTINS	=	./builtins/init/init_buildin.c \
+				./builtins/init/init_env.c \
+				./builtins/execute.c \
+				./builtins/utils_bultin.c \
+				./builtins/builtin/ft_cd.c \
+				./builtins/builtin/ft_echo.c \
+				./builtins/builtin/ft_env.c \
+				./builtins/builtin/ft_exit.c \
+				./builtins/builtin/ft_export.c \
+				./builtins/builtin/ft_pwd.c \
+				./builtins/builtin/ft_unset.c
+
+
 SRC	= main.c \
 	$(TOKENIZATION) \
 	$(NODE_CREATION) \
-	$(EXECUTION)
+	$(EXECUTION) \
+	$(BUILTINS)
 
 HEADERS	= ./headers/minishell.h \
 		./headers/char_itr.h \
@@ -25,7 +39,10 @@ HEADERS	= ./headers/minishell.h \
 		./headers/token.h \
 		./headers/cmd.h \
 		./headers/tree_node.h \
-		./headers/redirections.h
+		./headers/redirections.h \
+		./headers/structs.h \
+		./headers/built_in.h
+
 
 OBJS = $(SRC:.c=.o)
 

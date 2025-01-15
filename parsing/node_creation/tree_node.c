@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tree_node.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/10 17:35:21 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/15 21:49:58 by alejandrora      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,5 +156,31 @@ void indent_node (size_t spaces)
 	}
 }
 
+void free_tree_node(t_tree_node *node)
+{
+	if (!node)
+		return;
 
+	if (node->type == N_PIPE)
+	{
+		free_tree_node(node->data.pipe_u.left);
+		free_tree_node(node->data.pipe_u.right);
+	}
+	else if (node->type == N_REDIR)
+	{
+		free(node->data.redir_u.target);
+		free_tree_node(node->data.redir_u.cmd);
+	}
+	else if (node->type == N_EXEC)
+	{
+		int i = 0;
+		while (node->data.exec_u.args[i])
+		{
+			free(node->data.exec_u.args[i]);
+			i++;
+		}
+		free(node->data.exec_u.args);
+	}
 
+	free(node);
+}

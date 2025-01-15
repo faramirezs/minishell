@@ -1,4 +1,6 @@
 #include "../headers/minishell.h"
+#include "../headers/built_in.h"
+#include "../headers/structs.h"
 
 #define FORKED_CHILD 0
 
@@ -72,7 +74,7 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 
         if (is_builtin(node))
         {
-            execute_builtin(node, msh);
+            execute_builtin(node, ctx);
             exit(EXIT_SUCCESS); // Exit after executing the builtin
         }
         else
