@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/16 18:02:38 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/16 19:51:05 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,20 +52,14 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 			return NULL;
 		}
 		redir_node->data.redir_u.heredoc_content = heredoc_input;
-		redir_node->data.redir_u.flags = O_RDWR;
+		//redir_node->data.redir_u.flags = O_RDWR;
 		redir_node->data.redir_u.source_fd = STDIN_FILENO;
 	}
-	else
-	{
-		printf("Set execution paths for other redirection types\n");
-		// Set execution paths for other redirection types
-		// redir_node->data.redir_u.exec_file = get_exec_file(file_args->words[0]);
-	}
 	//printf("Set file handling flags based on redirection type\n");
-	redir_node->data.redir_u.flags = get_redir_flags(redir_node->data.redir_u.redir_type);
+	//redir_node->data.redir_u.flags = get_redir_flags(redir_node->data.redir_u.redir_type);
 	//redir_node->data.redir_u.close_fd = 1; // Default to true
 	// Store command args if provided
-	if (cmd_args->words)
+	if (cmd_args && cmd_args->words)
 		redir_node->data.redir_u.cmd = parse_exec(cmd_args);
 	// Continue parsing if there are more tokens
 	if (scanner_has_next(scanner))

@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/16 18:44:01 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/16 18:44:41 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/16 19:15:38 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void    handle_heredoc_sigint(int sig)
 void    setup_heredoc_signals(void)
 {
     signal(SIGINT, handle_heredoc_sigint);   // Handle Ctrl+C
-    signal(SIGQUIT, SIG_IGN);                // Ignore Ctrl+\
+    signal(SIGQUIT, SIG_IGN);                // Ignore Ctrl+ slash./
 }
 
 void    cleanup_heredoc(t_redircmd *rcmd)

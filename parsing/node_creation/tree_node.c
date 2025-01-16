@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tree_node.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/13 22:07:59 by alejandrora      ###   ########.fr       */
+/*   Updated: 2025/01/16 19:43:48 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,16 +158,19 @@ void free_tree_node(t_tree_node *node)
 {
 	if (!node)
 		return;
-
-	if (node->type == N_PIPE)
+	if (node->type == N_REDIR)
+	{
+		if (node->data.redir_u.redir_type == HEREDOC)
+		{
+			cleanup_heredoc(&node->data.redir_u);
+		}
+		free(node->data.redir_u.target);
+		free_tree_node(node->data.redir_u.cmd);
+	}
+	else if (node->type == N_PIPE)
 	{
 		free_tree_node(node->data.pipe_u.left);
 		free_tree_node(node->data.pipe_u.right);
-	}
-	else if (node->type == N_REDIR)
-	{
-		free(node->data.redir_u.target);
-		free_tree_node(node->data.redir_u.cmd);
 	}
 	else if (node->type == N_EXEC)
 	{

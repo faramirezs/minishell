@@ -66,67 +66,43 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
             cleanup(node, 1); // General error
         }
         close(fd);
-/*
-		if (handle_input_redirection(rcmd) < 0)
-		{
-			printf("Error handling input redirection\n");
-			close(saved_stdin);
-			close(saved_stdout);
-			cleanup(node, 1);
-		}
- */
 	}
-	else if (rcmd->redir_type == REDIR_OUT)
-    {
-        fd = open(rcmd->target, rcmd->flags, rcmd->mode);
-        if (fd < 0)
-        {
-            perror("open");
-            close(saved_stdin);
-            close(saved_stdout);
-            cleanup(node, 1); // General error
-        }
-        if (dup2(fd, STDOUT_FILENO) == -1)
-        {
-            perror("dup2");
-            close(fd);
-            close(saved_stdin);
-            close(saved_stdout);
-            cleanup(node, 1); // General error
-        }
-        close(fd);
-    }
-	else if (rcmd->redir_type == APPEND_OUT)
-    {
-        fd = open(rcmd->target, rcmd->flags, rcmd->mode);
-        if (fd < 0)
-        {
-            perror("open");
-            close(saved_stdin);
-            close(saved_stdout);
-            cleanup(node, 1); // General error
-        }
-        if (dup2(fd, STDOUT_FILENO) == -1)
-        {
-            perror("dup2");
-            close(fd);
-            close(saved_stdin);
-            close(saved_stdout);
-            cleanup(node, 1); // General error
-        }
-        close(fd);
-    }
 	else if (rcmd->redir_type == HEREDOC)
-	{
-		if (handle_heredoc(rcmd) < 0)
-		{
-			close(saved_stdin);
-			close(saved_stdout);
-			cleanup(node, 1);
-		}
-	}
-	// Handle other redirection types (REDIR_OUT, APPEND_OUT, HEREDOC) here
-	// ...
+    {
+        if (handle_heredoc(rcmd) < 0)
+        {
+            close(saved_stdin);
+            close(saved_stdout);
+            cleanup(node, 1);
+        }
+    }
+	else if (rcmd->redir_type == REDIR_OUT || rcmd->redir_type == APPEND_OUT)
+    {
+        fd = open(rcmd->target, rcmd->flags, rcmd->mode);
+        if (fd < 0)
+        {
+            perror("open");
+            close(saved_stdin);
+            close(saved_stdout);
+            cleanup(node, 1); // General error
+        }
+        if (dup2(fd, STDOUT_FILENO) == -1)
+        {
+            perror("dup2");
+            close(fd);
+            close(saved_stdin);
+            close(saved_stdout);
+            cleanup(node, 1); // General error
+        }
+        close(fd);
+    }
+	if (rcmd->cmd == NULL)
+    {
+        fprintf(stderr, "Error: Command node is NULL\n");
+        close(saved_stdin);
+        close(saved_stdout);
+        cleanup(node, 1); // General error
+    }
 	result = exec_node(rcmd->cmd, ctx);
 	if (dup2(saved_stdin, STDIN_FILENO) == -1 || dup2(saved_stdout, STDOUT_FILENO) == -1)
 	{
@@ -249,13 +225,16 @@ static int exec_pipe(t_tree_node *node, t_context *ctx)
 
 void cleanup(t_tree_node *node, int exit_code)
 {
-	cleanup_heredoc(&node->data.redir_u);
+	if (node && node->type == N_REDIR)  // Only clean heredoc for redirection nodes
+	{
+		cleanup_heredoc(&node->data.redir_u);
+	}
 	free_tree_node(node);
 	clear_history();
 	exit(exit_code);
 }
 
-static int handle_heredoc(t_redircmd *rcmd)
+int handle_heredoc(t_redircmd *rcmd)
 {
     if (pipe(rcmd->heredoc_pipe) == -1)
     {
@@ -268,7 +247,7 @@ static int handle_heredoc(t_redircmd *rcmd)
     {
         close(rcmd->heredoc_pipe[0]);
         write(rcmd->heredoc_pipe[1], rcmd->heredoc_content,
-              strlen(rcmd->heredoc_content));
+              ft_strlen(rcmd->heredoc_content));
         close(rcmd->heredoc_pipe[1]);
         exit(0);
     }
@@ -284,12 +263,4 @@ static int handle_heredoc(t_redircmd *rcmd)
         return 0;
     }
     return -1;
-}
-
-
-
-void setup_heredoc_signals(void)
-{
-    signal(SIGINT, handle_heredoc_sigint);
-    signal(SIGQUIT, SIG_IGN);
 }

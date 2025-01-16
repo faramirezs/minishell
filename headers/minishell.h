@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 15:17:33 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/16 18:50:46 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/16 19:02:05 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,5 +64,8 @@
 # include "cmd.h"
 # include "guards.h"
 # include "scanner.h"
+
+//Signals
+# include "signals.h"
 
 #endif

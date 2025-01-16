@@ -1,2 +1,1 @@
-hello new new
-hello new new
+hello
