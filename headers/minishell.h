@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 15:17:33 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/12 19:12:45 by alejandrora      ###   ########.fr       */
+/*   Updated: 2025/01/16 18:50:46 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 # include <unistd.h>
 #include <sys/types.h>
 #include <errno.h>
-
+#include <signal.h>
 // CALL VALGRIND SUPPRESSION:
 // valgrind --suppressions=readline.supp --leak-check=full --show-leak-kinds=all ./minishell
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tree_node.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:26:14 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/13 22:04:08 by alejandrora      ###   ########.fr       */
+/*   Updated: 2025/01/16 18:02:40 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ typedef enum e_target_type
 	TARGET_DELIMITER
 }							t_target_type;
 
-struct s_redircmd {
+struct s_redircmd
+{
     t_token_type redir_type;     // Current redirection type (REDIR_IN, REDIR_OUT, etc.)
     char *target;                // Target file/delimiter
     t_target_type target_type;   // Type of target (filename, pathname, env var, delimiter)
@@ -55,6 +56,9 @@ struct s_redircmd {
     mode_t mode;                 // File permissions when creating new files
     t_tree_node *cmd;           // Command to be redirected
     int error_code;             // Error tracking
+	char *heredoc_content;    // Store the collected heredoc content
+    int heredoc_pipe[2];      // Pipe for heredoc data transfer
+    pid_t heredoc_pid;        // Process ID for heredoc handling
 };
 
 

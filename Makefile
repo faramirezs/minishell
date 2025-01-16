@@ -9,7 +9,9 @@ TOKENIZATION =	./parsing/tokenization/char_itr.c \
 
 NODE_CREATION =	./parsing/node_creation/tree_node.c \
 				./parsing/node_creation/args.c \
-				./parsing/redirection/redirections.c
+				./parsing/redirection/redirections.c \
+				./parsing/redirection/heredoc.c \
+				./parsing/redirection/heredoc_signals.c
 
 EXECUTION	= ./execution/exec.c
 

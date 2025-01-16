@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:18:13 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/10 18:18:17 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/16 18:49:29 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,14 +92,22 @@ char *collect_heredoc_input(const char *delimiter)
 {
     t_list *head = NULL;
     char *line;
+	char *result;
+
+	setup_heredoc_signals();
+    reset_heredoc_interrupt();
 
     while (1)
     {
         line = readline("heredoc> ");
-        if (!line)
+        if (!line || is_heredoc_interrupted())
+        {
+            if (is_heredoc_interrupted())
+                free(line);
             break;
+        }
 
-        if (strcmp(line, delimiter) == 0)
+        if (ft_strcmp(line, delimiter) == 0)
         {
             free(line);
             break;
@@ -109,7 +117,25 @@ char *collect_heredoc_input(const char *delimiter)
         free(line);
     }
 
-    char *result = concatenate_lines(head);
+	 if (is_heredoc_interrupted())
+    {
+        free_list(head);
+        return NULL;
+    }
+    result = concatenate_lines(head);
     free_list(head);
     return result;
+}
+void cleanup_heredoc(t_redircmd *rcmd)
+{
+    if (rcmd->heredoc_content)
+    {
+        free(rcmd->heredoc_content);
+        rcmd->heredoc_content = NULL;
+    }
+    if (rcmd->heredoc_pid > 0)
+    {
+        int status;
+        waitpid(rcmd->heredoc_pid, &status, 0);
+    }
 }

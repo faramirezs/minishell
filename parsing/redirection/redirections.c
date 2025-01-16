@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/15 17:48:41 by alejandrora      ###   ########.fr       */
+/*   Updated: 2025/01/16 18:02:38 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,15 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 	// Handle heredoc case
 	if (redir_node->data.redir_u.redir_type == HEREDOC)
 	{
-		printf("collect_heredoc_input until the delimiter is encountered\n");
-		// Collect heredoc input until the delimiter is encountered
-		// char *heredoc_input = collect_heredoc_input(file_args->words[0]);
-		// redir_node->data.redir_u.file_input = heredoc_input;
+		char *heredoc_input = collect_heredoc_input(file_args->words[0]);
+		if (!heredoc_input)
+		{
+			free(redir_node);
+			return NULL;
+		}
+		redir_node->data.redir_u.heredoc_content = heredoc_input;
+		redir_node->data.redir_u.flags = O_RDWR;
+		redir_node->data.redir_u.source_fd = STDIN_FILENO;
 	}
 	else
 	{

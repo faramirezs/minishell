@@ -116,6 +116,15 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
         }
         close(fd);
     }
+	else if (rcmd->redir_type == HEREDOC)
+	{
+		if (handle_heredoc(rcmd) < 0)
+		{
+			close(saved_stdin);
+			close(saved_stdout);
+			cleanup(node, 1);
+		}
+	}
 	// Handle other redirection types (REDIR_OUT, APPEND_OUT, HEREDOC) here
 	// ...
 	result = exec_node(rcmd->cmd, ctx);
@@ -240,7 +249,47 @@ static int exec_pipe(t_tree_node *node, t_context *ctx)
 
 void cleanup(t_tree_node *node, int exit_code)
 {
+	cleanup_heredoc(&node->data.redir_u);
 	free_tree_node(node);
 	clear_history();
 	exit(exit_code);
+}
+
+static int handle_heredoc(t_redircmd *rcmd)
+{
+    if (pipe(rcmd->heredoc_pipe) == -1)
+    {
+        perror("pipe");
+        return -1;
+    }
+
+    rcmd->heredoc_pid = fork();
+    if (rcmd->heredoc_pid == 0)
+    {
+        close(rcmd->heredoc_pipe[0]);
+        write(rcmd->heredoc_pipe[1], rcmd->heredoc_content,
+              strlen(rcmd->heredoc_content));
+        close(rcmd->heredoc_pipe[1]);
+        exit(0);
+    }
+    else if (rcmd->heredoc_pid > 0)
+    {
+        close(rcmd->heredoc_pipe[1]);
+        if (dup2(rcmd->heredoc_pipe[0], STDIN_FILENO) == -1)
+        {
+            perror("dup2");
+            return -1;
+        }
+        close(rcmd->heredoc_pipe[0]);
+        return 0;
+    }
+    return -1;
+}
+
+
+
+void setup_heredoc_signals(void)
+{
+    signal(SIGINT, handle_heredoc_sigint);
+    signal(SIGQUIT, SIG_IGN);
 }
