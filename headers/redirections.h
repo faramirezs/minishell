@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:40:19 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/16 19:44:01 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/17 15:51:14 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,9 @@ void						setup_heredoc_signals(void);
 int							is_heredoc_interrupted(void);
 void						reset_heredoc_interrupt(void);
 char						*collect_heredoc_input(const char *delimiter);
+void						restore_stdin(void);
+//void						save_terminal_settings(void);
+//void						restore_terminal_settings(void);
 
 //int							handle_input_redirection(t_redircmd *rcmd);
 #endif

@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/16 18:44:01 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/17 13:42:58 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/17 15:55:11 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,6 @@ void    handle_heredoc_sigint(int sig)
     (void)sig;
     g_heredoc_interrupt = 1;
     write(STDOUT_FILENO, "\n", 1);
-    // Close stdin to force readline to return
-	//I need to understand this better
-    close(STDIN_FILENO);
 }
 
 void    setup_heredoc_signals(void)
@@ -42,10 +39,21 @@ void    cleanup_heredoc(t_redircmd *rcmd)
         int status;
         waitpid(rcmd->heredoc_pid, &status, 0);
     }
-	/* if (isatty(STDIN_FILENO) == 0)
+	restore_stdin();
+}
+
+void    restore_stdin(void)
+{
+    if (isatty(STDIN_FILENO) == 0)
     {
-        freopen("/dev/tty", "r", stdin);
-    } */
+        int new_stdin = open("/dev/tty", O_RDONLY);
+        if (new_stdin != -1)
+        {
+            dup2(new_stdin, STDIN_FILENO);
+            close(new_stdin);
+        }
+    }
+	//restore_terminal_settings();
 }
 
 int     is_heredoc_interrupted(void)
@@ -57,3 +65,14 @@ void    reset_heredoc_interrupt(void)
 {
     g_heredoc_interrupt = 0;
 }
+/* static struct termios original_termios;
+
+void save_terminal_settings(void)
+{
+    tcgetattr(STDIN_FILENO, &original_termios);
+}
+
+void restore_terminal_settings(void)
+{
+    tcsetattr(STDIN_FILENO, TCSANOW, &original_termios);
+} */

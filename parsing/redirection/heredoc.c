@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:18:13 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/17 13:33:03 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/17 15:51:42 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,8 @@ char *collect_heredoc_input(const char *delimiter)
     char *line;
 	char *result;
 
-	//setup_heredoc_signals();
+	//save_terminal_settings();
+	setup_heredoc_signals();
     reset_heredoc_interrupt();
 
     while (1)
@@ -103,7 +104,10 @@ char *collect_heredoc_input(const char *delimiter)
         if (!line || is_heredoc_interrupted())
         {
             if (is_heredoc_interrupted())
-                free(line);
+			{
+				free(line);
+                restore_stdin();
+			}
             break;
         }
 

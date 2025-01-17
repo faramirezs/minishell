@@ -1,2 +1,1 @@
-hello
-helo hello
+-rw-r--r-- 1 alramire 2023_berlin  3308 Jan 17 15:51 main.c

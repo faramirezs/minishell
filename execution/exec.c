@@ -260,6 +260,13 @@ int handle_heredoc(t_redircmd *rcmd)
             return -1;
         }
         close(rcmd->heredoc_pipe[0]);
+
+        // Wait for child process to complete
+        int status;
+        waitpid(rcmd->heredoc_pid, &status, 0);
+        // Ensure proper terminal output
+        write(STDOUT_FILENO, "\n", 1);
+        //restore_terminal_settings();
         return 0;
     }
     return -1;
