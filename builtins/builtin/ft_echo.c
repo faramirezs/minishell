@@ -20,10 +20,11 @@ int	ft_newline(char *av)
 	return (false);
 }
 
-int	handle_echo(struct s_tree_node *node)
+int	handle_echo(struct s_tree_node *node, t_context *msh)
 {
 	int i;
 	int n;
+	(void)msh;
 
 	if (!node || node->type != N_EXEC || !node->data.exec_u.args)
         return (1);

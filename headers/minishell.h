@@ -41,7 +41,7 @@
 
 
 //structs
-# include "structs.h"
+//# include "structs.h"
 // Parsing headers
 # include "token.h" // token structs and functions
 //#include	"node.h" // node structs and node handling functions

@@ -1,5 +1,5 @@
-#include "../headers/built_in.h"
-#include "../headers/structs.h"
+#include "../../headers/built_in.h"
+#include "../../headers/minishell.h"
 
 void	set_pwd(t_context *msh, char *av, char *c)
 {
@@ -15,10 +15,12 @@ int	handle_cd(struct s_tree_node *node, t_context *msh)
 	char	cwd[1024];
 	char	*dir;
 
+	if (!node || !node->data.exec_u.args)
+        return (1);
 	dir = node->data.exec_u.args[1];
 	if (dir == NULL)
 	{
-		dir = ms_get_env (msh->env, "HOME") + 5;
+		dir = ms_get_env (msh->env, "HOME");
 		if ((dir - 5) == NULL || *dir == '\0')
 		{
 			ft_putstr_fd ("cd: HOME not set\n", STDERR_FILENO);
@@ -32,11 +34,7 @@ int	handle_cd(struct s_tree_node *node, t_context *msh)
 	}
 	if (chdir(dir) == -1)
 	{
-		if (dir[0] == '\0')
-			return (1);
-		ft_putstr_fd ("cd: ", STDERR_FILENO);
-		ft_putstr_fd (dir, STDERR_FILENO);
-		ft_putendl_fd (": no such file or dir", STDERR_FILENO);
+		fprintf (stderr, "cd: %s no such file or dir", dir);
 		return (1);
 	}
 	set_pwd (msh, "OLDPWD=", cwd);

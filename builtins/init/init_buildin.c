@@ -1,7 +1,7 @@
-#include "../../headers/built_in.h"
-#include "../../headers/structs.h"
+//#include "../../headers/built_in.h"
+#include "../../headers/minishell.h"
 
-void add_builtin(bld_in **head, const char *name, int (*func)(char **av))
+void add_builtin(bld_in **head, const char *name, int (*func)(struct s_tree_node *node, t_context *msh))
 {
 	bld_in  *new_node;
 
@@ -32,7 +32,7 @@ bld_in  *create_builtin_list(void)
 	add_builtin (&head, "cd", handle_cd);
 	add_builtin (&head, "pwd", handle_pwd);
 	add_builtin (&head, "export", handle_export);
-	add_builtin (&head, "unset", handle_unset);
+//	add_builtin (&head, "unset", handle_unset);
 	add_builtin (&head, "env", handle_env);
 	add_builtin (&head, "exit", handle_exit);
 
