@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/16 18:44:01 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/16 19:15:38 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/17 13:42:58 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void    handle_heredoc_sigint(int sig)
     g_heredoc_interrupt = 1;
     write(STDOUT_FILENO, "\n", 1);
     // Close stdin to force readline to return
+	//I need to understand this better
     close(STDIN_FILENO);
 }
 
@@ -41,6 +42,10 @@ void    cleanup_heredoc(t_redircmd *rcmd)
         int status;
         waitpid(rcmd->heredoc_pid, &status, 0);
     }
+	/* if (isatty(STDIN_FILENO) == 0)
+    {
+        freopen("/dev/tty", "r", stdin);
+    } */
 }
 
 int     is_heredoc_interrupted(void)

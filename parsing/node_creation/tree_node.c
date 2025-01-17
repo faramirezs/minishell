@@ -6,16 +6,16 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/16 19:43:48 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/17 13:13:32 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../headers/tree_node.h"
-#include "../../headers/guards.h"
-#include "../../headers/scanner.h"
-#include "../../headers/token.h"
+//#include "../../headers/tree_node.h"
+//#include "../../headers/guards.h"
+//#include "../../headers/scanner.h"
+//#include "../../headers/token.h"
 #include "../../headers/minishell.h"
-#include "../../headers/args.h"
+//#include "../../headers/args.h"
 
 //YouTube video min 7:45 https://youtu.be/sUxFE32tXF0?si=73UiqQEYAERD3fdD
 
@@ -165,7 +165,9 @@ void free_tree_node(t_tree_node *node)
 			cleanup_heredoc(&node->data.redir_u);
 		}
 		free(node->data.redir_u.target);
+		node->data.redir_u.target = NULL;
 		free_tree_node(node->data.redir_u.cmd);
+		node->data.redir_u.cmd = NULL;
 	}
 	else if (node->type == N_PIPE)
 	{
@@ -181,9 +183,11 @@ void free_tree_node(t_tree_node *node)
 			i++;
 		}
 		free(node->data.exec_u.args);
+		//node->data.exec_u.args = NULL; do i need this?
 	}
 
 	free(node);
+	//node = NULL; Do I need this?
 }
 
 

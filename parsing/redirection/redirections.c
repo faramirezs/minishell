@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/16 19:51:05 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/17 11:50:59 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 	file_args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
 	// Store redirection type
 	redir_node->data.redir_u.redir_type = scanner->next.type;
-    if(scanner->next.type == REDIR_IN)
+    if(scanner->next.type == REDIR_IN || scanner->next.type == HEREDOC)
 		redir_node->data.redir_u.source_fd = STDIN_FILENO;
 	else
 		redir_node->data.redir_u.source_fd = STDOUT_FILENO;
@@ -53,7 +53,7 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 		}
 		redir_node->data.redir_u.heredoc_content = heredoc_input;
 		//redir_node->data.redir_u.flags = O_RDWR;
-		redir_node->data.redir_u.source_fd = STDIN_FILENO;
+		//redir_node->data.redir_u.source_fd = STDIN_FILENO;
 	}
 	//printf("Set file handling flags based on redirection type\n");
 	//redir_node->data.redir_u.flags = get_redir_flags(redir_node->data.redir_u.redir_type);

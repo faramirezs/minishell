@@ -155,7 +155,7 @@ void exec(t_tree_node *node)
 static int exec_command(t_tree_node *node, t_context *ctx)
 {
 	pid_t pid;
-
+	//Here we can execute builtins in the parent process.
 	pid = fork();
 	if (pid == FORKED_CHILD)
 	{
