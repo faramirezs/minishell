@@ -1,0 +1,9 @@
+breakpoint set --name ft_strlen
+breakpoint modify --condition 'x0 == 0'  # For ARM64 (adjust for your architecture)
+breakpoint command add
+frame info
+register read
+bt
+continue
+DONE
+run
