@@ -15,10 +15,13 @@ NODE_CREATION =	./parsing/node_creation/tree_node.c \
 
 EXECUTION	= ./execution/exec.c
 
+SIGNALS     = ./signal_handler.c
+
 SRC	= main.c \
 	$(TOKENIZATION) \
 	$(NODE_CREATION) \
-	$(EXECUTION)
+	$(EXECUTION) \
+	$(SIGNALS)
 
 HEADERS	= ./headers/minishell.h \
 		./headers/char_itr.h \
@@ -27,7 +30,8 @@ HEADERS	= ./headers/minishell.h \
 		./headers/token.h \
 		./headers/cmd.h \
 		./headers/tree_node.h \
-		./headers/redirections.h
+		./headers/redirections.h \
+        ./headers/signals.h
 
 OBJS = $(SRC:.c=.o)
 

@@ -173,6 +173,8 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 	}
 	else if (pid > 0)
 	{
+		int status;
+        waitpid(pid, &status, 0);
 		//printf("Parent pID: %d\n", getpid());
 		//New line or no new line, that is the question...
         return (1);

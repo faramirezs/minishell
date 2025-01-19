@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 16:26:03 by jslusark          #+#    #+#             */
-/*   Updated: 2025/01/17 15:51:20 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/19 20:06:59 by alejandrora      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ int	main(int argc, char **argv)
 	t_tree_node		*tree_node;
 	(void)argc;
 	(void)argv;
+
+	setup_global_signals();
 
 	//save_terminal_settings();
 	while (1)

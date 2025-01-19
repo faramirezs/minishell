@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 15:17:33 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/17 15:51:24 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/19 20:24:07 by alejandrora      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@
 # define COLOR_CYAN "\001\033[36m\002"
 # define COLOR_WHITE "\001\033[37m\002"
 # define COLOR_BOLD "\001\033[1m\002"
+
+extern volatile sig_atomic_t g_heredoc_interrupt;
 
 // Parsing headers
 # include "token.h" // token structs and functions

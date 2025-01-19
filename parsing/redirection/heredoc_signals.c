@@ -3,16 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_signals.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/16 18:44:01 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/17 15:55:11 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/19 20:26:31 by alejandrora      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/minishell.h"
 
-static volatile sig_atomic_t g_heredoc_interrupt = 0;
+volatile sig_atomic_t g_heredoc_interrupt = 0;
+
+void handle_sigint(int sig); // Forward declaration
 
 void    handle_heredoc_sigint(int sig)
 {
@@ -23,8 +25,15 @@ void    handle_heredoc_sigint(int sig)
 
 void    setup_heredoc_signals(void)
 {
+    g_heredoc_interrupt = 0;
     signal(SIGINT, handle_heredoc_sigint);   // Handle Ctrl+C
-    signal(SIGQUIT, SIG_IGN);                // Ignore Ctrl+ slash./
+    signal(SIGQUIT, SIG_IGN);                // Ignore Ctrl+slash
+}
+
+void restore_global_signals(void)
+{
+    signal(SIGINT, handle_sigint);
+    signal(SIGQUIT, SIG_IGN); // Ignore Ctrl+slash
 }
 
 void    cleanup_heredoc(t_redircmd *rcmd)
