@@ -1,0 +1,10 @@
+{
+	"files.associations": {
+		"guards.h": "c",
+		"tree_node.h": "c",
+		"env_var.h": "c"
+	},
+	"[c]": {
+		"editor.defaultFormatter": "keyhr.42-c-format"
+	}
+}
