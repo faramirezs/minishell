@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   args.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:32:06 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/15 15:50:29 by alejandrora      ###   ########.fr       */
+/*   Updated: 2025/01/20 13:21:23 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ void free_string_array(char ***array)
 			while ((*array)[i] != NULL)
 			{
 				free((*array)[i]);
+				//(*array)[i] = NULL;
 				i++;
 			}
 			free((*array));
@@ -92,23 +93,16 @@ void free_string_array(char ***array)
 
 void free_args(t_args **args)
 {
-	int i;
-
 	if (args && *args)
 	{
 		if ((*args)->words)
 		{
-			i = 0;
-			while (i < *((*args)->count))
-			{
-				free((*args)->words[i]);
-				i++;
-			}
-			free((*args)->words);
+			free_string_array(&(*args)->words);
 		}
 		if ((*args)->count)
 		{
 			free((*args)->count);
+			(*args)->count = NULL;
 		}
 		free(*args);
 		*args = NULL;

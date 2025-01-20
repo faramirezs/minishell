@@ -35,7 +35,8 @@ HEADERS	= ./headers/minishell.h \
 
 OBJS = $(SRC:.c=.o)
 
-CC	= clang -fsanitize=address
+#CC	= clang -fsanitize=address
+CC	= clang
 
 RM	= rm -f
 

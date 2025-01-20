@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/17 13:13:32 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/20 13:30:36 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 //#include "../../headers/guards.h"
 //#include "../../headers/scanner.h"
 //#include "../../headers/token.h"
+#include "../../headers/args.h"
 #include "../../headers/minishell.h"
 //#include "../../headers/args.h"
 
@@ -21,14 +22,14 @@
 
 t_tree_node *parse_tree_node (t_scanner *scanner)
 {
-	t_tree_node	*node;
+	//t_tree_node	*node;
 	t_args		*args;
 	int			pipe_flag;
 	//int			redir_i;
 
 	pipe_flag = 0;
 	//redir_i = 0;
-	node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
+	//node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
 	args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
 	args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
 
@@ -38,7 +39,7 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 	// Check if it's a redirection before collecting args
 	if (check_redir(scanner))
 	{
-		node->type = N_REDIR;
+		//node->type = N_REDIR;
 		return parse_redir(scanner, NULL);
 	}
 
@@ -75,13 +76,16 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 			}
 			else
 			{
+				//Aqui en lugar de retornar node, deberia retornar error. Porque este node esta vacio
 				printf("No arguments after pipe\n");
-				return(node);
+				exit(EXIT_FAILURE);
 			}
 		}
 		else
 			{
+				//if we arrived here, we can free node
 				//printf("Node type EXEC\n");
+				//free_tree_node(node);
 				return(parse_exec(args));
 			}
 	}
@@ -102,6 +106,7 @@ t_tree_node *parse_exec(t_args *args)
 	//printf("++++parse_exec++++\n");
 	//print_args(args);
 	node->data.exec_u.args = copy_string_array(args);
+	//free_args(&args); ya se hizo en copy_string_array
 	//print_array(node->data.exec_u.args);
 	//print_args(args);
 	return(node);
@@ -176,18 +181,20 @@ void free_tree_node(t_tree_node *node)
 	}
 	else if (node->type == N_EXEC)
 	{
-		int i = 0;
+		//int i = 0;
+		free_string_array(&node->data.exec_u.args);
+/*
 		while (node->data.exec_u.args[i])
 		{
 			free(node->data.exec_u.args[i]);
 			i++;
 		}
 		free(node->data.exec_u.args);
-		//node->data.exec_u.args = NULL; do i need this?
+		node->data.exec_u.args = NULL; */
 	}
 
 	free(node);
-	//node = NULL; Do I need this?
+	node = NULL;
 }
 
 

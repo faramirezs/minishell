@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 16:26:03 by jslusark          #+#    #+#             */
-/*   Updated: 2025/01/19 20:06:59 by alejandrora      ###   ########.fr       */
+/*   Updated: 2025/01/20 11:56:02 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,17 @@ int	main(int argc, char **argv)
 	(void)argc;
 	(void)argv;
 
+	//g_heredoc_interrupt = 0;
 	setup_global_signals();
-
 	//save_terminal_settings();
 	while (1)
 	{
 		input = readline(COLOR_GREEN "Minishell> " COLOR_RESET);
+		if (input == NULL)
+		{
+			write(STDOUT_FILENO, "exit\n", 5);
+			break;
+		}
 		if (ft_strlen(input) > 0)
 		{
 			add_history(input);

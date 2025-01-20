@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:18:13 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/17 15:51:42 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/20 11:48:19 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,6 @@ char *collect_heredoc_input(const char *delimiter)
     char *line;
 	char *result;
 
-	//save_terminal_settings();
 	setup_heredoc_signals();
     reset_heredoc_interrupt();
 
@@ -129,4 +128,32 @@ char *collect_heredoc_input(const char *delimiter)
     result = concatenate_lines(head);
     free_list(head);
     return result;
+}
+
+void    cleanup_heredoc(t_redircmd *rcmd)
+{
+    if (rcmd->heredoc_content)
+    {
+        free(rcmd->heredoc_content);
+        rcmd->heredoc_content = NULL;
+    }
+    if (rcmd->heredoc_pid > 0)
+    {
+        int status;
+        waitpid(rcmd->heredoc_pid, &status, 0);
+    }
+	restore_stdin();
+}
+
+void    restore_stdin(void)
+{
+    if (isatty(STDIN_FILENO) == 0)
+    {
+        int new_stdin = open("/dev/tty", O_RDONLY);
+        if (new_stdin != -1)
+        {
+            dup2(new_stdin, STDIN_FILENO);
+            close(new_stdin);
+        }
+    }
 }
