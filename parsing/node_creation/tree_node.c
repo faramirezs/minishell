@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/20 13:30:36 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/20 17:36:04 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 	//node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
 	args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
 	args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
-
+	
 	scanner->next = scanner_next(scanner);
 	*(args->count) = 1;
 
@@ -171,8 +171,11 @@ void free_tree_node(t_tree_node *node)
 		}
 		free(node->data.redir_u.target);
 		node->data.redir_u.target = NULL;
-		free_tree_node(node->data.redir_u.cmd);
-		node->data.redir_u.cmd = NULL;
+		if (node->data.redir_u.cmd)
+        {
+            free_tree_node(node->data.redir_u.cmd);
+            node->data.redir_u.cmd = NULL;
+        }
 	}
 	else if (node->type == N_PIPE)
 	{

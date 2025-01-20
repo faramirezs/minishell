@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/17 11:50:59 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/20 17:37:03 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 
 	redir_node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
 	redir_node->type = N_REDIR;
+	redir_node->data.redir_u.cmd = NULL;
 	file_args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
 	file_args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
 	// Store redirection type
@@ -34,22 +35,27 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 	if (!scanner_has_next(scanner))
 	{
 		printf("Syntax error: nothing after redirection token\n");
-		return (NULL);
+		cleanup(redir_node, EXIT_FAILURE);
 	}
 	scanner->next = scanner_next(scanner);
 	*(file_args->count) = 1;
 	args_collector(&scanner->next, file_args);
 	// Set target and its properties
-	redir_node->data.redir_u.target = file_args->words[0];
-	redir_node->data.redir_u.target_type = determine_target_type(file_args->words[0]);
+	redir_node->data.redir_u.target = ft_strdup(file_args->words[0]);
+	free_args(&file_args);
+	redir_node->data.redir_u.target_type = determine_target_type(redir_node->data.redir_u.target);
 	// Handle heredoc case
 	if (redir_node->data.redir_u.redir_type == HEREDOC)
 	{
-		char *heredoc_input = collect_heredoc_input(file_args->words[0]);
+		char *heredoc_input = collect_heredoc_input(redir_node->data.redir_u.target);
 		if (!heredoc_input)
 		{
-			free(redir_node);
-			return NULL;
+			redir_node->data.redir_u.heredoc_content = ft_strdup("");
+			redir_node->data.redir_u.heredoc_pid = -1;
+			//free_args(&file_args);
+			//clean file_args FREE
+			//Do i need to clean mode?
+			cleanup(redir_node, EXIT_FAILURE);
 		}
 		redir_node->data.redir_u.heredoc_content = heredoc_input;
 		//redir_node->data.redir_u.flags = O_RDWR;

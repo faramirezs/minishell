@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:18:13 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/20 13:36:21 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/20 15:56:50 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ char *collect_heredoc_input(const char *delimiter)
         free(line);
     }
 
-	 if (is_heredoc_interrupted())
+	 if (!line || is_heredoc_interrupted())
     {
         free_list(head);
         return NULL;
