@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:18:13 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/20 11:48:19 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/20 13:36:21 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,12 @@ char *collect_heredoc_input(const char *delimiter)
         line = readline("heredoc> ");
         if (!line || is_heredoc_interrupted())
         {
-            if (is_heredoc_interrupted())
+            if (!line)
+            {
+                // Print warning message for EOF
+                fprintf(stderr, "Minishell: warning: here-document at line 1 delimited by end-of-file (wanted `%s')\n", delimiter);
+            }
+			if (is_heredoc_interrupted())
 			{
 				free(line);
                 restore_stdin();
