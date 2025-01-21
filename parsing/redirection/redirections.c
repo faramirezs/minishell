@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/20 17:37:03 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/21 15:14:27 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 		{
 			redir_node->data.redir_u.heredoc_content = ft_strdup("");
 			redir_node->data.redir_u.heredoc_pid = -1;
-			//free_args(&file_args);
+			free_args(&cmd_args);
 			//clean file_args FREE
 			//Do i need to clean mode?
 			cleanup(redir_node, EXIT_FAILURE);
@@ -76,8 +76,9 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 			return (parse_redir(scanner, cmd_args));
 		}
 	}
-	free(file_args->count);
-	free(file_args);
+	//I've done the free in line 45
+	//free(file_args->count);
+	//free(file_args);
 	return (redir_node);
 }
 

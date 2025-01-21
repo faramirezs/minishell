@@ -71,7 +71,8 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
     {
         if (handle_heredoc(rcmd) < 0)
         {
-            close(saved_stdin);
+            //if it is 0, then we could do the cleanup with node info.
+			close(saved_stdin);
             close(saved_stdout);
             cleanup(node, 1);
         }
@@ -251,8 +252,12 @@ int handle_heredoc(t_redircmd *rcmd)
         close(rcmd->heredoc_pipe[0]);
         write(rcmd->heredoc_pipe[1], rcmd->heredoc_content,
               ft_strlen(rcmd->heredoc_content));
-        close(rcmd->heredoc_pipe[1]);
+		cleanup_heredoc(rcmd);
+		//free(rcmd->heredoc_content);
+		close(rcmd->heredoc_pipe[1]);
         exit(0);
+		//return (0);
+		//When the heredoc finishes correctly this is the exit flow.
     }
     else if (rcmd->heredoc_pid > 0)
     {
@@ -269,6 +274,7 @@ int handle_heredoc(t_redircmd *rcmd)
         waitpid(rcmd->heredoc_pid, &status, 0);
         // Ensure proper terminal output
         write(STDOUT_FILENO, "\n", 1);
+		cleanup_heredoc(rcmd);
         //restore_terminal_settings();
         return 0;
     }
