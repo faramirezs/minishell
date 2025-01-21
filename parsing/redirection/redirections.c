@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/21 15:14:27 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/21 21:58:23 by alejandrora      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 	redir_node->data.redir_u.cmd = NULL;
 	file_args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
 	file_args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
-	// Store redirection type
 	redir_node->data.redir_u.redir_type = scanner->next.type;
     if(scanner->next.type == REDIR_IN || scanner->next.type == HEREDOC)
 		redir_node->data.redir_u.source_fd = STDIN_FILENO;
@@ -30,8 +29,6 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 		redir_node->data.redir_u.source_fd = STDOUT_FILENO;
     redir_node->data.redir_u.flags = get_redir_flags(scanner->next.type);
     redir_node->data.redir_u.mode = 0644;  // Default file permissions
-
-	// Move to the file/delimiter token
 	if (!scanner_has_next(scanner))
 	{
 		printf("Syntax error: nothing after redirection token\n");
@@ -53,29 +50,28 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 			redir_node->data.redir_u.heredoc_content = ft_strdup("");
 			redir_node->data.redir_u.heredoc_pid = -1;
 			free_args(&cmd_args);
-			//clean file_args FREE
-			//Do i need to clean mode?
 			cleanup(redir_node, EXIT_FAILURE);
 		}
 		redir_node->data.redir_u.heredoc_content = heredoc_input;
-		//redir_node->data.redir_u.flags = O_RDWR;
-		//redir_node->data.redir_u.source_fd = STDIN_FILENO;
 	}
-	//printf("Set file handling flags based on redirection type\n");
-	//redir_node->data.redir_u.flags = get_redir_flags(redir_node->data.redir_u.redir_type);
-	//redir_node->data.redir_u.close_fd = 1; // Default to true
-	// Store command args if provided
-	if (cmd_args && cmd_args->words)
-		redir_node->data.redir_u.cmd = parse_exec(cmd_args);
+    // Continue parsing if there are more tokens
+	//if (cmd_args && cmd_args->words)
+	//	redir_node->data.redir_u.cmd = parse_exec(cmd_args);
 	// Continue parsing if there are more tokens
 	if (scanner_has_next(scanner))
 	{
 		scanner->next = scanner_next(scanner);
 		if (check_redir(scanner))
 		{
-			return (parse_redir(scanner, cmd_args));
+			redir_node->data.redir_u.cmd = parse_redir(scanner, cmd_args);
+		}
+		else
+		{
+			redir_node->data.redir_u.cmd = parse_exec(cmd_args);
 		}
 	}
+	if (cmd_args && cmd_args->words)
+		redir_node->data.redir_u.cmd = parse_exec(cmd_args);
 	//I've done the free in line 45
 	//free(file_args->count);
 	//free(file_args);
