@@ -3,19 +3,19 @@
 
 void set_pwd(t_context *msh, char *av, char *c)
 {
-    char *string;
+	char *string;
 
 	printf("handle_env: msh->env = %p\n", (void *)msh->env);
 	for (int i = 0; msh->env && msh->env[i]; i++)
-    	printf("  msh->env[%d]: %s\n", i, msh->env[i]);
+		printf("  msh->env[%d]: %s\n", i, msh->env[i]);
 
 
-    string = ft_strjoin(av, c); // Concatenate "PWD=" or "OLDPWD=" with the current directory
-    if (!string)
-        return; // Handle memory allocation failure gracefully
-    if (ms_set_env(msh->env, msh, string) == -1) // Pass the correct parameters
-        ft_putstr_fd("Failed to set environment variable\n", STDERR_FILENO);
-    free(string);
+	string = ft_strjoin(av, c); // Concatenate "PWD=" or "OLDPWD=" with the current directory
+	if (!string)
+		return; // Handle memory allocation failure gracefully
+	if (ms_set_env(msh->env, msh, string) == -1) // Pass the correct parameters
+		ft_putstr_fd("Failed to set environment variable\n", STDERR_FILENO);
+	free(string);
 }
 
 int	handle_cd(struct s_tree_node *node, t_context *msh)
@@ -24,7 +24,7 @@ int	handle_cd(struct s_tree_node *node, t_context *msh)
 	char	*dir;
 
 	if (!node || !node->data.exec_u.args)
-        return (1);
+		return (1);
 	dir = node->data.exec_u.args[1];
 	if (dir == NULL)
 	{

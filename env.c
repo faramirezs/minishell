@@ -3,54 +3,40 @@
 
 t_context *init_context(char **envp)
 {
-    t_context *msh;
-    int i;
+	t_context *msh;
+	int i;
 
-    msh = OOM_GUARD(malloc(sizeof(t_context)), __FILE__, __LINE__);
-    msh->fd[0] = STDIN_FILENO;
-    msh->fd[1] = STDOUT_FILENO;
-    msh->fd_close = -1;
-    msh->ret_exit = 0;
-    msh->user = getenv("USER"); // Fetch current user from environment
-
-    // Initialize msh->env with envp
-    msh->env = NULL;
-    if (envp && envp[0])
-    {
+	msh = OOM_GUARD(malloc(sizeof(t_context)), __FILE__, __LINE__);
+	msh->fd[0] = STDIN_FILENO;
+	msh->fd[1] = STDOUT_FILENO;
+	msh->fd_close = -1;
+	msh->ret_exit = 0;
+	msh->user = getenv("USER");
+	msh->env = NULL;
+	if (envp && envp[0])
+	{
 		i = 0;
-        while (envp[i])
-        {
-            msh->env = ms_matrix_add_line(msh->env, envp[i]);
-            i++;
-        }
-    }
+		while (envp[i])
+		{
+			msh->env = ms_matrix_add_line(msh->env, envp[i]);
+			i++;
+		}
+	}
 	else
-    {
-        fprintf(stderr, "Warning: envp is NULL or empty\n");
-    }
-
-    // Initialize msh->env_export with envp
-    msh->env_export = NULL;
-    if (envp && envp[0])
-    {
-        i = 0;
-        while (envp[i])
-        {
-            msh->env_export = ms_matrix_add_line(msh->env_export, envp[i]);
-            i++;
-        }
-    }
-
+		fprintf(stderr, "Warning: envp is NULL or empty\n");
+	msh->env_export = NULL;
+	if (envp && envp[0])
+	{
+		i = 0;
+		while (envp[i])
+		{
+			msh->env_export = ms_matrix_add_line(msh->env_export, envp[i]);
+			i++;
+		}
+	}
 	else
-    {
-        fprintf(stderr, "Warning: envp is NULL or empty\n");
-    }
-
-	printf("init_context: msh->env initialized with envp:\n");
-	for (int i = 0; msh->env && msh->env[i]; i++)
-    	printf("  msh->env[%d]: %s\n", i, msh->env[i]);
-
-    return msh;
+		fprintf(stderr, "Warning: envp is NULL or empty\n");
+	return msh;
 }
 
 
@@ -134,47 +120,39 @@ int	ms_set_env(char **env, t_context *msh, const char *value)
 
 int ms_set_env(char **env, t_context *msh, const char *value)
 {
-    int i;
-    const char *equals;
-    size_t key_len;
+	int i;
+	const char *equals;
+	size_t key_len;
 
-    if (!env)
-    {
-        return -1;
-    }
+	if (!env)
+		return (-1);
+	equals = ft_strchr(value, '=');
+	if (!equals)
+	{
+		fprintf(stderr, "setenv: %s: Invalid argument\n", value);
+		return -1;
+	}
 
-    equals = ft_strchr(value, '=');
-    if (!equals)
-    {
-        fprintf(stderr, "setenv: %s: Invalid argument\n", value);
-        return -1;
-    }
+	key_len = equals - value;
+	i = 0;
+	while (env[i])
+	{
+		if (ft_strncmp(env[i], value, key_len) == 0 && env[i][key_len] == '=')
+		{
+			free(env[i]);
+			env[i] = ft_strdup(value);
+			if (!env[i])
+				return -1;
+			return 0;
+		}
+		i++;
+	}
 
-	printf("ms_set_env: Before adding '%s', msh->env = %p\n", value, (void *)env);
-	for (int i = 0; env && env[i]; i++)
-    	printf("  msh->env[%d]: %s\n", i, env[i]);
+	msh->env = ms_matrix_add_line(env, value);
+	if (!msh->env)
+		return -1;
 
-
-    key_len = equals - value;
-    i = 0;
-    while (env[i])
-    {
-        if (ft_strncmp(env[i], value, key_len) == 0 && env[i][key_len] == '=')
-        {
-            free(env[i]);
-            env[i] = ft_strdup(value);
-            if (!env[i])
-                return -1;
-            return 0;
-        }
-        i++;
-    }
-
-    msh->env = ms_matrix_add_line(env, value);
-    if (!msh->env)
-        return -1;
-
-    return 0;
+	return 0;
 }
 
 
@@ -232,45 +210,45 @@ char **ms_remove_line(char **matrix, int index)
 
 int ms_unset_env(t_context *msh, const char *key)
 {
-    int i = 0;
-    size_t key_len = ft_strlen(key);
+	int i = 0;
+	size_t key_len = ft_strlen(key);
 
-    // Search for the key in the environment
-    while (msh->env[i])
-    {
-        if (ft_strncmp(msh->env[i], key, key_len) == 0 && msh->env[i][key_len] == '=')
-        {
-            // Free the matched entry and remove it from the environment
-            free(msh->env[i]);
-            while (msh->env[i + 1])
-            {
-                msh->env[i] = msh->env[i + 1];
-                i++;
-            }
-            msh->env[i] = NULL; // Null-terminate the array
-            return 0; // Success
-        }
-        i++;
-    }
+	// Search for the key in the environment
+	while (msh->env[i])
+	{
+		if (ft_strncmp(msh->env[i], key, key_len) == 0 && msh->env[i][key_len] == '=')
+		{
+			// Free the matched entry and remove it from the environment
+			free(msh->env[i]);
+			while (msh->env[i + 1])
+			{
+				msh->env[i] = msh->env[i + 1];
+				i++;
+			}
+			msh->env[i] = NULL; // Null-terminate the array
+			return 0; // Success
+		}
+		i++;
+	}
 
-    // Key not found
-    return -1;
+	// Key not found
+	return -1;
 }
 
 
 void free_env(char **env)
 {
-    for (int i = 0; env[i]; i++)
-        free(env[i]);
-    free(env);
+	for (int i = 0; env[i]; i++)
+		free(env[i]);
+	free(env);
 }
 
 void cleanup_context(t_context *msh)
 {
-    if (msh)
-    {
-        free_env(msh->env);
-        free_env(msh->env_export);
-        free(msh);
-    }
+	if (msh)
+	{
+		free_env(msh->env);
+		free_env(msh->env_export);
+		free(msh);
+	}
 }

@@ -12,10 +12,10 @@ typedef struct s_context
 {
 	int fd[2]; //for stdin and stdout
 	int fd_close; // Close an fd? -1 if not
-	char    **env;           // Environment variables
-	char    **env_export;    // Exported variables
-	int     ret_exit;        // Last command's exit code 
-	char    *user;           // Current user's name or shell session info
+	char	**env;		   // Environment variables
+	char	**env_export;	// Exported variables
+	int	 ret_exit;		// Last command's exit code 
+	char	*user;		   // Current user's name or shell session info
 } t_context;
 
 char	**ms_matrix_add_line(char **matrix, const char *new_line);

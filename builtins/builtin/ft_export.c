@@ -3,37 +3,37 @@
 
 int process_key_value(char *arg, t_context *msh)
 {
-    char *equal_sign;
+	char *equal_sign;
 	char *key;
-    char *value;
+	char *value;
 	char *new_var;
 	
 	equal_sign = ft_strchr(arg, '=');
 
-    if (equal_sign)
-    {
-        // Temporarily split the string into key and value
-        *equal_sign = '\0';
-        key = arg;
-        value = equal_sign + 1;
+	if (equal_sign)
+	{
+		// Temporarily split the string into key and value
+		*equal_sign = '\0';
+		key = arg;
+		value = equal_sign + 1;
 
-        // Add/Update the variable in the environment
-        new_var = ft_strjoin(key, "=");
-        new_var = ft_strjoin_free_s1(new_var, value);
-        ms_set_env(msh->env, msh, new_var);
+		// Add/Update the variable in the environment
+		new_var = ft_strjoin(key, "=");
+		new_var = ft_strjoin_free_s1(new_var, value);
+		ms_set_env(msh->env, msh, new_var);
 
-        free(new_var);
-        *equal_sign = '='; // Restore the original argument
-        return 1; // Successfully processed
-    }
-    return 0; // Failed to process (no '=' found)
+		free(new_var);
+		*equal_sign = '='; // Restore the original argument
+		return 1; // Successfully processed
+	}
+	return 0; // Failed to process (no '=' found)
 }
 
 
 int	handle_export(struct s_tree_node *node, t_context *msh)
 {
 	int i;
-    char *arg;
+	char *arg;
 
 	if (!node->data.exec_u.args[1])
 	{

@@ -7,7 +7,7 @@ int	handle_pwd(struct s_tree_node *node, t_context *msh)
 	char	cwd[1024];
 
 	if (!node || !node->data.exec_u.args)
-        return (1);
+		return (1);
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
 	{
 		printf("%s\n", cwd);

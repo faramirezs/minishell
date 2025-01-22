@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   node.h                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/08 12:34:31 by jslusark          #+#    #+#             */
-/*   Updated: 2025/01/10 17:11:59 by alramire         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   node.h											 :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: alramire <alramire@student.42.fr>		  +#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2024/11/08 12:34:31 by jslusark		  #+#	#+#			 */
+/*   Updated: 2025/01/10 17:11:59 by alramire		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #ifndef NODE_H
@@ -17,8 +17,8 @@
 
 /* typedef struct s_token_list
 {
-	int type;         // Type of the token, e.g., COMMAND, STRING_LITERAL, etc.
-	char *value;      // Value of the token, e.g., "echo", "hello"
+	int type;		 // Type of the token, e.g., COMMAND, STRING_LITERAL, etc.
+	char *value;	  // Value of the token, e.g., "echo", "hello"
 	struct s_token_list *next; // Pointer to the next token in the linked list
 }			t_token_list; */
 
@@ -48,15 +48,15 @@ typedef struct s_redir
 typedef struct s_args // list of tokens that follow the command token in the node and considered its arguments
 {
 	struct s_args *prev;   // Pointer to the prev argument in the list (adding it in case it can be useful in the future)
-	int arg_type;         //anything that is not a command/builtin token or part of the redirection struct (file, redir type)
-	char *arg_value;      // Value of the token (strings.. could it be also expandables and env variables?)
+	int arg_type;		 //anything that is not a command/builtin token or part of the redirection struct (file, redir type)
+	char *arg_value;	  // Value of the token (strings.. could it be also expandables and env variables?)
 	struct s_args *next;   // Pointer to the next argument in the list
 } t_args;
 
 typedef struct s_cmd // the the first token thas is not redirection data (redirection symbol and file name) or pipe is seen by bash as the command of the node
 {
-	int		cmd_type;         // type of the token given us from the tokenizer, this will help us with execution and error handling (if the command is not an actual command)
-	char	*cmd_value;       // what is the value of the commmand (echo, cd, exit, string_value etc)
+	int		cmd_type;		 // type of the token given us from the tokenizer, this will help us with execution and error handling (if the command is not an actual command)
+	char	*cmd_value;	   // what is the value of the commmand (echo, cd, exit, string_value etc)
 } t_cmd;
 
 //a node table is a linked list of nodes, we traverse each node as a double linked list.. why?

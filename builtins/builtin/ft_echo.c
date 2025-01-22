@@ -27,7 +27,7 @@ int	handle_echo(struct s_tree_node *node, t_context *msh)
 	(void)msh;
 
 	if (!node || node->type != N_EXEC || !node->data.exec_u.args)
-        return (1);
+		return (1);
 	i = 1;
 	n = false;
 	while (node->data.exec_u.args[i] && ft_newline(node->data.exec_u.args[i]))

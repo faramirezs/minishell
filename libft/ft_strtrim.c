@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_strtrim.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jslusark <jslusark@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/29 11:43:56 by jslusark          #+#    #+#             */
-/*   Updated: 2024/05/07 14:43:48 by jslusark         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   ft_strtrim.c									   :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: jslusark <jslusark@student.42.fr>		  +#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2024/04/29 11:43:56 by jslusark		  #+#	#+#			 */
+/*   Updated: 2024/05/07 14:43:48 by jslusark		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #include "libft.h"
@@ -73,24 +73,24 @@ char	*ft_strtrim(char const *s1, char const *set)
 #include <stdio.h>
 
 int main(void) {
-    char *result;
+	char *result;
 
-    // Test 1: Standard trim
-    result = ft_strtrim("xxxHello Worldxxx", "x");
-    printf("Test 1: '%s'\n", result);
-    free(result);  // Clean up heap allocation
+	// Test 1: Standard trim
+	result = ft_strtrim("xxxHello Worldxxx", "x");
+	printf("Test 1: '%s'\n", result);
+	free(result);  // Clean up heap allocation
 
-    // Test 2: Characters to trim are not at the ends
-    result = ft_strtrim("Hello World", "x");
-    printf("Test 2: '%s'\n", result);
-    free(result);
+	// Test 2: Characters to trim are not at the ends
+	result = ft_strtrim("Hello World", "x");
+	printf("Test 2: '%s'\n", result);
+	free(result);
 
-    // Test 3: Empty string and non-empty set
-    result = ft_strtrim("", "xyz");
-    printf("Test 3: '%s'\n", result);
-    free(result);
+	// Test 3: Empty string and non-empty set
+	result = ft_strtrim("", "xyz");
+	printf("Test 3: '%s'\n", result);
+	free(result);
 	//test4:
 	printf("%s\n", ft_strtrim("xxxz  test with
 	x and z and x .  zx  xx z", "z x"));
-    return 0;
+	return 0;
 } */

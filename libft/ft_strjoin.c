@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jslusark <jslusark@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/29 11:43:46 by jslusark          #+#    #+#             */
-/*   Updated: 2024/05/07 14:12:06 by jslusark         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   ft_strjoin.c									   :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: jslusark <jslusark@student.42.fr>		  +#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2024/04/29 11:43:46 by jslusark		  #+#	#+#			 */
+/*   Updated: 2024/05/07 14:12:06 by jslusark		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #include "libft.h" // PASSES
@@ -35,22 +35,22 @@ char	*ft_strjoin(char const *s1, char const *s2)
 }
 /* #include<stdio.h>
 int main(void) {
-    char *result;
+	char *result;
 
-    // Test 1: Join two normal strings
-    result = ft_strjoin("Hello", " world!");
-    printf("Test 1: %s\n", result);
-    free(result);  // Remember to free after usage to avoid memory leaks
+	// Test 1: Join two normal strings
+	result = ft_strjoin("Hello", " world!");
+	printf("Test 1: %s\n", result);
+	free(result);  // Remember to free after usage to avoid memory leaks
 
-    // Test 2: Join first string empty
-    result = ft_strjoin("", " world!");
-    printf("Test 2: %s\n", result);
-    free(result);
+	// Test 2: Join first string empty
+	result = ft_strjoin("", " world!");
+	printf("Test 2: %s\n", result);
+	free(result);
 
-    // Test 3: Join second string empty
-    result = ft_strjoin("Hello", "");
-    printf("Test 3: %s\n", result);
-    free(result);
+	// Test 3: Join second string empty
+	result = ft_strjoin("Hello", "");
+	printf("Test 3: %s\n", result);
+	free(result);
 
-    return 0;
+	return 0;
 } */

@@ -16,19 +16,19 @@ PIPE:
 		We will receive the following tokens for all the 3 examples above:
 		Token 1: echo   (command)
 		Token 2: hello  (word)
-		Token 3: |      (pipe)
-		Token 4: cat    (command)
+		Token 3: |	  (pipe)
+		Token 4: cat	(command)
 
 		"echo hello| cat" will not tokenize this way - THIS IS WRONG:
 		Token 1: echo   (command)
 		Token 2: hello| (word/unknown
-		Token 3: cat    (command)
+		Token 3: cat	(command)
 
 
 		"echo hello |cat" will not tokenize this way - THIS IS WRONG:
 		Token 1: echo   (command)
 		Token 2: hello (word/unknown)
-		Token 3: |cat    (command)
+		Token 3: |cat	(command)
 
 	EXAMPLE 2:
 		These commands will tokenize and parse the same way
@@ -38,7 +38,7 @@ PIPE:
 		We will receive the following tokens for all the 3 examples above:
 		Token 1: echo   (command)
 		Token 2: hello  (word)
-		Token 3: |      (pipe)
+		Token 3: |	  (pipe)
 
 		And it will not tokenize this way - THIS IS WRONG:
 		"echo hello|"

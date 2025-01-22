@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   redirections.c                                     :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/17 11:50:59 by alramire         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   redirections.c									 :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: alramire <alramire@student.42.fr>		  +#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2025/01/10 18:36:54 by alramire		  #+#	#+#			 */
+/*   Updated: 2025/01/17 11:50:59 by alramire		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #include "../../headers/minishell.h"
@@ -23,12 +23,12 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 	file_args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
 	// Store redirection type
 	redir_node->data.redir_u.redir_type = scanner->next.type;
-    if(scanner->next.type == REDIR_IN || scanner->next.type == HEREDOC)
+	if(scanner->next.type == REDIR_IN || scanner->next.type == HEREDOC)
 		redir_node->data.redir_u.source_fd = STDIN_FILENO;
 	else
 		redir_node->data.redir_u.source_fd = STDOUT_FILENO;
-    redir_node->data.redir_u.flags = get_redir_flags(scanner->next.type);
-    redir_node->data.redir_u.mode = 0644;  // Default file permissions
+	redir_node->data.redir_u.flags = get_redir_flags(scanner->next.type);
+	redir_node->data.redir_u.mode = 0644;  // Default file permissions
 
 	// Move to the file/delimiter token
 	if (!scanner_has_next(scanner))
@@ -108,32 +108,32 @@ int	check_redir(t_scanner *scanner)
 }
 
 /* int handle_input_redirection(t_redircmd *rcmd) {
-    int fd;
+	int fd;
 
 	fd = -1;
-    // Handle different target types
-    if (rcmd->target_type == TARGET_FILENAME) {
-        fd = open(rcmd->target, rcmd->flags, rcmd->mode);
-    } else if (rcmd->target_type == TARGET_ENV_PATHNAME) {
+	// Handle different target types
+	if (rcmd->target_type == TARGET_FILENAME) {
+		fd = open(rcmd->target, rcmd->flags, rcmd->mode);
+	} else if (rcmd->target_type == TARGET_ENV_PATHNAME) {
 		printf("TARGET_ENV_PATHNAME\n");
 		// Handle environment variable expansion
-        //char *expanded_path = expand_env_var(rcmd->target);
-        //fd = open(expanded_path, rcmd->flags, rcmd->mode);
-        //free(expanded_path);
-    }
+		//char *expanded_path = expand_env_var(rcmd->target);
+		//fd = open(expanded_path, rcmd->flags, rcmd->mode);
+		//free(expanded_path);
+	}
 
-    if (fd < 0) {
-        rcmd->error_code = errno;
-        return -1;
-    }
+	if (fd < 0) {
+		rcmd->error_code = errno;
+		return -1;
+	}
 
-    // Redirect input
-    if (dup2(fd, rcmd->source_fd) < 0) {
-        rcmd->error_code = errno;
-        close(fd);
-        return -1;
-    }
+	// Redirect input
+	if (dup2(fd, rcmd->source_fd) < 0) {
+		rcmd->error_code = errno;
+		close(fd);
+		return -1;
+	}
 
-    close(fd);
-    return 0;
+	close(fd);
+	return 0;
 } */
