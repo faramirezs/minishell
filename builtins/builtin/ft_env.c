@@ -6,10 +6,6 @@ int handle_env(struct s_tree_node *node, t_context *msh)
 	(void)node;
 	int i;
 
-	printf("handle_env: msh->env = %p\n", (void *)msh->env);
-	for (int i = 0; msh->env && msh->env[i]; i++)
-		printf("  msh->env[%d]: %s\n", i, msh->env[i]);
-
 	i = 0;
 	if (!msh->env)
 	{

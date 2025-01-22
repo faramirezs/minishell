@@ -1,20 +1,30 @@
 #include "../headers/built_in.h"
 #include "../headers/minishell.h"
 
-int	handle_unset(struct s_tree_node *node, t_context *msh)
+int	handle_unset(t_tree_node *node, t_context *msh)
 {
 	char	**av;
+	int		i;
+	int		status;
 
+	status = 0;
 	av = node->data.exec_u.args;
 	if (!av[1])
 	{
 		fprintf (stderr, "unset: missing argument\n");
-		return (EXIT_FAILURE);
+		msh->ret_exit = 1;
+		return (1);
 	}
-	if ((ms_unset_env(msh, av[1])) != 0)
+	i = 1;
+	while (av[i])
 	{
-		perror ("unset");
-		return (EXIT_FAILURE);
+		if (handle_env(node, msh) != 0)
+		{
+			fprintf (stderr, "unset: %s failed to remove\n", av[i]);
+			status = 1;
+		}
+		i++;
 	}
-	return (EXIT_SUCCESS);
+	msh->ret_exit = status;
+	return (status);
 }
