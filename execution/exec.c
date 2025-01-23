@@ -74,8 +74,14 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
             //if it is 0, then we could do the cleanup with node info.
 			close(saved_stdin);
             close(saved_stdout);
-            cleanup(node, 1);
+            cleanup(node, EXIT_FAILURE);
         }
+		else
+		{
+			printf("This is the exit point where heredoc executes right/n");
+			cleanup(node, EXIT_SUCCESS);
+			//Exit when
+		}
     }
 	else if (rcmd->redir_type == REDIR_OUT || rcmd->redir_type == APPEND_OUT)
     {
@@ -252,10 +258,10 @@ int handle_heredoc(t_redircmd *rcmd)
         close(rcmd->heredoc_pipe[0]);
         write(rcmd->heredoc_pipe[1], rcmd->heredoc_content,
               ft_strlen(rcmd->heredoc_content));
-		cleanup_heredoc(rcmd);
+		//cleanup_heredoc(rcmd);
 		//free(rcmd->heredoc_content);
 		close(rcmd->heredoc_pipe[1]);
-        exit(0);
+        return(0);
 		//return (0);
 		//When the heredoc finishes correctly this is the exit flow.
     }
@@ -276,7 +282,7 @@ int handle_heredoc(t_redircmd *rcmd)
         write(STDOUT_FILENO, "\n", 1);
 		cleanup_heredoc(rcmd);
         //restore_terminal_settings();
-        return 0;
+        return (0);
     }
-    return -1;
+    return (-1);
 }
