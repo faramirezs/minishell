@@ -35,16 +35,16 @@ SRC	= main.c \
 	$(ENV_BLD)
 
 HEADERS	= ./headers/minishell.h \
-		./headers/char_itr.h \
-		./headers/guards.h \
-		./headers/scanner.h \
-		./headers/token.h \
-		./headers/cmd.h \
-		./headers/tree_node.h \
-		./headers/args.h \
-		./headers/built_in.h \
-		./headers/env_var.h \
-		./headers/redirections.h
+	#./headers/char_itr.h \
+	#./headers/guards.h \
+	#./headers/token.h \
+	#./headers/scanner.h \
+	#./headers/cmd.h \
+	#./headers/tree_node.h \
+	#./headers/args.h \
+	#./headers/built_in.h \
+	#./headers/env_var.h \
+	#./headers/redirections.h
 
 OBJS = $(SRC:.c=.o)
 

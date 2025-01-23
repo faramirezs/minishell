@@ -43,7 +43,6 @@
 # include "token.h" // token structs and functions
 //#include	"node.h" // node structs and node handling functions
 # include "tree_node.h"
-# include "tree_parser.h"
 
 // Args collector
 # include "args.h"
@@ -57,7 +56,6 @@
 	// this already should include all the builtins headers inside
 
 # include "exec.h"
-# include "pipes.h"
 	// this already should include all the pipes headers inside
 # include "redirections.h"
 	// this already should include all the redirections headers inside

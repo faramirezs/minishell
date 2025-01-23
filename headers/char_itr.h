@@ -12,7 +12,10 @@
 
 #ifndef CHAR_ITR_H
 # define CHAR_ITR_H
-# include <stddef.h>
+
+# include "minishell.h"
+
+//# include <stddef.h>
 
 # define WHITESPACES " \t\r\n\a\""
 # define SYMBOLS "\\;()#&`*~|"

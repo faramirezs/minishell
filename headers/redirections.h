@@ -13,7 +13,8 @@
 #ifndef REDIRECTIONS_H
 # define REDIRECTIONS_H
 
-# include "tree_node.h"
+//# include "tree_node.h"
+# include "minishell.h"
 
 
 t_tree_node					*parse_redir(t_scanner *scanner, t_args *cmd_args);

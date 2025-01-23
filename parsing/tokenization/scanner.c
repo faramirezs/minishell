@@ -48,7 +48,7 @@ t_token scanner_next(t_scanner *self)
 }
 // In this moment peek is also consuming the token, it is not just only peeking.. it also advance the iterator along the string.
 // We need to check if this can be problematic for the use of the parser.
-t_token scanner_peek(t_scanner *self)
+t_token scanner_peek(t_scanner *self, t_context *msh)
 {
 	char c;
 	c = *self->char_itr.cursor;

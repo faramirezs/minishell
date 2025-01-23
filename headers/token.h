@@ -13,6 +13,8 @@
 #ifndef TOKEN_H
 # define TOKEN_H
 
+# include "minishell.h"
+
 /*
 	COMMAND,				// 0 These are the commands we need to create ("echo, cd, pwd, export, unset, env, exit")
 	ENV_VAR,				// 1 Environment variable are words that start with $ (e.g., "$HOME", "$USER"), we do error handling for this after the tokenizing and node creation
@@ -76,10 +78,13 @@ typedef struct s_token
 	t_slice			lexeme;
 }					t_token;
 
-t_token				new_token(t_token_type type, char *start, size_t length);
-
-void				print_token(const t_token token);
-
-int					compare_token(const t_token *token, const char *str);
-
+t_token		new_token(t_token_type type, char *start, size_t length);
+void		print_token(const t_token token);
+int			compare_token(const t_token *token, const char *str);
+/*
+t_token		single_quote_token(t_scanner *self, t_context *msh);
+t_token		double_quote_token(t_scanner *self, t_context *msh);
+char 		*get_env_vvalue(t_scanner *self, t_context *msh);
+t_slice 	expand_env_var(t_scanner *self, t_context *msh);
+*/
 #endif

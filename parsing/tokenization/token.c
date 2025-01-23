@@ -1,4 +1,5 @@
 #include "../../headers/minishell.h"
+//nclude "../../headers/env_var.h"
 
 
 t_token new_token (t_token_type type, char *start, size_t length)
@@ -89,7 +90,12 @@ t_token word_token (t_scanner *self)
 
 t_token tmp_unknown_token (t_scanner *self)
 {
-	self->next.type = UNKNOWN;
+	self->next.type = UN{
+	t_token token;
+	token = scanner_peek(self, msh);
+	self->next = token;
+	return (token);
+}KNOWN;
 	self->next.lexeme.length = 1;
 	self->next.lexeme.start = self->char_itr.cursor;
 	self->char_itr.cursor++;
@@ -164,4 +170,136 @@ t_token heredoc_token(t_scanner *self)
 	self->next.lexeme.start = self->char_itr.cursor;
 	self->char_itr.cursor += 2;
 	return (self->next);
+}
+
+t_token double_quote_token(t_scanner *self, t_context *msh)
+{
+	char	*expanded;
+	t_slice	var;
+	char	*continuation;
+
+    self->next.type = STRING_D_QUOTES;
+    self->next.lexeme.start = ++self->char_itr.cursor;
+    expanded = ft_strdup("");
+    while (*self->char_itr.cursor && *self->char_itr.cursor != '"')
+    {
+        if (*self->char_itr.cursor == '$') // Handle expansions
+        {
+            var = expand_env_var(self, msh);
+            expanded = ft_strjoin_free_s1(expanded, var.start); // Append expanded value
+        }
+        else
+        {
+            expanded = ft_strjoin_free_s1(expanded, ft_substr(self->char_itr.cursor, 0, 1));
+            self->char_itr.cursor++;
+        }
+    }
+    if (*self->char_itr.cursor != '"')
+    {
+        continuation = readline("dquote> "); // Display continuation prompt
+        if (!continuation) // Handle Ctrl-D
+        {
+            fprintf(stderr, "minishell: unexpected EOF while looking for matching `\"'\n");
+            msh->ret_exit = 2; // Error exit code for syntax error
+            self->next.type = UNKNOWN;
+            return self->next;
+        }
+        self->char_itr.cursor = ft_strjoin_free_s1((char *)self->char_itr.cursor, continuation);
+        free(continuation);
+        return (double_quote_token(self, msh));
+    }
+    self->char_itr.cursor++;
+    self->next.lexeme.start = expanded;
+    self->next.lexeme.length = ft_strlen(expanded);
+    return self->next;
+}
+
+
+t_token single_quote_token(t_scanner *self, t_context *msh)
+{
+	char *continuation;
+
+    self->next.type = STRING_S_QUOTES;
+    self->next.lexeme.start = ++self->char_itr.cursor; // Skip the opening single quote
+    while (*self->char_itr.cursor && *self->char_itr.cursor != '\'')
+    {
+        self->next.lexeme.length++;
+        self->char_itr.cursor++;
+    }
+    if (*self->char_itr.cursor != '\'')
+    {
+        char *continuation = readline("quote> "); // Display continuation prompt
+        if (!continuation) // Handle Ctrl-D
+        {
+            fprintf(stderr, "minishell: unexpected EOF while looking for matching `'\n");
+            msh->ret_exit = 2; // Error exit code for syntax error
+            self->next.type = UNKNOWN;
+            return self->next;
+        }
+        self->char_itr.cursor = ft_strjoin_free_s1((char *)self->char_itr.cursor, continuation);
+        free(continuation);
+        return single_quote_token(self, msh);
+    }
+    self->char_itr.cursor++;
+    return self->next;
+}
+
+char *get_env_vvalue(t_scanner *self, t_context *msh)
+{
+    const char	*start;
+    size_t		length;
+    char		*var_name;
+    char		*value;
+
+    start = self->char_itr.cursor;
+    length = 0;
+
+    // Extract the variable name
+    while (*self->char_itr.cursor && (ft_isalnum(*self->char_itr.cursor) || *self->char_itr.cursor == '_'))
+    {
+        length++;
+        self->char_itr.cursor++;
+    }
+
+    // Get the variable name as a string
+    var_name = ft_substr(start, 0, length);
+
+    // Fetch the value from the environment
+    value = ms_get_env(msh->env, var_name);
+
+    // Clean up
+    free(var_name);
+
+    return value;
+}
+
+t_slice expand_env_var(t_scanner *self, t_context *msh)
+{
+    char	*value;
+	t_slice	res;
+
+    self->char_itr.cursor++;
+    if (*self->char_itr.cursor == '$')
+    {
+        value = ft_itoa(getpid());
+        self->char_itr.cursor++;
+    }
+    else if (*self->char_itr.cursor == '?')
+    {
+        value = ft_itoa(msh->ret_exit);
+        self->char_itr.cursor++;
+    }
+    else
+        value = get_env_vvalue(self, msh);
+	if (value)
+	{
+		res.start = value;
+		res.length = ft_strlen(value);
+	}
+	else
+	{
+		res.start = "";
+		res.length = 0;
+	}
+	return (res);
 }

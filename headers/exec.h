@@ -13,9 +13,11 @@
 #ifndef EXEC_H
 # define EXEC_H
 
+# include "minishell.h"
+
 //# include "../headers/tree_node.h"
-# include "tree_node.h"
-# include "../headers/minishell.h"
+//# include "tree_node.h"
+//# include "../headers/minishell.h"
 
 int		exec(t_tree_node *node);
 void	cleanup(t_tree_node *node, int exit_code);

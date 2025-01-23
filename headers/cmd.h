@@ -13,9 +13,11 @@
 #ifndef CMD_H
 # define CMD_H
 
-# include "char_itr.h"
-# include "scanner.h"
-# include "token.h"
+# include "minishell.h"
+
+//# include "char_itr.h"
+//# include "scanner.h"
+//# include "token.h"
 
 void	check_cmd(t_scanner *self);
 
