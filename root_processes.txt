@@ -1,0 +1,48 @@
+root                89   0.9  0.2 410464992  13232   ??  Ss    8:55PM   0:07.05 /usr/libexec/logd
+root               298   0.8  0.4 413584064  36736   ??  Ss    8:56PM   0:38.76 /System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mds_stores
+root               139   0.4  0.1 410369680  10912   ??  Ss    8:55PM   0:03.35 /usr/libexec/dasd
+root               118   0.3  0.2 410687600  20832   ??  Ss    8:55PM   0:31.12 /System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Support/mds
+root               150   0.3  0.2 410427472  16800   ??  Ss    8:55PM   0:04.67 /usr/sbin/bluetoothd
+root               173   0.2  0.1 410378304  11536   ??  Ss    8:55PM   0:06.51 /usr/libexec/runningboardd
+root               162   0.2  0.1 410372224   9760   ??  Ss    8:55PM   0:00.83 /System/Library/PrivateFrameworks/CoreDuetContext.framework/Resources/contextstored
+root               131   0.2  0.1 410366000   8976   ??  Ss    8:55PM   0:04.78 /System/Library/CoreServices/launchservicesd
+root                 1   0.1  0.1 411184960  10032   ??  Ss    8:55PM   0:16.78 /sbin/launchd
+root               346   0.1  0.2 410397936  13296   ??  Ss    8:56PM   0:02.47 /usr/libexec/searchpartyd
+root               153   0.1  0.1 410363760   7392   ??  Ss    8:55PM   0:02.24 /usr/libexec/corebrightnessd --launchd
+root               129   0.1  0.1 410386224   9440   ??  Ss    8:55PM   0:07.62 /usr/libexec/opendirectoryd
+root               103   0.1  0.1 410365200   7568   ??  Ss    8:55PM   0:01.55 /System/Library/CoreServices/powerd.bundle/powerd
+root               365   0.1  0.2 411826336  17328   ??  Ss    8:56PM   0:06.10 /Applications/Cloudflare WARP.app/Contents/Resources/CloudflareWARP
+root              9088   0.0  0.1 410369008   6352   ??  Ss    9:09PM   0:00.17 /usr/sbin/systemsoundserverd
+root              7971   0.0  0.0 410162912   2064   ??  Ss    9:06PM   0:00.13 /usr/libexec/sysmond
+root              7706   0.0  0.0 410928144   3248   ??  Ss    9:05PM   0:00.10 /System/Library/Frameworks/Metal.framework/Versions/A/XPCServices/MTLCompilerService.xpc/Contents/MacOS/MTLCompilerService
+root              7453   0.0  0.0 410286384   2704   ??  Ss    9:02PM   0:00.01 /usr/libexec/mmaintenanced
+root              7452   0.0  0.0 410285792   2912   ??  Ss    9:02PM   0:00.02 /usr/libexec/keybagd -t 15
+root              7437   0.0  0.1 410327488   4384   ??  Ss    9:01PM   0:00.05 /System/Library/Frameworks/SystemExtensions.framework/Versions/A/Helpers/sysextd
+root              7436   0.0  0.1 410294624   4400   ??  Ss    9:01PM   0:00.05 /usr/libexec/nesessionmanager
+root              7425   0.0  0.1 410326736   8144   ??  Ss    9:01PM   0:00.23 /usr/libexec/PowerUIAgent
+root              7324   0.0  0.1 410293936   4352   ??  Ss    9:01PM   0:00.02 /System/Library/CoreServices/backupd.bundle/Contents/Resources/backupd-helper -launchd
+root              7322   0.0  0.0 410163264   2784   ??  Ss    9:01PM   0:00.01 /System/Library/CoreServices/liquiddetectiond
+root              7323   0.0  0.1 410327904   5760   ??  Ss    9:01PM   0:00.06 /usr/libexec/ASPCarryLog
+root              7168   0.0  0.1 410326496   7824   ??  Ss    8:59PM   0:00.16 /System/Library/CoreServices/SubmitDiagInfo server-init
+root              7167   0.0  0.1 410348192   9168   ??  Ss    8:59PM   0:02.27 /usr/sbin/spindump
+root              4506   0.0  0.1 410163344   4240   ??  Ss    8:59PM   0:00.04 /usr/libexec/tzd
+root              4495   0.0  0.1 411606928   6512   ??  Ss    8:58PM   0:00.32 /System/Library/PrivateFrameworks/TVIdleServices.framework/idleassetsd
+root              4492   0.0  0.0 411612176   2672   ??  Ss    8:58PM   0:00.22 /System/Library/Frameworks/Metal.framework/Versions/A/XPCServices/MTLCompilerService.xpc/Contents/MacOS/MTLCompilerService
+root              4469   0.0  0.0 410190896   2240   ??  Ss    8:58PM   0:00.03 /System/Library/PrivateFrameworks/CacheDelete.framework/deleted_helper
+root              4453   0.0  0.1 410366096   5168   ??  Ss    8:58PM   0:00.05 /System/Library/CoreServices/sharedfilelistd
+root              3653   0.0  0.1 410327696   6112   ??  Ss    8:58PM   0:00.18 /System/Library/CoreServices/osanalyticshelper server-init
+root              1203   0.0  0.0 410163568   3040   ??  Ss    8:57PM   0:00.02 /System/Library/CoreServices/ReportCrash daemon
+root              1198   0.0  0.0 410447712   3872   ??  Ss    8:57PM   1:26.37 /System/Library/PrivateFrameworks/XprotectFramework.framework/Versions/A/XPCServices/XprotectService.xpc/Contents/MacOS/XprotectService
+root              1196   0.0  0.0 410214976   3392   ??  S     8:57PM   0:00.11 /System/Library/PrivateFrameworks/PackageKit.framework/Versions/A/XPCServices/package_script_service.xpc/Contents/MacOS/package_script_service
+root              1026   0.0  0.0 410172496   3456   ??  Ss    8:57PM   0:00.03 /System/Library/CoreServices/Applications/Feedback Assistant.app/Contents/Library/LaunchServices/fbahelperd
+root               982   0.0  0.0 410285568   2464   ??  Ss    8:57PM   0:00.01 /System/Library/CoreServices/CrashReporterSupportHelper server-init
+root               952   0.0  0.0 411087488   3776   ??  Ss    8:56PM   0:00.19 /private/var/db/com.apple.xpc.roleaccountd.staging/exec/16777233.67115203.xpc/Contents/MacOS/com.apple.NRD.UpdateBrainService
+root               951   0.0  0.0 411768240   2688   ??  Ss    8:56PM   0:00.11 /Applications/OneDrive.app/Contents/StandaloneUpdaterDaemon.xpc/Contents/MacOS/StandaloneUpdaterDaemon
+root               942   0.0  0.0 411180192   2496   ??  Ss    8:56PM   0:00.10 /System/Library/PrivateFrameworks/XprotectFramework.framework/Versions/A/XPCServices/XProtectBridgeService.xpc/Contents/MacOS/XProtectBridgeService
+root               909   0.0  0.1 410367312   5456   ??  Ss    8:56PM   0:01.18 /System/Library/PrivateFrameworks/PackageKit.framework/Resources/installd
+root               879   0.0  0.1 410326480   4656   ??  Ss    8:56PM   0:00.08 /usr/libexec/wifivelocityd
+root               835   0.0  0.0 410363280   3600   ??  Ss    8:56PM   0:00.08 /usr/libexec/mobileactivationd
+root               822   0.0  0.0 410323024   1312   ??  Ss    8:56PM   0:00.03 /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/CVMServer
+root               820   0.0  0.0 410332224   2432   ??  Ss    8:56PM   0:00.38 /System/Library/PrivateFrameworks/CoreSymbolication.framework/coresymbolicationd
+root               815   0.0  0.0 410622384   1904   ??  Ss    8:56PM   0:00.03 /usr/libexec/online-auth-agent
+root               814   0.0  0.0 410363920   3696   ??  Ss    8:56PM   0:00.53 /usr/libexec/aned
