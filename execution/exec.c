@@ -78,9 +78,7 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
         }
 		else
 		{
-			printf("This is the exit point where heredoc executes right/n");
 			cleanup(node, EXIT_SUCCESS);
-			//Exit when
 		}
     }
 	else if (rcmd->redir_type == REDIR_OUT || rcmd->redir_type == APPEND_OUT)
