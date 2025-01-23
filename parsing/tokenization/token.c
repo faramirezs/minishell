@@ -90,12 +90,11 @@ t_token word_token (t_scanner *self)
 
 t_token tmp_unknown_token (t_scanner *self)
 {
-	self->next.type = UN{
+	self->next.type = UNKNOWN;
 	t_token token;
-	token = scanner_peek(self, msh);
+	token = scanner_peek(self);
 	self->next = token;
 	return (token);
-}KNOWN;
 	self->next.lexeme.length = 1;
 	self->next.lexeme.start = self->char_itr.cursor;
 	self->char_itr.cursor++;
@@ -104,15 +103,17 @@ t_token tmp_unknown_token (t_scanner *self)
 
 t_token env_var_token(t_scanner *self)
 {
-	self->next.type = ENV_VAR;
-	self->next.lexeme.start = self->char_itr.cursor++;
-	self->next.lexeme.length++;
-	while (self->char_itr.cursor && (ft_isalnum(*self->char_itr.cursor) || *self->char_itr.cursor == '_'))
-	{
-		self->next.lexeme.length++;
-		self->char_itr.cursor++;
-	}
-	return (self->next);
+    t_slice expanded;
+
+    self->next.type = ENV_VAR;
+
+    // Get the expanded value
+    expanded = expand_env_var(self);
+
+    // Store the expansion directly in the scanner's next token
+    self->next.lexeme = expanded;
+
+    return self->next;
 }
 
 t_token abs_path_token(t_scanner *self)
@@ -172,7 +173,7 @@ t_token heredoc_token(t_scanner *self)
 	return (self->next);
 }
 
-t_token double_quote_token(t_scanner *self, t_context *msh)
+t_token double_quote_token(t_scanner *self)
 {
 	char	*expanded;
 	t_slice	var;
@@ -185,7 +186,7 @@ t_token double_quote_token(t_scanner *self, t_context *msh)
     {
         if (*self->char_itr.cursor == '$') // Handle expansions
         {
-            var = expand_env_var(self, msh);
+            var = expand_env_var(self);
             expanded = ft_strjoin_free_s1(expanded, var.start); // Append expanded value
         }
         else
@@ -200,13 +201,13 @@ t_token double_quote_token(t_scanner *self, t_context *msh)
         if (!continuation) // Handle Ctrl-D
         {
             fprintf(stderr, "minishell: unexpected EOF while looking for matching `\"'\n");
-            msh->ret_exit = 2; // Error exit code for syntax error
+            self->msh->ret_exit = 2; // Error exit code for syntax error
             self->next.type = UNKNOWN;
             return self->next;
         }
         self->char_itr.cursor = ft_strjoin_free_s1((char *)self->char_itr.cursor, continuation);
         free(continuation);
-        return (double_quote_token(self, msh));
+        return (double_quote_token(self));
     }
     self->char_itr.cursor++;
     self->next.lexeme.start = expanded;
@@ -215,7 +216,7 @@ t_token double_quote_token(t_scanner *self, t_context *msh)
 }
 
 
-t_token single_quote_token(t_scanner *self, t_context *msh)
+t_token single_quote_token(t_scanner *self)
 {
 	char *continuation;
 
@@ -228,23 +229,23 @@ t_token single_quote_token(t_scanner *self, t_context *msh)
     }
     if (*self->char_itr.cursor != '\'')
     {
-        char *continuation = readline("quote> "); // Display continuation prompt
+        continuation = readline("quote> "); // Display continuation prompt
         if (!continuation) // Handle Ctrl-D
         {
             fprintf(stderr, "minishell: unexpected EOF while looking for matching `'\n");
-            msh->ret_exit = 2; // Error exit code for syntax error
+            self->msh->ret_exit = 2; // Error exit code for syntax error
             self->next.type = UNKNOWN;
             return self->next;
         }
         self->char_itr.cursor = ft_strjoin_free_s1((char *)self->char_itr.cursor, continuation);
         free(continuation);
-        return single_quote_token(self, msh);
+        return single_quote_token(self);
     }
     self->char_itr.cursor++;
     return self->next;
 }
 
-char *get_env_vvalue(t_scanner *self, t_context *msh)
+char *get_env_vvalue(t_scanner *self)
 {
     const char	*start;
     size_t		length;
@@ -265,7 +266,7 @@ char *get_env_vvalue(t_scanner *self, t_context *msh)
     var_name = ft_substr(start, 0, length);
 
     // Fetch the value from the environment
-    value = ms_get_env(msh->env, var_name);
+    value = ms_get_env(self->msh->env, var_name);
 
     // Clean up
     free(var_name);
@@ -273,10 +274,10 @@ char *get_env_vvalue(t_scanner *self, t_context *msh)
     return value;
 }
 
-t_slice expand_env_var(t_scanner *self, t_context *msh)
+t_slice expand_env_var(t_scanner *self)
 {
-    char	*value;
-	t_slice	res;
+    char *value;
+    t_slice res;
 
     self->char_itr.cursor++;
     if (*self->char_itr.cursor == '$')
@@ -286,20 +287,42 @@ t_slice expand_env_var(t_scanner *self, t_context *msh)
     }
     else if (*self->char_itr.cursor == '?')
     {
-        value = ft_itoa(msh->ret_exit);
+        value = ft_itoa(self->msh->ret_exit);
         self->char_itr.cursor++;
     }
     else
-        value = get_env_vvalue(self, msh);
-	if (value)
-	{
-		res.start = value;
-		res.length = ft_strlen(value);
-	}
-	else
-	{
-		res.start = "";
-		res.length = 0;
-	}
-	return (res);
+    {
+        value = get_env_vvalue(self);
+    }
+
+    if (value)
+    {
+        res.start = value;
+        res.length = ft_strlen(value);
+    }
+    else
+    {
+        res.start = NULL;
+        res.length = 0;
+    }
+
+    return res;
+}
+
+// ... existing code ...
+
+char *handle_expansions(const char *arg, t_context *msh)
+{
+    if (!arg || !*arg)
+        return ft_strdup("");
+
+    if (arg[0] == '$')
+    {
+        char *var_name = ft_strdup(arg + 1);
+        char *value = expand_env_var_value(var_name, msh);
+        free(var_name);
+        return value;
+    }
+
+    return ft_strdup(arg);
 }

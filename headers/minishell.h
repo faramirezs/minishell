@@ -41,16 +41,20 @@
 
 // Parsing headers
 # include "token.h" // token structs and functions
-//#include	"node.h" // node structs and node handling functions
+# include "char_itr.h"
+# include "scanner.h"
+# include "args.h"
 # include "tree_node.h"
+//#include	"node.h" // node structs and node handling functions
+
 
 // Args collector
-# include "args.h"
+
 
 
 # include "env_var.h"
 	// this already should include all the env_var headers inside
-	
+
 // Execution headers
 # include "built_in.h"
 	// this already should include all the builtins headers inside
@@ -61,10 +65,10 @@
 	// this already should include all the redirections headers inside
 
 // Tokenizer headers
-# include "char_itr.h"
+
 # include "cmd.h"
 # include "guards.h"
-# include "scanner.h"
+
 
 //Signals
 # include "signals.h"

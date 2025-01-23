@@ -66,7 +66,7 @@ int	main(int argc, char **argv)
 				print_nodes(node_list); // let's leave this function for error handling, we can comment it our or remove it once we submit the project
 				exec_node(node_list); // I already set a simple ground for initiating execution from our nodes
 				free_node_list(node_list);// we have to free the node_list when finished executing it and ready to prompt a new input
-			} 
+			}
 		}
 	}
 	clear_history(); //Before I had this: rl_clear_history(); shouldn't this run in the while loop? (outside if statements)
@@ -92,8 +92,9 @@ void shell_loop(t_context *msh)
 		add_history(line);
 		itr = char_itr_value(line, ft_strlen(line));
 		scanner = scanner_value(itr);
+		scanner.msh = msh;
 		tree_node = parse_tree_node(&scanner);
-		
+
 		if (is_builtin(tree_node))
 			msh->ret_exit = execute_builtin(tree_node, msh);
 		else

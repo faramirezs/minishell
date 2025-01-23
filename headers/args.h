@@ -1,9 +1,9 @@
 #ifndef ARGS_H
 # define ARGS_H
 
-# include "minishell.h"
+//# include "minishell.h"
 //#include "char_itr.h"
-//#include "token.h"
+#include "token.h"
 //#include "scanner.h"
 
 typedef struct s_args

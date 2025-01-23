@@ -13,8 +13,8 @@
 #ifndef TREE_NODE_H
 # define TREE_NODE_H
 
-# include "../headers/args.h"
-# include "../headers/scanner.h"
+# include "args.h"
+# include "scanner.h"
 #include <sys/types.h>
 //# include "../headers/minishell.h"
 

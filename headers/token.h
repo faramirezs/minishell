@@ -13,7 +13,7 @@
 #ifndef TOKEN_H
 # define TOKEN_H
 
-# include "minishell.h"
+# include <stddef.h>
 
 /*
 	COMMAND,				// 0 These are the commands we need to create ("echo, cd, pwd, export, unset, env, exit")

@@ -14,9 +14,9 @@
 #ifndef SCANNER_H
 # define SCANNER_H
 
-# include "minishell.h"
-# include "env_var.h"
+# include "token.h"
 # include "char_itr.h"
+# include "env_var.h"
 
 
 /*
@@ -30,6 +30,7 @@ typedef struct s_scanner
 	t_char_itr	char_itr;
 	char		char_next;
 	t_token		next;
+	t_context	*msh;
 }				t_scanner;
 
 // Initializing the scanner struct.
@@ -39,7 +40,7 @@ t_scanner		scanner_value(t_char_itr char_itr);
 int				scanner_has_next(const t_scanner *self);
 
 // This returns the token without advancind the iterator.
-t_token 		scanner_peek(t_scanner *self, t_context *msh);
+t_token 		scanner_peek(t_scanner *self);
 
 // This returns the token advancing the iterator.
 t_token			scanner_next(t_scanner *self);
@@ -61,9 +62,10 @@ t_token			option_token(t_scanner *self);
 t_token			append_out_token(t_scanner *self);
 t_token			heredoc_token(t_scanner *self);
 int				check_start_uknown(const char *input);
-t_token			single_quote_token(t_scanner *self, t_context *msh);
-t_token			double_quote_token(t_scanner *self, t_context *msh);
-char 			*get_env_vvalue(t_scanner *self, t_context *msh);
-t_slice 		expand_env_var(t_scanner *self, t_context *msh);
+t_token			single_quote_token(t_scanner *self);
+t_token			double_quote_token(t_scanner *self);
+char 			*get_env_vvalue(t_scanner *self);
+t_slice 		expand_env_var(t_scanner *self);
+char			*handle_expansions(const char *arg, t_context *msh);
 
 #endif

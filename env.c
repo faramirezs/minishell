@@ -252,3 +252,20 @@ void cleanup_context(t_context *msh)
 		free(msh);
 	}
 }
+
+char *expand_env_var_value(const char *var_name, t_context *msh)
+{
+    if (!var_name || !msh || !msh->env)
+        return ft_strdup("");
+	// Handle special cases
+    if (ft_strcmp(var_name, "?") == 0)
+        return ft_itoa(msh->ret_exit);
+
+    // Look up regular environment variables
+    char *value = ms_get_env(msh->env, var_name);
+    if (value)
+        return ft_strdup(value);
+
+    // Variable not found
+    return ft_strdup("");
+}
