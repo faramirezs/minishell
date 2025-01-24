@@ -7,7 +7,7 @@ int process_key_value(char *arg, t_context *msh)
 	char *key;
 	char *value;
 	char *new_var;
-	
+
 	equal_sign = ft_strchr(arg, '=');
 
 	if (equal_sign)
@@ -34,6 +34,7 @@ int	handle_export(struct s_tree_node *node, t_context *msh)
 {
 	int i;
 	char *arg;
+	int in_pipe = (msh->fd[0] != STDIN_FILENO || msh->fd[1] != STDOUT_FILENO);
 
 	if (!node->data.exec_u.args[1])
 	{
@@ -53,5 +54,14 @@ int	handle_export(struct s_tree_node *node, t_context *msh)
 		}
 		i++;
 	}
+	if (in_pipe)
+    {
+        i = 0;
+        while (msh->env[i])
+        {
+            dprintf(msh->fd[1], "%s\n", msh->env[i]);
+            i++;
+        }
+    }
 	return (0);
 }

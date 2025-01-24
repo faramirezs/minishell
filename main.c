@@ -102,11 +102,12 @@ void shell_loop(t_context *msh)
 		scanner = scanner_value(itr);
 		scanner.msh = msh;
 		tree_node = parse_tree_node(&scanner);
+		msh->ret_exit = exec(tree_node, msh);
 
-		if (is_builtin(tree_node))
+		/* if (is_builtin(tree_node))
 			msh->ret_exit = execute_builtin(tree_node, msh);
 		else
-			msh->ret_exit = exec(tree_node);
+			msh->ret_exit = exec(tree_node); */
 		free(line);
 		free(tree_node);
 	}

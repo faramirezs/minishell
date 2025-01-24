@@ -34,7 +34,8 @@ SRC	= main.c \
 	$(TOKENIZATION) \
 	$(NODE_CREATION) \
 	$(EXECUTION) \
-	$(ENV_BLD)
+	$(ENV_BLD) \
+    $(SIGNALS)
 
 HEADERS	= ./headers/minishell.h \
 			./headers/char_itr.h \
@@ -46,7 +47,8 @@ HEADERS	= ./headers/minishell.h \
 			./headers/args.h \
 			./headers/built_in.h \
 			./headers/env_var.h \
-			./headers/redirections.h
+			./headers/redirections.h \
+			./headers/signals.h
 
 OBJS = $(SRC:.c=.o)
 

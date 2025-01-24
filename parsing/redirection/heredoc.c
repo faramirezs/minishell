@@ -6,11 +6,12 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:18:13 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/24 18:47:22 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/24 19:49:14 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/minishell.h"
+//#include "../../headers/redirections.h"
 
 typedef struct s_list
 {
@@ -103,29 +104,26 @@ char *collect_heredoc_input(const char *delimiter)
         if (!line || is_heredoc_interrupted())
         {
             if (!line)
-            {
-                // Print warning message for EOF
                 fprintf(stderr, "Minishell: warning: here-document at line 1 delimited by end-of-file (wanted `%s')\n", delimiter);
-            }
-			if (is_heredoc_interrupted())
-			{
-				free(line);
-                restore_stdin();
-			}
+			free(line);
+            break;
+		}
+		if (strcmp(line, delimiter) == 0)
+        {
+            free(line);
             break;
         }
-
-		if (ft_strcmp(line, delimiter) == 0)
-		{
-			free(line);
-			break;
-		}
-
 		append_node(&head, line);
 		free(line);
 	}
-
-	 if (!line || is_heredoc_interrupted())
+	if (is_heredoc_interrupted())
+	{
+		free_list(head);
+        return NULL;
+		//free(line);
+        //restore_stdin();
+	}
+	if (is_heredoc_interrupted())
     {
         free_list(head);
         return NULL;

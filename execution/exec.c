@@ -76,10 +76,21 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
             close(saved_stdout);
             cleanup(node, EXIT_FAILURE);
         }
-		else
-		{
-			cleanup(node, EXIT_SUCCESS);
-		}
+		result = exec_node(rcmd->cmd, ctx);
+		if (dup2(saved_stdin, STDIN_FILENO) == -1)
+    	{
+        	perror("dup2");
+        	close(saved_stdin);
+        	close(saved_stdout);
+        	cleanup(node, EXIT_FAILURE);
+    	}
+   		close(saved_stdin);
+    	close(saved_stdout);
+    	return result;
+		//else
+		//{
+		//	cleanup(node, EXIT_SUCCESS);
+		//}
     }
 	else if (rcmd->redir_type == REDIR_OUT || rcmd->redir_type == APPEND_OUT)
 	{
@@ -138,17 +149,16 @@ static int exec_node(t_tree_node *node, t_context *ctx)
 }
 
 
-int exec(t_tree_node *node)
+int exec(t_tree_node *node, t_context *msh)
 {
-	t_context ctx;
 	int children;
 	int status;
 
-	ctx.fd[0] = STDIN_FILENO;
-	ctx.fd[1] = STDOUT_FILENO;
-	ctx.fd_close = -1;
+	msh->fd[0] = STDIN_FILENO;
+	msh->fd[1] = STDOUT_FILENO;
+	msh->fd_close = -1;
 
-	children = exec_node(node, &ctx);
+	children = exec_node(node, msh);
 
 	// Wait for all child processes to complete
 	while (children > 0) {
@@ -161,7 +171,14 @@ int exec(t_tree_node *node)
 static int exec_command(t_tree_node *node, t_context *ctx)
 {
 	pid_t pid;
+	int status;
 
+	if (is_builtin(node) && ctx->fd[0] == STDIN_FILENO && ctx->fd[1] == STDOUT_FILENO)
+        {
+            printf("Executing builtin\n");
+			return execute_builtin(node, ctx);
+        }
+	printf("Executing $PATH functions\n");
 	pid = fork();
 	if (pid == -1)
 	{
@@ -170,71 +187,84 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 	}
 	if (pid == FORKED_CHILD)
 	{
-		//printf("Child pID: %d\n", getpid());
-		//evaluate the context and act on
-		dup2(ctx->fd[STDIN_FILENO], STDIN_FILENO);
-		dup2(ctx->fd[STDOUT_FILENO], STDOUT_FILENO);
-		if(ctx->fd_close >= 0)
-			close(ctx->fd_close);
-		//printf("+++Exec_command()check+++\n");
-		//check_null_array(node->data.exec_u.args);
-		execvp(node->data.exec_u.args[0], node->data.exec_u.args);
-		perror("execvp"); // If execvp fails
-		exit(EXIT_FAILURE);
-	}
-	else if (pid > 0)
-	{
-		int status;
-        waitpid(pid, &status, 0);
-		//printf("Parent pID: %d\n", getpid());
-		//New line or no new line, that is the question...
-        return (1);
-	}
-	else
-	{
-		perror("fork");
-		exit(EXIT_FAILURE);
-	}
-
+		// Set up pipe redirections
+		if (ctx->fd[0] != STDIN_FILENO)
+		{
+			dup2(ctx->fd[0], STDIN_FILENO);
+			close(ctx->fd[0]);
+		}
+		if (ctx->fd[1] != STDOUT_FILENO)
+		{
+			dup2(ctx->fd[1], STDOUT_FILENO);
+			close(ctx->fd[1]);
+		}
+		// Execute builtin or external command
+		if (is_builtin(node))
+		{
+			exit(execute_builtin(node, ctx));
+		}
+		else
+		{
+			execvp(node->data.exec_u.args[0], node->data.exec_u.args);
+			perror("execvp");
+			exit(127);
+		}
+    }
+	// Parent process
+	if (ctx->fd[0] != STDIN_FILENO)
+        close(ctx->fd[0]);
+    if (ctx->fd[1] != STDOUT_FILENO)
+        close(ctx->fd[1]);
+    waitpid(pid, &status, 0);
+    return WEXITSTATUS(status);
 }
 
 static int exec_pipe(t_tree_node *node, t_context *ctx)
 {
-	t_tree_node *lhs;
-	t_tree_node *rhs;
-	t_context lhs_ctx;
-	t_context rhs_ctx;
-	int p[2];
-	int children;
+	t_pipecmd *pcmd = &node->data.pipe_u;
+    int pipefd[2];
+    t_context left_ctx = *ctx;
+    t_context right_ctx = *ctx;
+    int status;
+	pid_t left_pid;
+	pid_t right_pid;
 
-	children = 0;
-	if (pipe(p) == -1)
-	{
-		perror("pipe");
-		exit(EXIT_FAILURE);
-	}
+    if (pipe(pipefd) == -1)
+    {
+        perror("pipe");
+        return -1;
+    }
 
-	// Set up left side of pipe
-	lhs = node->data.pipe_u.left;
-	lhs_ctx = *ctx;
-	lhs_ctx.fd[STDOUT_FILENO] = p[1];
-	lhs_ctx.fd_close = p[0];
-	children += exec_node(lhs, &lhs_ctx);
+    // Set up contexts for left and right commands
+    left_ctx.fd[1] = pipefd[1];
+    right_ctx.fd[0] = pipefd[0];
+	 // Fork for left side
+    left_pid = fork();
+    if (left_pid == 0)
+    {
+        close(pipefd[0]);  // Close unused read end
+        status = exec_node(pcmd->left, &left_ctx);
+        exit(status);
+    }
 
-	// Close write end in parent
-	close(p[1]);
+    // Fork for right side
+    right_pid = fork();
+    if (right_pid == 0)
+    {
+        close(pipefd[1]);  // Close unused write end
+        status = exec_node(pcmd->right, &right_ctx);
+        exit(status);
+    }
 
-	// Set up right side of pipe
-	rhs = node->data.pipe_u.right;
-	rhs_ctx = *ctx;
-	rhs_ctx.fd[STDIN_FILENO] = p[0];
-	rhs_ctx.fd_close = -1;
-	children += exec_node(rhs, &rhs_ctx);
+    // Parent closes both ends of pipe
+    close(pipefd[0]);
+    close(pipefd[1]);
 
-	// Close read end in parent
-	close(p[0]);
+    // Wait for both children
+    waitpid(left_pid, &status, 0);
+    waitpid(right_pid, &status, 0);
 
-	return (children);
+    return WEXITSTATUS(status);
 }
 
 void cleanup(t_tree_node *node, int exit_code)
@@ -250,6 +280,8 @@ void cleanup(t_tree_node *node, int exit_code)
 
 int handle_heredoc(t_redircmd *rcmd)
 {
+	ssize_t bytes_written;
+
 	if (pipe(rcmd->heredoc_pipe) == -1)
 	{
 		perror("pipe");
@@ -257,36 +289,49 @@ int handle_heredoc(t_redircmd *rcmd)
 	}
 
     rcmd->heredoc_pid = fork();
+	if (rcmd->heredoc_pid == -1)
+    {
+        perror("fork");
+        close(rcmd->heredoc_pipe[0]);
+        close(rcmd->heredoc_pipe[1]);
+        return -1;
+    }
     if (rcmd->heredoc_pid == 0)
     {
         close(rcmd->heredoc_pipe[0]);
-        write(rcmd->heredoc_pipe[1], rcmd->heredoc_content,
-              ft_strlen(rcmd->heredoc_content));
-		//cleanup_heredoc(rcmd);
-		//free(rcmd->heredoc_content);
-		close(rcmd->heredoc_pipe[1]);
-        return(0);
-		//return (0);
-		//When the heredoc finishes correctly this is the exit flow.
-    }
-    else if (rcmd->heredoc_pid > 0)
-    {
-        close(rcmd->heredoc_pipe[1]);
-        if (dup2(rcmd->heredoc_pipe[0], STDIN_FILENO) == -1)
+        if (rcmd->heredoc_content)
         {
-            perror("dup2");
-            return -1;
+            bytes_written = write(rcmd->heredoc_pipe[1], rcmd->heredoc_content,
+                  ft_strlen(rcmd->heredoc_content));
+			if (bytes_written == -1)
+            {
+                perror("write");
+                exit(1);
+            }
         }
-        close(rcmd->heredoc_pipe[0]);
-
-        // Wait for child process to complete
-        int status;
-        waitpid(rcmd->heredoc_pid, &status, 0);
-        // Ensure proper terminal output
-        write(STDOUT_FILENO, "\n", 1);
-		cleanup_heredoc(rcmd);
-        //restore_terminal_settings();
-        return (0);
+        close(rcmd->heredoc_pipe[1]);
+        exit(0);
     }
-    return (-1);
+
+    close(rcmd->heredoc_pipe[1]);  // Close write end
+
+        // Redirect stdin to read end of pipe
+    if (dup2(rcmd->heredoc_pipe[0], STDIN_FILENO) == -1)
+     {
+		perror("dup2");
+        close(rcmd->heredoc_pipe[0]);
+        return -1;
+    }
+    close(rcmd->heredoc_pipe[0]);
+
+        // Wait for child to finish writing
+    int status;
+    waitpid(rcmd->heredoc_pid, &status, 0);
+
+	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+    {
+        return -1;
+    }
+    return 0;
 }
+

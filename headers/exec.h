@@ -19,7 +19,7 @@
 //# include "tree_node.h"
 //# include "../headers/minishell.h"
 
-int		exec(t_tree_node *node);
+int		exec(t_tree_node *node, t_context *msh);
 void	cleanup(t_tree_node *node, int exit_code);
 
 #endif

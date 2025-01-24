@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/24 18:44:23 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/24 20:54:25 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,14 +70,14 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 			if(scanner_has_next(scanner))
 			{
 				//scanner->next = scanner_next(scanner); //skip pipe token
-				printf("Node type PIPE\n");
+				//printf("Node type PIPE\n");
 				pipe_flag = 0;
 				return(parse_pipe(scanner, args));
 			}
 			else
 			{
 				//Aqui en lugar de retornar node, deberia retornar error. Porque este node esta vacio
-				printf("No arguments after pipe\n");
+				//printf("No arguments after pipe\n");
 				exit(EXIT_FAILURE);
 			}
 		}
@@ -119,9 +119,9 @@ t_tree_node *parse_pipe (t_scanner *scanner, t_args *args)
 	pipe_node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
 	pipe_node->type = N_PIPE;
 	pipe_node->data.pipe_u.left = parse_exec(args);
-	printf("Left args\n");
+	//printf("Left args\n");
 	pipe_node->data.pipe_u.right = parse_tree_node(scanner);
-	printf("Right args\n");
+	//printf("Right args\n");
 	return (pipe_node);
 }
 
@@ -130,7 +130,7 @@ void visit_node (const t_tree_node *node, size_t spaces)
 	indent_node(spaces);
 	if(node->type == N_PIPE)
 	{
-		printf("Pipe node\n");
+		//printf("Pipe node\n");
 		visit_node(node->data.pipe_u.left, spaces + 2);
 		visit_node(node->data.pipe_u.right, spaces + 2);
 	}
