@@ -14,11 +14,11 @@
 //From this video https://www.youtube.com/watch?v=KbhDPYHRqkY&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=67
 // Execute pipe node https://www.youtube.com/watch?v=KbhDPYHRqkY&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=65
 
-typedef struct s_context
+/* typedef struct s_context
 {
 	int fd[2]; //for stdin and stdout
 	int fd_close; // Close an fd? -1 if not
-} t_context;
+} t_context; */
 
 static int exec_node(t_tree_node *node, t_context *ctx);
 static int exec_command(t_tree_node *node, t_context *ctx);
@@ -30,7 +30,7 @@ static int exec_redir(t_tree_node *node, t_context *ctx);
 
 static int exec_redir(t_tree_node *node, t_context *ctx)
 {
-    t_redircmd *rcmd;
+	t_redircmd *rcmd;
 	int saved_stdin;
 	int saved_stdout;
 	int result;
@@ -50,59 +50,59 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
 	if (rcmd->redir_type == REDIR_IN)
 	{
 		fd = open(rcmd->target, O_RDONLY);
-        if (fd < 0)
-        {
-            perror("open");
-            close(saved_stdin);
-            close(saved_stdout);
-            cleanup(node, 1); // General error
-        }
-        if (dup2(fd, STDIN_FILENO) == -1)
-        {
-            perror("dup2");
-            close(fd);
-            close(saved_stdin);
-            close(saved_stdout);
-            cleanup(node, 1); // General error
-        }
-        close(fd);
+		if (fd < 0)
+		{
+			perror("open");
+			close(saved_stdin);
+			close(saved_stdout);
+			cleanup(node, 1); // General error
+		}
+		if (dup2(fd, STDIN_FILENO) == -1)
+		{
+			perror("dup2");
+			close(fd);
+			close(saved_stdin);
+			close(saved_stdout);
+			cleanup(node, 1); // General error
+		}
+		close(fd);
 	}
 	else if (rcmd->redir_type == HEREDOC)
-    {
-        if (handle_heredoc(rcmd) < 0)
-        {
-            close(saved_stdin);
-            close(saved_stdout);
-            cleanup(node, 1);
-        }
-    }
+	{
+		if (handle_heredoc(rcmd) < 0)
+		{
+			close(saved_stdin);
+			close(saved_stdout);
+			cleanup(node, 1);
+		}
+	}
 	else if (rcmd->redir_type == REDIR_OUT || rcmd->redir_type == APPEND_OUT)
-    {
-        fd = open(rcmd->target, rcmd->flags, rcmd->mode);
-        if (fd < 0)
-        {
-            perror("open");
-            close(saved_stdin);
-            close(saved_stdout);
-            cleanup(node, 1); // General error
-        }
-        if (dup2(fd, STDOUT_FILENO) == -1)
-        {
-            perror("dup2");
-            close(fd);
-            close(saved_stdin);
-            close(saved_stdout);
-            cleanup(node, 1); // General error
-        }
-        close(fd);
-    }
+	{
+		fd = open(rcmd->target, rcmd->flags, rcmd->mode);
+		if (fd < 0)
+		{
+			perror("open");
+			close(saved_stdin);
+			close(saved_stdout);
+			cleanup(node, 1); // General error
+		}
+		if (dup2(fd, STDOUT_FILENO) == -1)
+		{
+			perror("dup2");
+			close(fd);
+			close(saved_stdin);
+			close(saved_stdout);
+			cleanup(node, 1); // General error
+		}
+		close(fd);
+	}
 	if (rcmd->cmd == NULL)
-    {
-        fprintf(stderr, "Error: Command node is NULL\n");
-        close(saved_stdin);
-        close(saved_stdout);
-        cleanup(node, 1); // General error
-    }
+	{
+		fprintf(stderr, "Error: Command node is NULL\n");
+		close(saved_stdin);
+		close(saved_stdout);
+		cleanup(node, 1); // General error
+	}
 	result = exec_node(rcmd->cmd, ctx);
 	if (dup2(saved_stdin, STDIN_FILENO) == -1 || dup2(saved_stdout, STDOUT_FILENO) == -1)
 	{
@@ -133,7 +133,7 @@ static int exec_node(t_tree_node *node, t_context *ctx)
 }
 
 
-void exec(t_tree_node *node)
+int exec(t_tree_node *node)
 {
 	t_context ctx;
 	int children;
@@ -150,13 +150,19 @@ void exec(t_tree_node *node)
 		wait(&status);
 		children--;
 	}
+	return (0);
 }
 
 static int exec_command(t_tree_node *node, t_context *ctx)
 {
 	pid_t pid;
-	//Here we can execute builtins in the parent process.
+
 	pid = fork();
+	if (pid == -1)
+	{
+		perror("fork");
+		return -1;
+	}
 	if (pid == FORKED_CHILD)
 	{
 		//printf("Child pID: %d\n", getpid());
@@ -169,19 +175,23 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 		//check_null_array(node->data.exec_u.args);
 		execvp(node->data.exec_u.args[0], node->data.exec_u.args);
 		perror("execvp"); // If execvp fails
-        exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 	else if (pid > 0)
 	{
-		//printf("Parent pID: %d\n", getpid());
-		return (1);
-	}
-	else
-	{
-		perror("fork");
-		exit(EXIT_FAILURE);
-	}
+		// Wait for the child process to finish
+		//int status;
+		//waitpid(pid, &status, 0);
 
+		// Update the context's exit code with the child's exit status
+		//if (WIFEXITED(status))
+		//	ctx->ret_exit = WEXITSTATUS(status);
+		//else if (WIFSIGNALED(status))
+		 //   ctx->ret_exit = 128 + WTERMSIG(status); // Signal exit status
+
+		return 0; // Indicate success
+	}
+	return -1;
 }
 
 static int exec_pipe(t_tree_node *node, t_context *ctx)
@@ -236,31 +246,31 @@ void cleanup(t_tree_node *node, int exit_code)
 
 int handle_heredoc(t_redircmd *rcmd)
 {
-    if (pipe(rcmd->heredoc_pipe) == -1)
-    {
-        perror("pipe");
-        return -1;
-    }
+	if (pipe(rcmd->heredoc_pipe) == -1)
+	{
+		perror("pipe");
+		return -1;
+	}
 
-    rcmd->heredoc_pid = fork();
-    if (rcmd->heredoc_pid == 0)
-    {
-        close(rcmd->heredoc_pipe[0]);
-        write(rcmd->heredoc_pipe[1], rcmd->heredoc_content,
-              ft_strlen(rcmd->heredoc_content));
-        close(rcmd->heredoc_pipe[1]);
-        exit(0);
-    }
-    else if (rcmd->heredoc_pid > 0)
-    {
-        close(rcmd->heredoc_pipe[1]);
-        if (dup2(rcmd->heredoc_pipe[0], STDIN_FILENO) == -1)
-        {
-            perror("dup2");
-            return -1;
-        }
-        close(rcmd->heredoc_pipe[0]);
-        return 0;
-    }
-    return -1;
+	rcmd->heredoc_pid = fork();
+	if (rcmd->heredoc_pid == 0)
+	{
+		close(rcmd->heredoc_pipe[0]);
+		write(rcmd->heredoc_pipe[1], rcmd->heredoc_content,
+			  ft_strlen(rcmd->heredoc_content));
+		close(rcmd->heredoc_pipe[1]);
+		exit(0);
+	}
+	else if (rcmd->heredoc_pid > 0)
+	{
+		close(rcmd->heredoc_pipe[1]);
+		if (dup2(rcmd->heredoc_pipe[0], STDIN_FILENO) == -1)
+		{
+			perror("dup2");
+			return -1;
+		}
+		close(rcmd->heredoc_pipe[0]);
+		return 0;
+	}
+	return -1;
 }

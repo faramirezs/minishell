@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/25 11:53:39 by jessica           #+#    #+#             */
-/*   Updated: 2024/11/27 13:12:37 by alramire         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   libft.h											:+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: alramire <alramire@student.42.fr>		  +#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2024/04/25 11:53:39 by jessica		   #+#	#+#			 */
+/*   Updated: 2024/11/27 13:12:37 by alramire		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
@@ -16,6 +16,7 @@
 # include <string.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include <ctype.h>
 
 int		ft_atoi(const char *nptr);
 void	ft_bzero(void *s, size_t n);
@@ -52,8 +53,13 @@ void	ft_striteri(char *s, void (*f)(unsigned int, char*));
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 char	**ft_split(char const *s, char c);
 char	*ft_strndup(const char *s, size_t n); //Newly introduced function
+void	ft_free_tab(char **tab);
+long long ft_atoll(const char *str);
+int 	ft_isllong(const char *str);
+char 	*ft_strjoin_free_s1(char *s1, const char *s2);
 
 //jess added functions
-int ft_strcmp(const char *s1, const char *s2);
+int     ft_strcmp(const char *s1, const char *s2);
+long    ft_strtol(const char *str, char **endptr, int base);
 
 #endif

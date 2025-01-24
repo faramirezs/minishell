@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   how_bash_parses_tokens.c                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jslusark <jslusark@student.42berlin.de>    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/17 15:43:09 by jslusark          #+#    #+#             */
-/*   Updated: 2024/11/17 17:48:42 by jslusark         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   how_bash_parses_tokens.c						   :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: jslusark <jslusark@student.42berlin.de>	+#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2024/11/17 15:43:09 by jslusark		  #+#	#+#			 */
+/*   Updated: 2024/11/17 17:48:42 by jslusark		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 
@@ -38,9 +38,9 @@ FEEL FREE TO TEST THESE CASES AND COME OUT WITH OTHERS WHERE YOU CAN SEE IF IT F
 				Bash goes through the input like this:
 					- echo  : this is not a redirection or a pipe, since it's the first word i find it must be the command of our first node.
 					- hello : i already assigned the command of our node, since this is not a redirection or a pipe it must be an argument of the command "echo".
-					- >     : this is a redirection symbol, so I have to start my redirection data, this is an output redirection and the word that comes after must be a file
+					- >	 : this is a redirection symbol, so I have to start my redirection data, this is an output redirection and the word that comes after must be a file
 					- file  : i saw a redirection symbol before, so this must be the file we have to redirect to.
-					-       : there is nothing else so the node is over, and our tree is made of just one node.
+					-	   : there is nothing else so the node is over, and our tree is made of just one node.
 
 
 			EXAMPLE 2:
@@ -50,11 +50,11 @@ FEEL FREE TO TEST THESE CASES AND COME OUT WITH OTHERS WHERE YOU CAN SEE IF IT F
 
 				Order of the input is different but gives the same result!
 				This happens because Bash goes through the input like this:
-					- >     : this is a redirection symbol, so I have to start my redirection data, this is an output redirection and the word that comes after must be a file
+					- >	 : this is a redirection symbol, so I have to start my redirection data, this is an output redirection and the word that comes after must be a file
 					- file  : i saw a redirection symbol before, so this must be the file we have to redirect to.
 					- echo  : since this is the first word i find that is not redirection or pipe, it must be the command of our node.
 					- hello : i already assigned the command of our node, since this is not a redirection or a pipe it must be an argument of the command "echo".
-					-       : there is nothing else so the node is over, and our tree is made of just one node.
+					-	   : there is nothing else so the node is over, and our tree is made of just one node.
 
 			EXAMPLE 3:
 				echo > echo hello
@@ -64,10 +64,10 @@ FEEL FREE TO TEST THESE CASES AND COME OUT WITH OTHERS WHERE YOU CAN SEE IF IT F
 				But we wrote  echo after the redirection.. how is this possible?!!
 				This happens because Bash goes through the input like this:
 					- echo  : since this is the first word i find that is not redirection or pipe, it must be the command of our node.
-					- >     : this is a redirection symbol, so I have to start my redirection data, this is an output redirection and the word that comes after must be a file
+					- >	 : this is a redirection symbol, so I have to start my redirection data, this is an output redirection and the word that comes after must be a file
 					- echo  :  i saw a redirection symbol before, so this must be the file we have to redirect to. (bash doesn't care how this file is called)
 					- hello : i already assigned the command of our node, since this is not a redirection or a pipe it must be an argument of the command "echo".
-					-       : there is nothing else so the node is over, and our tree is made of just one node.
+					-	   : there is nothing else so the node is over, and our tree is made of just one node.
 
 			EXAMPLE 4:
 				> file hello echo
@@ -75,11 +75,11 @@ FEEL FREE TO TEST THESE CASES AND COME OUT WITH OTHERS WHERE YOU CAN SEE IF IT F
 
 				Why does it see "hello" as a command?! I just wrote echo after!
 				This happens because Bash goes through the input like this:
-					- >      : this is a redirection symbol, so I have to start my redirection data, this is an output redirection and the word that comes after must be a file
+					- >	  : this is a redirection symbol, so I have to start my redirection data, this is an output redirection and the word that comes after must be a file
 					- file   : i saw a redirection symbol before, so this must be the file we have to redirect to.(bash doesn't care how this file is called)
 					- hello  : since this is the first word I find that is not redirection or pipe, it must be the command of our node.
 					- echo   : i already assigned the command of our node, since this is not a redirection or a pipe it must be an argument of the command "hello".
-					-        : there is nothing else to process for this node. Our tree is made of one node.
+					-		: there is nothing else to process for this node. Our tree is made of one node.
 					Bash then tries to execute the command of the node and sees that "hello" is not an actual command.
 
 			EXAMPLE 5:
@@ -88,10 +88,10 @@ FEEL FREE TO TEST THESE CASES AND COME OUT WITH OTHERS WHERE YOU CAN SEE IF IT F
 
 				Why does it see "hello" as a command?! I just wrote echo before hello!
 				This happens because Bash goes through the input like this:
-					- >      : this is a REDIRECTION symbol, so I have to start my redirection data, this is an output redirection and the word that comes after must be a file
+					- >	  : this is a REDIRECTION symbol, so I have to start my redirection data, this is an output redirection and the word that comes after must be a file
 					- echo   : i saw a redirection symbol before, so this must be the file we have to redirect to. (bash doesn't care how this file is called)
 					- hello  : since this is the first word I find that is not redirection or pipe, it must be the command of our node.
-					-        : there is nothing else so the node is over, and our tree is made of just one node.
+					-		: there is nothing else so the node is over, and our tree is made of just one node.
 				Bash then tries to execute the command of the node and sees that "hello" is not an actual command.
 
 
@@ -109,16 +109,16 @@ FEEL FREE TO TEST THESE CASES AND COME OUT WITH OTHERS WHERE YOU CAN SEE IF IT F
 					NODE1:
 					- echo  : since this is the first word i find that is not redirection or pipe, it must be the command of our 1st node.
 					- hello : i already assigned the command of our node, since this is not a redirection or a pipe it must be an argument of the command "echo".
-					- >     : this is a REDIRECTION symbol, so I have to start my redirection data, this is an output redirection and the word that comes after must be a file
+					- >	 : this is a REDIRECTION symbol, so I have to start my redirection data, this is an output redirection and the word that comes after must be a file
 					- file1  : we had a redircetion before so this must be the file we have to redirect to.
-					- |     : we found a pipe so we end our node and start a new one.
+					- |	 : we found a pipe so we end our node and start a new one.
 
 					NODE 2:
 					- echo  : since this is the first word i find that is not redirection or pipe, it must be the command of our 2nd node.
 					- ciao : i already assigned the command of our node, since this is not a redirection or a pipe it must be an argument of the command "echo".
-					- >     : this is a REDIRECTION symbol, so I have to start my redirection data, this is an output redirection and the word that comes after must be a file
+					- >	 : this is a REDIRECTION symbol, so I have to start my redirection data, this is an output redirection and the word that comes after must be a file
 					- file2  : we had a redircetion before so this must be the file we have to redirect to.
-					-        : there is nothing else so node 2 is over. When we have more than 1 nodes we have built a node table (sequence of nodes). Out tree is made of 1 node table of 2 nodes.
+					-		: there is nothing else so node 2 is over. When we have more than 1 nodes we have built a node table (sequence of nodes). Out tree is made of 1 node table of 2 nodes.
 
 					IMPORTANT: pipe is what connects one node to the other inside a node table
 

@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parsing_rules.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jslusark <jslusark@student.42berlin.de>    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/17 15:43:56 by jslusark          #+#    #+#             */
-/*   Updated: 2024/11/22 14:22:54 by jslusark         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   parsing_rules.c									:+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: jslusark <jslusark@student.42berlin.de>	+#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2024/11/17 15:43:56 by jslusark		  #+#	#+#			 */
+/*   Updated: 2024/11/22 14:22:54 by jslusark		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 
@@ -220,8 +220,8 @@ rules still work! :)
 		> hola
 		> hallo
 		> moin
-		>      delimiter
-		>delimiter          <-spaces after delimeter
+		>	  delimiter
+		>delimiter		  <-spaces after delimeter
 		> delimiter yo
 		> delimiter
 
@@ -232,12 +232,12 @@ rules still work! :)
 	EXAMPLE:
 	echo hello << del1 << del2
 	> echo hello
-	> del2             <-- this does not work as we are in 1st heredoc with del1 as delimiter
+	> del2			 <-- this does not work as we are in 1st heredoc with del1 as delimiter
 	> del2
-	> del1             <-- heredoc 1 ends and collects previous lines in its buffer
-	> del1             <-- we are in 2nd heredoc with del2 as delimiter so this does not interrupt the heredoc process
+	> del1			 <-- heredoc 1 ends and collects previous lines in its buffer
+	> del1			 <-- we are in 2nd heredoc with del2 as delimiter so this does not interrupt the heredoc process
 	> del1
-	> del2              <-- heredoc  2 ends and collects previous lines in its buffer
+	> del2			  <-- heredoc  2 ends and collects previous lines in its buffer
 	hello
 
 	bash executes from the first to the last herdoc, the buff of the last heredoc

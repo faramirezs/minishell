@@ -1,20 +1,20 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   tree_node.h                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/10 17:26:14 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/16 19:07:10 by alramire         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   tree_node.h										:+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: alramire <alramire@student.42.fr>		  +#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2025/01/10 17:26:14 by alramire		  #+#	#+#			 */
+/*   Updated: 2025/01/16 19:07:10 by alramire		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #ifndef TREE_NODE_H
 # define TREE_NODE_H
 
-# include "../headers/args.h"
-# include "../headers/scanner.h"
+# include "args.h"
+# include "scanner.h"
 #include <sys/types.h>
 //# include "../headers/minishell.h"
 
@@ -47,18 +47,18 @@ typedef enum e_target_type
 
 struct s_redircmd
 {
-    t_token_type redir_type;     // Current redirection type (REDIR_IN, REDIR_OUT, etc.)
-    char *target;                // Target file/delimiter
-    t_target_type target_type;   // Type of target (filename, pathname, env var, delimiter)
-    int source_fd;               // Source file descriptor (usually 0 for input, 1 for output)
-    int target_fd;               // Target file descriptor
-    int flags;                   // Open flags for the file
-    mode_t mode;                 // File permissions when creating new files
-    t_tree_node *cmd;           // Command to be redirected
-    int error_code;             // Error tracking
-	char *heredoc_content;    // Store the collected heredoc content
-    int heredoc_pipe[2];      // Pipe for heredoc data transfer
-    pid_t heredoc_pid;        // Process ID for heredoc handling
+	t_token_type redir_type;	 // Current redirection type (REDIR_IN, REDIR_OUT, etc.)
+	char *target;				// Target file/delimiter
+	t_target_type target_type;   // Type of target (filename, pathname, env var, delimiter)
+	int source_fd;			   // Source file descriptor (usually 0 for input, 1 for output)
+	int target_fd;			   // Target file descriptor
+	int flags;				   // Open flags for the file
+	mode_t mode;				 // File permissions when creating new files
+	t_tree_node *cmd;		   // Command to be redirected
+	int error_code;			 // Error tracking
+	char *heredoc_content;	// Store the collected heredoc content
+	int heredoc_pipe[2];	  // Pipe for heredoc data transfer
+	pid_t heredoc_pid;		// Process ID for heredoc handling
 };
 
 

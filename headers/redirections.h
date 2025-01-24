@@ -1,19 +1,20 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   redirections.h                                     :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/10 17:40:19 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/16 19:44:01 by alramire         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   redirections.h									 :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: alramire <alramire@student.42.fr>		  +#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2025/01/10 17:40:19 by alramire		  #+#	#+#			 */
+/*   Updated: 2025/01/16 19:44:01 by alramire		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #ifndef REDIRECTIONS_H
 # define REDIRECTIONS_H
 
-# include "tree_node.h"
+//# include "tree_node.h"
+# include "minishell.h"
 
 
 t_tree_node					*parse_redir(t_scanner *scanner, t_args *cmd_args);
