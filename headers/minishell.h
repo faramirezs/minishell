@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/19 15:17:33 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/19 20:24:07 by alejandrora      ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   minishell.h										:+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: alramire <alramire@student.42.fr>		  +#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2024/10/19 15:17:33 by alramire		  #+#	#+#			 */
+/*   Updated: 2025/01/17 11:34:24 by alramire		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
@@ -44,29 +44,34 @@ extern volatile sig_atomic_t g_heredoc_interrupt;
 
 // Parsing headers
 # include "token.h" // token structs and functions
-//#include	"node.h" // node structs and node handling functions
+# include "char_itr.h"
+# include "scanner.h"
+# include "args.h"
 # include "tree_node.h"
-# include "tree_parser.h"
+//#include	"node.h" // node structs and node handling functions
+
 
 // Args collector
-# include "args.h"
+
+
+
+# include "env_var.h"
+	// this already should include all the env_var headers inside
 
 // Execution headers
 # include "built_in.h"
 	// this already should include all the builtins headers inside
-# include "env_var.h"
-	// this already should include all the env_var headers inside
+
 # include "exec.h"
-# include "pipes.h"
 	// this already should include all the pipes headers inside
 # include "redirections.h"
 	// this already should include all the redirections headers inside
 
 // Tokenizer headers
-# include "char_itr.h"
+
 # include "cmd.h"
 # include "guards.h"
-# include "scanner.h"
+
 
 //Signals
 # include "signals.h"

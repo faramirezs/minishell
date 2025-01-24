@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_memset.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jslusark <jslusark@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/19 15:49:15 by jslusark          #+#    #+#             */
-/*   Updated: 2024/05/07 12:13:49 by jslusark         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   ft_memset.c										:+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: jslusark <jslusark@student.42.fr>		  +#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2024/04/19 15:49:15 by jslusark		  #+#	#+#			 */
+/*   Updated: 2024/05/07 12:13:49 by jslusark		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #include "libft.h"
@@ -45,12 +45,12 @@ int main(void)
 // with values for the than 255 or -n
 // and not be misinterpreted and overflow
 	int c = 511; // Example value
-    printf("Original: %d, Cast to unsigned char: %u\n", c, (unsigned char)c);
-    printf("Original: %d, Cast to char: %u\n", c, (char)c);
-    printf("Original: %d, Cast without: %u\n", c, c);
+	printf("Original: %d, Cast to unsigned char: %u\n", c, (unsigned char)c);
+	printf("Original: %d, Cast to char: %u\n", c, (char)c);
+	printf("Original: %d, Cast without: %u\n", c, c);
 
 	c = -38; // Example value
-    printf("Original: %d, Cast to unsigned char: %u\n", c, (unsigned char)c);
-    printf("Original: %d, Cast to char: %u\n", c, (char)c);
-    printf("Original: %d, Cast without: %u\n", c, c);
+	printf("Original: %d, Cast to unsigned char: %u\n", c, (unsigned char)c);
+	printf("Original: %d, Cast to char: %u\n", c, (char)c);
+	printf("Original: %d, Cast without: %u\n", c, c);
 } */

@@ -3,15 +3,15 @@
 The s_redircmd struct represents a single redirection command in the AST.
 
 Fields:
-    - redir_type: Specifies the type of redirection (e.g., input, output, append).
-      This uses the t_token_type enum to define the redirection type.
-    - target: The target of the redirection. This can be a file name, path, or stream name.
-    - target_fd: The file descriptor associated with the target. This specifies
-      the descriptor to which the redirection applies (e.g., stdin, stdout).
-    - flags: Flags to be used with the open function. Different types of redirections
-      (input, output, append) require specific flags for file access.
-    - error_code: Used to store error codes that occur during redirection processing.
-      This helps in diagnosing issues such as file not found, permission denied, etc.
+	- redir_type: Specifies the type of redirection (e.g., input, output, append).
+	  This uses the t_token_type enum to define the redirection type.
+	- target: The target of the redirection. This can be a file name, path, or stream name.
+	- target_fd: The file descriptor associated with the target. This specifies
+	  the descriptor to which the redirection applies (e.g., stdin, stdout).
+	- flags: Flags to be used with the open function. Different types of redirections
+	  (input, output, append) require specific flags for file access.
+	- error_code: Used to store error codes that occur during redirection processing.
+	  This helps in diagnosing issues such as file not found, permission denied, etc.
 
 
 This structure is designed to integrate into the AST, with each command node potentially
@@ -19,11 +19,11 @@ containing a linked list of s_redircmd instances for managing its associated red
 */
 
 struct s_redircmd {
-    t_token_type redir_type;          // Use enum for redirection types (e.g., input, output, append).
-    char *target;            // Target file or stream.
-    int target_fd;           // Target file descriptor.
-    int flags;               // File open flags.
-    int error_code;          // Error code during processing.
+	t_token_type redir_type;		  // Use enum for redirection types (e.g., input, output, append).
+	char *target;			// Target file or stream.
+	int target_fd;		   // Target file descriptor.
+	int flags;			   // File open flags.
+	int error_code;		  // Error code during processing.
 };
 
 
@@ -35,11 +35,11 @@ Your current `s_redircmd` structure (from tree_node.h):
 
 ```44:50:headers/tree_node.h
 struct						s_redircmd {
-    t_token_type redir_type;          // Use enum for redirection types (e.g., input, output, append).
-    char *target;            // Target file or stream.
-    int target_fd;           // Target file descriptor.
-    int flags;               // File open flags.
-    int error_code;          // Error code during processing.
+	t_token_type redir_type;		  // Use enum for redirection types (e.g., input, output, append).
+	char *target;			// Target file or stream.
+	int target_fd;		   // Target file descriptor.
+	int flags;			   // File open flags.
+	int error_code;		  // Error code during processing.
 };
 ```
 
@@ -51,15 +51,15 @@ Here's a suggested improved version:
 
 ```c
 struct s_redircmd {
-    t_token_type redir_type;     // Current redirection type (REDIR_IN, REDIR_OUT, etc.)
-    char *target;                // Target file/delimiter
-    t_target_type target_type;   // Type of target (filename, pathname, env var, delimiter)
-    int source_fd;               // Source file descriptor (usually 0 for input, 1 for output)
-    int target_fd;               // Target file descriptor
-    int flags;                   // Open flags for the file
-    mode_t mode;                 // File permissions when creating new files
-    t_tree_node *cmd;           // Command to be redirected
-    int error_code;             // Error tracking
+	t_token_type redir_type;	 // Current redirection type (REDIR_IN, REDIR_OUT, etc.)
+	char *target;				// Target file/delimiter
+	t_target_type target_type;   // Type of target (filename, pathname, env var, delimiter)
+	int source_fd;			   // Source file descriptor (usually 0 for input, 1 for output)
+	int target_fd;			   // Target file descriptor
+	int flags;				   // Open flags for the file
+	mode_t mode;				 // File permissions when creating new files
+	t_tree_node *cmd;		   // Command to be redirected
+	int error_code;			 // Error tracking
 };
 ```
 
@@ -75,32 +75,32 @@ struct s_redircmd {
 
 ```c
 static int handle_input_redirection(t_redircmd *rcmd) {
-    int fd;
+	int fd;
 
-    // Handle different target types
-    if (rcmd->target_type == TARGET_FILENAME) {
-        fd = open(rcmd->target, rcmd->flags, rcmd->mode);
-    } else if (rcmd->target_type == TARGET_ENV_PATHNAME) {
-        // Handle environment variable expansion
-        char *expanded_path = expand_env_var(rcmd->target);
-        fd = open(expanded_path, rcmd->flags, rcmd->mode);
-        free(expanded_path);
-    }
+	// Handle different target types
+	if (rcmd->target_type == TARGET_FILENAME) {
+		fd = open(rcmd->target, rcmd->flags, rcmd->mode);
+	} else if (rcmd->target_type == TARGET_ENV_PATHNAME) {
+		// Handle environment variable expansion
+		char *expanded_path = expand_env_var(rcmd->target);
+		fd = open(expanded_path, rcmd->flags, rcmd->mode);
+		free(expanded_path);
+	}
 
-    if (fd < 0) {
-        rcmd->error_code = errno;
-        return -1;
-    }
+	if (fd < 0) {
+		rcmd->error_code = errno;
+		return -1;
+	}
 
-    // Redirect input
-    if (dup2(fd, rcmd->source_fd) < 0) {
-        rcmd->error_code = errno;
-        close(fd);
-        return -1;
-    }
+	// Redirect input
+	if (dup2(fd, rcmd->source_fd) < 0) {
+		rcmd->error_code = errno;
+		close(fd);
+		return -1;
+	}
 
-    close(fd);
-    return 0;
+	close(fd);
+	return 0;
 }
 ```
 
@@ -116,21 +116,21 @@ Your current AST approach using the union for different node types is good. For 
 Example parsing flow:
 ```c
 t_tree_node *parse_redir(t_scanner *scanner, t_args *args) {
-    t_tree_node *node = malloc(sizeof(t_tree_node));
-    node->type = N_REDIR;
+	t_tree_node *node = malloc(sizeof(t_tree_node));
+	node->type = N_REDIR;
 
-    // Set up redirection command
-    node->data.redir_u.redir_type = scanner->next.type;
-    node->data.redir_u.source_fd = (scanner->next.type == REDIR_IN) ? STDIN_FILENO : STDOUT_FILENO;
-    node->data.redir_u.flags = get_redir_flags(scanner->next.type);
-    node->data.redir_u.mode = 0644;  // Default file permissions
+	// Set up redirection command
+	node->data.redir_u.redir_type = scanner->next.type;
+	node->data.redir_u.source_fd = (scanner->next.type == REDIR_IN) ? STDIN_FILENO : STDOUT_FILENO;
+	node->data.redir_u.flags = get_redir_flags(scanner->next.type);
+	node->data.redir_u.mode = 0644;  // Default file permissions
 
-    // Get target
-    scanner_next(scanner);  // Move to target token
-    node->data.redir_u.target = strdup(scanner->next.lexeme.start);
-    node->data.redir_u.target_type = determine_target_type(node->data.redir_u.target);
+	// Get target
+	scanner_next(scanner);  // Move to target token
+	node->data.redir_u.target = strdup(scanner->next.lexeme.start);
+	node->data.redir_u.target_type = determine_target_type(node->data.redir_u.target);
 
-    return node;
+	return node;
 }
 ```
 

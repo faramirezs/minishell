@@ -1,13 +1,13 @@
 # **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: alramire <alramire@student.42.fr>          +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/04/25 11:53:09 by jessica           #+#    #+#              #
-#    Updated: 2024/11/27 13:13:32 by alramire         ###   ########.fr        #
-#                                                                              #
+#																			  #
+#														 :::	  ::::::::	#
+#	Makefile										   :+:	  :+:	:+:	#
+#													 +:+ +:+		 +:+	  #
+#	By: alramire <alramire@student.42.fr>		  +#+  +:+	   +#+		 #
+#												 +#+#+#+#+#+   +#+			#
+#	Created: 2024/04/25 11:53:09 by jessica		   #+#	#+#			  #
+#	Updated: 2024/11/27 13:13:32 by alramire		 ###   ########.fr		#
+#																			  #
 # **************************************************************************** #
 
 NAME = libft.a
@@ -52,7 +52,12 @@ ft_striteri.c \
 ft_strmapi.c \
 ft_split.c \
 ft_strndup.c \
-ft_strcmp.c
+ft_strcmp.c \
+ft_free_tab.c \
+ft_atoll.c \
+ft_isllong.c \
+ft_strjoin_free_s1.c\
+ft_strtol.c
 
 
 

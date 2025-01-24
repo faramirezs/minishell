@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tree_node.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/21 21:46:58 by alejandrora      ###   ########.fr       */
+/*   Updated: 2025/01/24 18:44:23 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

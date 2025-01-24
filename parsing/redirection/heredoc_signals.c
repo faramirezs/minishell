@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/16 18:44:01 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/20 11:50:34 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/24 18:44:33 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,10 @@
 
 /* int     is_heredoc_interrupted(void)
 {
-    return g_heredoc_interrupt;
+	return g_heredoc_interrupt;
 }
 
-void    reset_heredoc_interrupt(void)
+void	reset_heredoc_interrupt(void)
 {
     g_heredoc_interrupt = 0;
 } */
