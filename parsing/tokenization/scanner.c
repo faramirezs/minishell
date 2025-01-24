@@ -64,6 +64,10 @@ t_token scanner_peek(t_scanner *self)
 			return (redir_in_token(self));
 		else if (c == '$')
 			return (env_var_token(self));
+		else if (c == '\"')
+			return (double_quote_token(self));
+		else if (c == '\'')
+			return (single_quote_token(self));
 		/* else if (c == '/')
 			return (abs_path_token(self));
 		else if (c == '.' && ((*(self->char_itr.cursor + 1) == '/') || (*(self->char_itr.cursor + 1) == '.' && *(self->char_itr.cursor + 2) == '/')))

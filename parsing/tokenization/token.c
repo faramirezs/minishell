@@ -182,12 +182,32 @@ t_token double_quote_token(t_scanner *self)
     self->next.type = STRING_D_QUOTES;
     self->next.lexeme.start = ++self->char_itr.cursor;
     expanded = ft_strdup("");
-    while (*self->char_itr.cursor && *self->char_itr.cursor != '"')
+    while (1)
     {
-        if (*self->char_itr.cursor == '$') // Handle expansions
+        if (*self->char_itr.cursor == '"')
+        {
+            self->char_itr.cursor++; // Skip closing quote
+            break;
+        }
+        if (*self->char_itr.cursor == '\0')
+        {
+            continuation = readline("dquote> ");
+            if (!continuation)
+            {
+                fprintf(stderr, "minishell: unexpected EOF while looking for matching `\"'\n");
+                self->msh->ret_exit = 2;
+                self->next.type = UNKNOWN;
+                free(expanded);
+                return self->next;
+            }
+            self->char_itr.cursor = ft_strjoin_free_s1((char *)self->char_itr.cursor, continuation);
+            free(continuation);
+            continue;
+        }
+        if (*self->char_itr.cursor == '$')
         {
             var = expand_env_var(self);
-            expanded = ft_strjoin_free_s1(expanded, var.start); // Append expanded value
+            expanded = ft_strjoin_free_s1(expanded, var.start);
         }
         else
         {
@@ -195,21 +215,6 @@ t_token double_quote_token(t_scanner *self)
             self->char_itr.cursor++;
         }
     }
-    if (*self->char_itr.cursor != '"')
-    {
-        continuation = readline("dquote> "); // Display continuation prompt
-        if (!continuation) // Handle Ctrl-D
-        {
-            fprintf(stderr, "minishell: unexpected EOF while looking for matching `\"'\n");
-            self->msh->ret_exit = 2; // Error exit code for syntax error
-            self->next.type = UNKNOWN;
-            return self->next;
-        }
-        self->char_itr.cursor = ft_strjoin_free_s1((char *)self->char_itr.cursor, continuation);
-        free(continuation);
-        return (double_quote_token(self));
-    }
-    self->char_itr.cursor++;
     self->next.lexeme.start = expanded;
     self->next.lexeme.length = ft_strlen(expanded);
     return self->next;
@@ -222,26 +227,34 @@ t_token single_quote_token(t_scanner *self)
 
     self->next.type = STRING_S_QUOTES;
     self->next.lexeme.start = ++self->char_itr.cursor; // Skip the opening single quote
-    while (*self->char_itr.cursor && *self->char_itr.cursor != '\'')
+    while (1)
     {
+        // Handle EOF or closing quote
+        if (*self->char_itr.cursor == '\'')
+        {
+            self->char_itr.cursor++; // Skip closing quote
+            break;
+        }
+        if (*self->char_itr.cursor == '\0') // Unmatched quote, wait for continuation
+        {
+            continuation = readline("quote> ");
+            if (!continuation)
+            {
+                fprintf(stderr, "minishell: unexpected EOF while looking for matching `'\n");
+                self->msh->ret_exit = 2;
+                self->next.type = UNKNOWN;
+                return self->next;
+            }
+            self->char_itr.cursor = ft_strjoin_free_s1((char *)self->char_itr.cursor, continuation);
+            free(continuation);
+            continue;
+        }
+
         self->next.lexeme.length++;
         self->char_itr.cursor++;
     }
-    if (*self->char_itr.cursor != '\'')
-    {
-        continuation = readline("quote> "); // Display continuation prompt
-        if (!continuation) // Handle Ctrl-D
-        {
-            fprintf(stderr, "minishell: unexpected EOF while looking for matching `'\n");
-            self->msh->ret_exit = 2; // Error exit code for syntax error
-            self->next.type = UNKNOWN;
-            return self->next;
-        }
-        self->char_itr.cursor = ft_strjoin_free_s1((char *)self->char_itr.cursor, continuation);
-        free(continuation);
-        return single_quote_token(self);
-    }
-    self->char_itr.cursor++;
+
+    self->next.lexeme.length = self->char_itr.cursor - self->next.lexeme.start - 1;
     return self->next;
 }
 

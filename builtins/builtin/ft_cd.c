@@ -1,18 +1,23 @@
 #include "../../headers/built_in.h"
 #include "../../headers/minishell.h"
 
-void set_pwd(t_context *msh, char *av, char *c)
+void set_pwd(t_context *msh, char *av, char *cwd)
 {
-	char *string;
+	char	*string;
+	int		i;
 
 	printf("handle_env: msh->env = %p\n", (void *)msh->env);
-	for (int i = 0; msh->env && msh->env[i]; i++)
+	i = 0;
+	while (msh->env && msh->env[i])
+	{
 		printf("  msh->env[%d]: %s\n", i, msh->env[i]);
+		i++;
+	}
 
 
-	string = ft_strjoin(av, c); // Concatenate "PWD=" or "OLDPWD=" with the current directory
+	string = ft_strjoin(av, cwd); // Concatenate "PWD=" or "OLDPWD=" with the current directory
 	if (!string)
-		return; // Handle memory allocation failure gracefully
+		return ; // Handle memory allocation failure gracefully
 	if (ms_set_env(msh->env, msh, string) == -1) // Pass the correct parameters
 		ft_putstr_fd("Failed to set environment variable\n", STDERR_FILENO);
 	free(string);
@@ -29,7 +34,7 @@ int	handle_cd(struct s_tree_node *node, t_context *msh)
 	if (dir == NULL)
 	{
 		dir = ms_get_env (msh->env, "HOME");
-		if ((dir - 5) == NULL || *dir == '\0')
+		if (!dir || *dir == '\0')
 		{
 			ft_putstr_fd ("cd: HOME not set\n", STDERR_FILENO);
 			return (1);

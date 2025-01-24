@@ -59,6 +59,7 @@ int 	ft_isllong(const char *str);
 char 	*ft_strjoin_free_s1(char *s1, const char *s2);
 
 //jess added functions
-int ft_strcmp(const char *s1, const char *s2);
+int     ft_strcmp(const char *s1, const char *s2);
+long    ft_strtol(const char *str, char **endptr, int base);
 
 #endif
