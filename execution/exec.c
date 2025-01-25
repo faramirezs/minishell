@@ -173,11 +173,11 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 	pid_t pid;
 	int status;
 
-	if (is_builtin(node) && ctx->fd[0] == STDIN_FILENO && ctx->fd[1] == STDOUT_FILENO)
+	/* if (is_builtin(node) && ctx->fd[0] == STDIN_FILENO && ctx->fd[1] == STDOUT_FILENO)
         {
             printf("Executing builtin\n");
 			return execute_builtin(node, ctx);
-        }
+        } */
 	printf("Executing $PATH functions\n");
 	pid = fork();
 	if (pid == -1)
@@ -199,10 +199,10 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 			close(ctx->fd[1]);
 		}
 		// Execute builtin or external command
-		if (is_builtin(node))
+		/* if (is_builtin(node))
 		{
 			exit(execute_builtin(node, ctx));
-		}
+		} */
 		else
 		{
 			execvp(node->data.exec_u.args[0], node->data.exec_u.args);
