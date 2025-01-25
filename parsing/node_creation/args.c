@@ -102,13 +102,16 @@ void free_args(t_args **args)
 			while (i < *((*args)->count))
 			{
 				free((*args)->words[i]);
+				(*args)->words[i] = NULL;
 				i++;
 			}
 			free((*args)->words);
+			(*args)->words = NULL;
 		}
 		if ((*args)->count)
 		{
 			free((*args)->count);
+			(*args)->count = NULL;
 		}
 		free(*args);
 		*args = NULL;

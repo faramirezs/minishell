@@ -14,16 +14,17 @@
 #ifndef SCANNER_H
 # define SCANNER_H
 
-# include "token.h"
-# include "char_itr.h"
-# include "env_var.h"
+//# include "token.h"
+//# include "char_itr.h"
+//# include "env_var.h"
+# include "minishell.h"
 
 
 /*
 The scanner is like an interator
 Char itr is producing a char at a time, the scanner is producing a token at a time
 It looks like the mock token linked list? Can we create a linked list here?
- */
+
 
 typedef struct s_scanner
 {
@@ -32,7 +33,7 @@ typedef struct s_scanner
 	t_token		next;
 	t_context	*msh;
 }				t_scanner;
-
+*/
 // Initializing the scanner struct.
 t_scanner		scanner_value(t_char_itr char_itr);
 
@@ -66,6 +67,6 @@ t_token			single_quote_token(t_scanner *self);
 t_token			double_quote_token(t_scanner *self);
 char 			*get_env_vvalue(t_scanner *self);
 t_slice 		expand_env_var(t_scanner *self);
-char			*handle_expansions(const char *arg, t_context *msh);
+t_token			handle_expansions(t_scanner *self);
 
 #endif

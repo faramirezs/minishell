@@ -7,7 +7,7 @@
 # include <stdio.h>
 
 # include "minishell.h"
-
+/*
 typedef struct s_context
 {
 	int fd[2]; //for stdin and stdout
@@ -17,7 +17,7 @@ typedef struct s_context
 	int	 ret_exit;		// Last command's exit code
 	char	*user;		   // Current user's name or shell session info
 } t_context;
-
+*/
 char		**ms_matrix_add_line(char **matrix, const char *new_line);
 char		*ms_get_env(char **env, const char *key);
 char		*ms_get_varenv(char **env, char *av);

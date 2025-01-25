@@ -40,8 +40,11 @@
 # define COLOR_BOLD "\001\033[1m\002"
 
 // Parsing headers
-# include "token.h" // token structs and functions
+# include "structs.h"
 # include "char_itr.h"
+# include "token.h" // token structs and functions
+# include "env_var.h"
+	// this already should include all the env_var headers inside
 # include "scanner.h"
 # include "args.h"
 # include "tree_node.h"
@@ -49,11 +52,6 @@
 
 
 // Args collector
-
-
-
-# include "env_var.h"
-	// this already should include all the env_var headers inside
 
 // Execution headers
 # include "built_in.h"

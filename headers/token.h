@@ -14,6 +14,7 @@
 # define TOKEN_H
 
 # include <stddef.h>
+# include "minishell.h"
 
 /*
 	COMMAND,				// 0 These are the commands we need to create ("echo, cd, pwd, export, unset, env, exit")
@@ -47,7 +48,7 @@
 	// COMMENT,				// we do not need to handle comments
 	// PATH_EXP,			// we do not need this
  */
-
+/*
 typedef enum e_token_type // good to have an order like below
 {
 	COMMAND,
@@ -77,7 +78,7 @@ typedef struct s_token
 	t_token_type	type;
 	t_slice			lexeme;
 }					t_token;
-
+*/
 t_token		new_token(t_token_type type, char *start, size_t length);
 void		print_token(const t_token token);
 int			compare_token(const t_token *token, const char *str);

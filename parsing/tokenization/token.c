@@ -100,7 +100,7 @@ t_token tmp_unknown_token (t_scanner *self)
 	self->char_itr.cursor++;
 	return (self->next);
 }
-
+/*
 t_token env_var_token(t_scanner *self)
 {
     t_slice expanded;
@@ -115,7 +115,7 @@ t_token env_var_token(t_scanner *self)
 
     return self->next;
 }
-
+*/
 t_token abs_path_token(t_scanner *self)
 {
 	self->next.type = ABS_PATH;
@@ -255,7 +255,7 @@ t_token single_quote_token(t_scanner *self)
     }
 
     self->next.lexeme.length = self->char_itr.cursor - self->next.lexeme.start - 1;
-    return self->next;
+    return (self->next);
 }
 
 char *get_env_vvalue(t_scanner *self)
@@ -286,6 +286,80 @@ char *get_env_vvalue(t_scanner *self)
 
     return value;
 }
+
+void free_t_slice(t_slice *slice)
+{
+    if (slice && slice->start)
+    {
+        free((char *)slice->start); // Cast to char* for dynamic memory
+        slice->start = NULL;        // Prevent dangling pointer
+        slice->length = 0;          // Reset length
+    }
+}
+
+t_token handle_expansions(t_scanner *self)
+{
+    t_token    token;
+    char       *expanded;
+    char       *tmp;
+    t_slice    var;
+
+    // Initialize the token
+    token.type = ENV_VAR;
+    expanded = ft_strdup(""); // Start with an empty string
+    if (!expanded)
+    {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    // Process the expansion
+    while (*self->char_itr.cursor && (ft_isalnum(*self->char_itr.cursor) || *self->char_itr.cursor == '_' || *self->char_itr.cursor == '$'))
+    {
+        if (*self->char_itr.cursor == '$')
+        {
+            self->char_itr.cursor++; // Move past the `$`
+            if (*self->char_itr.cursor == '?') // Handle `$?`
+            {
+                tmp = expanded;
+                var.start = ft_itoa(self->msh->ret_exit); // Get exit code
+                var.length = ft_strlen(var.start);
+                expanded = ft_strjoin(expanded, var.start);
+                free(tmp);       // Free previous expanded
+                free_t_slice(&var); // Free temporary result
+                self->char_itr.cursor++; // Move past the `?`
+            }
+            else if (*self->char_itr.cursor == '\0') // Handle standalone `$`
+            {
+                tmp = expanded;
+                expanded = ft_strjoin(expanded, "$");
+                free(tmp);
+            }
+            else // Handle normal environment variables
+            {
+                var = expand_env_var(self);
+                tmp = expanded;
+                expanded = ft_strjoin(expanded, var.start);
+                free(tmp);       // Free previous expanded
+                free_t_slice(&var); // Free temporary result
+            }
+        }
+        else // Append non-expansion characters
+        {
+            tmp = expanded;
+            expanded = ft_strjoin_free_s1(expanded, ft_substr(self->char_itr.cursor, 0, 1));
+            free(tmp);
+            self->char_itr.cursor++;
+        }
+    }
+
+    // Populate the token with the expanded string
+    token.lexeme.start = expanded;
+    token.lexeme.length = ft_strlen(expanded);
+
+    return (token);
+}
+
 
 t_slice expand_env_var(t_scanner *self)
 {
@@ -323,7 +397,7 @@ t_slice expand_env_var(t_scanner *self)
 }
 
 // ... existing code ...
-
+/*
 char *handle_expansions(const char *arg, t_context *msh)
 {
     if (!arg || !*arg)
@@ -339,3 +413,4 @@ char *handle_expansions(const char *arg, t_context *msh)
 
     return ft_strdup(arg);
 }
+*/

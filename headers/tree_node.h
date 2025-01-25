@@ -27,6 +27,7 @@ typedef union u_node_value	t_node_value;
 typedef struct s_tree_node	t_tree_node;
 
 // node selector, like pick one and put it on the node struct (saves memory).
+/*
 typedef enum e_node_type
 {
 	// N_ERR = -1, just an idea for now
@@ -60,8 +61,7 @@ struct s_redircmd
 	int heredoc_pipe[2];	  // Pipe for heredoc data transfer
 	pid_t heredoc_pid;		// Process ID for heredoc handling
 };
-
-
+*/
 
 /*
 struct						s_redircmd
@@ -83,7 +83,7 @@ struct						s_redircmd
 
 	struct s_redir			*next;
 };
- */
+
 struct						s_execcmd
 {
 	char					**args;
@@ -107,7 +107,7 @@ struct						s_tree_node
 	t_node_type				type;
 	t_node_value			data;
 };
-
+*/
 /* typedef struct s_listcmd
 {
 	t_node_type type;
