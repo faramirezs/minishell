@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/25 20:47:01 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/25 20:55:05 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,45 +45,47 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 
 	args_collector(&scanner->next, args);
 
-	while (scanner_has_next(scanner) && scanner->next.type != PIPE)
-    {
-        scanner->next = scanner_next(scanner);
-
-        if (scanner->next.type == PIPE)
-        {
-            pipe_flag++;
-            break;
-        }
-
-        // Check for redirection during argument collection
-        if (check_redir(scanner))
-        {
-            free(args->count);
-            free(args);
-            free(node);
-            return parse_redir(scanner, args);
-        }
-
-			(*(args->count))++;
-			args_collector(&scanner->next, args);
-		}
-		if(pipe_flag > 0)
+	if(scanner_has_next(scanner))
+	{
+		while (scanner_has_next(scanner) && scanner->next.type != PIPE)
 		{
-			if(scanner_has_next(scanner))
+			scanner->next = scanner_next(scanner);
+
+			if (scanner->next.type == PIPE)
 			{
-				//scanner->next = scanner_next(scanner); //skip pipe token
-				//printf("Node type PIPE\n");
-				pipe_flag = 0;
-				return(parse_pipe(scanner, args));
+				pipe_flag++;
+				break;
+			}
+
+			// Check for redirection during argument collection
+			if (check_redir(scanner))
+			{
+				free(args->count);
+				free(args);
+				//free(node);
+				return parse_redir(scanner, args);
+			}
+
+				(*(args->count))++;
+				args_collector(&scanner->next, args);
+			}
+			if(pipe_flag > 0)
+			{
+				if(scanner_has_next(scanner))
+				{
+					//scanner->next = scanner_next(scanner); //skip pipe token
+					//printf("Node type PIPE\n");
+					pipe_flag = 0;
+					return(parse_pipe(scanner, args));
+				}
+				else
+				{
+					//Aqui en lugar de retornar node, deberia retornar error. Porque este node esta vacio
+					//printf("No arguments after pipe\n");
+					exit(EXIT_FAILURE);
+				}
 			}
 			else
-			{
-				//Aqui en lugar de retornar node, deberia retornar error. Porque este node esta vacio
-				//printf("No arguments after pipe\n");
-				exit(EXIT_FAILURE);
-			}
-		}
-		else
 			{
 				//if we arrived here, we can free node
 				//printf("Node type EXEC\n");
@@ -92,11 +94,9 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 			}
 	}
 	else
-	{
 		return(parse_exec(args));
-	}
-
 }
+
 t_tree_node *parse_exec(t_args *args)
 {
 	t_tree_node *node;

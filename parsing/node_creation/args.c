@@ -93,6 +93,8 @@ void free_string_array(char ***array)
 
 void free_args(t_args **args)
 {
+	int i;
+	
 	if (args && *args)
 	{
 		if ((*args)->words)
