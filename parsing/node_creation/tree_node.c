@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/24 20:54:25 by alramire         ###   ########.fr       */
+/*   Updated: 2025/01/25 20:47:01 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 	args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
 	args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
 
-	scanner->next = scanner_next(scanner);
 	*(args->count) = 1;
+	scanner->next = scanner_next(scanner);
 
 	// Check if it's a redirection before collecting args
 	if (check_redir(scanner))
@@ -45,22 +45,24 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 
 	args_collector(&scanner->next, args);
 
-	if(scanner_has_next(scanner))
-	{
-		while(scanner->next.type != PIPE && scanner_has_next(scanner))
-		{
-			scanner->next = scanner_next(scanner);
-			if(scanner->next.type == PIPE)
-			{
-				pipe_flag++;
-				break;
-			}
+	while (scanner_has_next(scanner) && scanner->next.type != PIPE)
+    {
+        scanner->next = scanner_next(scanner);
 
-			// Check for redirections after initial args
-			if (check_redir(scanner))
-			{
-				return parse_redir(scanner, args);
-			}
+        if (scanner->next.type == PIPE)
+        {
+            pipe_flag++;
+            break;
+        }
+
+        // Check for redirection during argument collection
+        if (check_redir(scanner))
+        {
+            free(args->count);
+            free(args);
+            free(node);
+            return parse_redir(scanner, args);
+        }
 
 			(*(args->count))++;
 			args_collector(&scanner->next, args);
@@ -109,6 +111,8 @@ t_tree_node *parse_exec(t_args *args)
 	//free_args(&args); ya se hizo en copy_string_array
 	//print_array(node->data.exec_u.args);
 	//print_args(args);
+	//free(args->count);
+    //free(args);
 	return(node);
 }
 
@@ -180,7 +184,10 @@ void free_tree_node(t_tree_node *node)
 	else if (node->type == N_PIPE)
 	{
 		free_tree_node(node->data.pipe_u.left);
-		free_tree_node(node->data.pipe_u.right);
+        node->data.pipe_u.left = NULL;
+
+        free_tree_node(node->data.pipe_u.right);
+        node->data.pipe_u.right = NULL;
 	}
 	else if (node->type == N_EXEC)
 	{

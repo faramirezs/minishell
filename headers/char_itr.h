@@ -21,12 +21,13 @@
 # define SYMBOLS "\\;()#&`*~|"
 # define NOBRKSYMS "_.?:-+="
 
+/*
 typedef struct s_chart_itr
 {
 	const char	*cursor;
 	const char	*sentinel1;
 }				t_char_itr;
-
+*/
 t_char_itr		char_itr_value(const char *star, size_t length);
 
 const char		*char_itr_cursor(const t_char_itr *self);

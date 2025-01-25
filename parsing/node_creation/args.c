@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   args.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/10 17:32:06 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/24 18:42:37 by alramire         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   args.c											 :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: alejandroramirez <alejandroramirez@stud	+#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2025/01/10 17:32:06 by alramire		  #+#	#+#			 */
+/*   Updated: 2025/01/15 15:50:29 by alejandrora	  ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #include "../../headers/args.h"
@@ -97,7 +97,15 @@ void free_args(t_args **args)
 	{
 		if ((*args)->words)
 		{
-			free_string_array(&(*args)->words);
+			i = 0;
+			while (i < *((*args)->count))
+			{
+				free((*args)->words[i]);
+				(*args)->words[i] = NULL;
+				i++;
+			}
+			free((*args)->words);
+			(*args)->words = NULL;
 		}
 		if ((*args)->count)
 		{

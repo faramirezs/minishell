@@ -10,8 +10,8 @@
 /*																			*/
 /* ************************************************************************** */
 
-#include "headers/minishell.h"
-#include "headers/tree_node.h" // Include the header for tree_node
+#include "../headers/minishell.h"
+//#include "headers/tree_node.h" // Include the header for tree_node
 /*
 int	main(int argc, char **argv)
 {
@@ -85,7 +85,7 @@ int	main(int argc, char **argv)
 void shell_loop(t_context *msh)
 {
 	char *line;
-	t_char_itr		itr;
+//	t_char_itr		itr;
 	t_scanner		scanner;
 	t_tree_node		*tree_node;
 
@@ -98,8 +98,7 @@ void shell_loop(t_context *msh)
 			break; // Ctrl-D exit
 		}
 		add_history(line);
-		itr = char_itr_value(line, ft_strlen(line));
-		scanner = scanner_value(itr);
+		scanner = scanner_value(char_itr_value(line, ft_strlen(line)));
 		scanner.msh = msh;
 		tree_node = parse_tree_node(&scanner);
 		msh->ret_exit = exec(tree_node, msh);
@@ -109,7 +108,6 @@ void shell_loop(t_context *msh)
 		else
 			msh->ret_exit = exec(tree_node); */
 		free(line);
-		free(tree_node);
 	}
 }
 

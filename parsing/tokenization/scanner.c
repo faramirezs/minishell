@@ -63,7 +63,8 @@ t_token scanner_peek(t_scanner *self)
 		else if (c == '<')
 			return (redir_in_token(self));
 		else if (c == '$')
-			return (env_var_token(self));
+			return (handle_expansions(self));
+//			return (env_var_token(self));
 		else if (c == '\"')
 			return (double_quote_token(self));
 		else if (c == '\'')

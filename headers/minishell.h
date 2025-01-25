@@ -43,8 +43,11 @@
 extern volatile sig_atomic_t g_heredoc_interrupt;
 
 // Parsing headers
-# include "token.h" // token structs and functions
+# include "structs.h"
 # include "char_itr.h"
+# include "token.h" // token structs and functions
+# include "env_var.h"
+	// this already should include all the env_var headers inside
 # include "scanner.h"
 # include "args.h"
 # include "tree_node.h"
@@ -52,11 +55,6 @@ extern volatile sig_atomic_t g_heredoc_interrupt;
 
 
 // Args collector
-
-
-
-# include "env_var.h"
-	// this already should include all the env_var headers inside
 
 // Execution headers
 # include "built_in.h"
