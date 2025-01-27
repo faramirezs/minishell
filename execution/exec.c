@@ -173,12 +173,27 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 	pid_t pid;
 	int status;
 
-	if (is_builtin(node) && ctx->fd[0] == STDIN_FILENO && ctx->fd[1] == STDOUT_FILENO)
+	if (is_builtin(node))
+        {
+			if (ctx->fd[0] != STDIN_FILENO)
+			{
+				dup2(ctx->fd[0], STDIN_FILENO);
+				close(ctx->fd[0]);
+			}
+			if (ctx->fd[1] != STDOUT_FILENO)
+				{
+					dup2(ctx->fd[1], STDOUT_FILENO);
+					close(ctx->fd[1]);
+				}
+			printf("Executing builtin\n");
+			return execute_builtin(node, ctx);
+        }
+	/* if (is_builtin(node) && ctx->fd[0] == STDIN_FILENO && ctx->fd[1] == STDOUT_FILENO)
         {
             printf("Executing builtin\n");
 			return execute_builtin(node, ctx);
-        }
-	printf("Executing $PATH functions\n");
+        } */
+
 	pid = fork();
 	if (pid == -1)
 	{
@@ -199,16 +214,17 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 			close(ctx->fd[1]);
 		}
 		// Execute builtin or external command
-		if (is_builtin(node))
+		/* if (is_builtin(node))
 		{
+			printf("Executing BUILTIN function\n");
 			exit(execute_builtin(node, ctx));
 		}
-		else
-		{
-			execvp(node->data.exec_u.args[0], node->data.exec_u.args);
-			perror("execvp");
-			exit(127);
-		}
+		else */
+		printf("Executing $PATH function\n");
+		execvp(node->data.exec_u.args[0], node->data.exec_u.args);
+		perror("execvp");
+		exit(127);
+
     }
 	// Parent process
 	if (ctx->fd[0] != STDIN_FILENO)

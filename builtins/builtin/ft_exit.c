@@ -22,5 +22,8 @@ int handle_exit(struct s_tree_node *node, t_context *msh)
 		exit (255);
 	}
 	msh->ret_exit = (int)exit_code;
-	exit ((int)exit_code);
+	//free_string_array(&node->data.exec_u.args);
+	cleanup(node, msh->ret_exit);
+	return (int)exit_code;
+	//exit ((int)exit_code);
 }
