@@ -18,12 +18,14 @@ void	check_shlvl(t_context *msh)
 	if (!value || ft_isdigit(value[0]) == 0)
 	{
 		printf("Warning: invalid SHLVL value. Resetting to 1\n");
-		free (value);
-		msh->env = ms_matrix_add_line (msh->env, "SHLVL=1");
+		
+		printf("Before add_line: msh->env = %p\n", (void *)msh->env);
+		msh->env = ms_matrix_add_line(msh->env, "SHLVL=1");
+		printf("After add_line: msh->env = %p\n", (void *)msh->env);
 		return ;
 	}
 	shlvl = ft_atoi (value);
-	free (value);
+	
 	if (shlvl < 0)
 		shlvl = 1;
 	else
@@ -33,27 +35,4 @@ void	check_shlvl(t_context *msh)
 	free (value);
 	ms_set_env (msh->env, msh, new_var);
 	free (new_var);
-}
-
-void	init_env(char **env, t_context *msh)
-{
-	int i;
-
-	i = 0;
-	if (!env)
-	{
-		fprintf(stderr, "Error: env is NULL\n");
-		exit(EXIT_FAILURE);
-	}
-	while (env[i])
-		i++;
-	msh->env = OOM_GUARD(malloc(sizeof(char *) * (i + 1)), __FILE__, __LINE__);
-	i = 0;
-	while (env[i])
-	{
-		msh->env[i] = ft_strdup (env[i]);
-		i++;
-	}
-	msh->env[i] = NULL;
-	check_shlvl(msh);
 }

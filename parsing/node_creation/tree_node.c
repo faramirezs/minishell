@@ -19,36 +19,32 @@
 
 //YouTube video min 7:45 https://youtu.be/sUxFE32tXF0?si=73UiqQEYAERD3fdD
 
-t_tree_node *parse_tree_node (t_scanner *scanner)
+t_tree_node *parse_tree_node(t_scanner *scanner)
 {
-	t_tree_node	*node = NULL;
-	t_args		*args = NULL;
-	int			pipe_flag;
-	//int			redir_i;
+    t_tree_node *node = NULL;
+    t_args *args = NULL;
+    int pipe_flag = 0;
 
-	pipe_flag = 0;
-	//redir_i = 0;
+    node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
+    args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
+    args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
+    *(args->count) = 1;
 
-	node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
-	args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
-	args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
+    scanner->next = scanner_next(scanner);
 
-	*(args->count) = 1;
-	scanner->next = scanner_next(scanner);
-
-	// Check if it's a redirection before collecting args
-	if (check_redir(scanner))
-	{
-	//	node->type = N_REDIR;
-		free(args->count);
+    // Check if it's a redirection
+    if (check_redir(scanner))
+    {
+        t_tree_node *redir_node = parse_redir(scanner, NULL);
+        free(args->count); // Clean up args
         free(args);
-        free(node);
-		return parse_redir(scanner, NULL);
-	}
+        free(node);        // Clean up node
+        return redir_node; // Return redirection node
+    }
 
-	args_collector(&scanner->next, args);
+    args_collector(&scanner->next, args);
 
-	while (scanner_has_next(scanner) && scanner->next.type != PIPE)
+    while (scanner_has_next(scanner) && scanner->next.type != PIPE)
     {
         scanner->next = scanner_next(scanner);
 
@@ -58,13 +54,13 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
             break;
         }
 
-        // Check for redirection during argument collection
         if (check_redir(scanner))
         {
-            free(args->count);
-            free(args);
-            free(node);
-            return parse_redir(scanner, args);
+            t_tree_node *redir_node = parse_redir(scanner, args);
+            //free(args->count); // Clean up args
+            //free(args);
+            free(node);        // Clean up node
+            return redir_node; // Return redirection node
         }
 
         (*(args->count))++;
@@ -84,13 +80,13 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
             free(args);
             free(node);
             printf("No arguments after pipe\n");
-            return NULL; // Avoid leaking memory on error
+            return NULL;
         }
     }
 
     // If no pipe is found, parse the collected arguments
     free(node); // Node will be reallocated in parse_exec
-    return (parse_exec(args));
+    return parse_exec(args);
 }
 
 t_tree_node *parse_exec(t_args *args)

@@ -30,6 +30,7 @@ void 		free_env(char **env);
 void 		cleanup_context(t_context *msh);
 t_context	*init_context(char **envp);
 char		*expand_env_var_value(const char *var_name, t_context *msh);
-
+char		**duplicate_env(char **env);
+void		check_shlvl(t_context *msh);
 
 #endif

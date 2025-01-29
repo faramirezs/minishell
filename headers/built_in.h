@@ -23,6 +23,7 @@ void	free_builtin_list(bld_in *head);
 int	 is_builtin(t_tree_node *node);
 int 	execute_builtin(t_tree_node *node, t_context *msh);
 void 	add_builtin(bld_in **head, const char *name, int (*func)(struct s_tree_node *node, t_context *msh));
+void	pipe_builtin(t_tree_node *node, t_context *msh);
 
 #endif
 

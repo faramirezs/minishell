@@ -4,15 +4,15 @@
 void set_pwd(t_context *msh, char *av, char *cwd)
 {
 	char	*string;
-	int		i;
+	// int		i;
 
-	printf("handle_env: msh->env = %p\n", (void *)msh->env);
-	i = 0;
-	while (msh->env && msh->env[i])
-	{
-		printf("  msh->env[%d]: %s\n", i, msh->env[i]);
-		i++;
-	}
+	// printf("handle_env: msh->env = %p\n", (void *)msh->env);
+	// i = 0;
+	// while (msh->env && msh->env[i])
+	// {
+	// 	printf("  msh->env[%d]: %s\n", i, msh->env[i]);
+	// 	i++;
+	// }
 
 
 	string = ft_strjoin(av, cwd); // Concatenate "PWD=" or "OLDPWD=" with the current directory

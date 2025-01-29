@@ -155,83 +155,186 @@ int exec(t_tree_node *node)
 
 static int exec_command(t_tree_node *node, t_context *ctx)
 {
-	pid_t pid;
-	
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("fork");
-		return -1;
-	}
-	if (pid == FORKED_CHILD)
-	{
-		//printf("Child pID: %d\n", getpid());
-		//evaluate the context and act on
-		dup2(ctx->fd[STDIN_FILENO], STDIN_FILENO);
-		dup2(ctx->fd[STDOUT_FILENO], STDOUT_FILENO);
-		if(ctx->fd_close >= 0)
-			close(ctx->fd_close);
-		//printf("+++Exec_command()check+++\n");
-		//check_null_array(node->data.exec_u.args);
-		execvp(node->data.exec_u.args[0], node->data.exec_u.args);
-		perror("execvp"); // If execvp fails
-		exit(EXIT_FAILURE);
-	}
-	else if (pid > 0)
-	{
-		// Wait for the child process to finish
-		//int status;
-		//waitpid(pid, &status, 0);
+    if (is_builtin(node)) // Handle builtins first
+    {
+        if (ctx->fd[0] != STDIN_FILENO || ctx->fd[1] != STDOUT_FILENO)
+        {
+            // Piped builtin
+            pipe_builtin(node, ctx);
+        }
+        else
+        {
+            // Direct builtin
+            ctx->ret_exit = execute_builtin(node, ctx);
+        }
+        return ctx->ret_exit;
+    }
 
-		// Update the context's exit code with the child's exit status
-		//if (WIFEXITED(status))
-		//	ctx->ret_exit = WEXITSTATUS(status);
-		//else if (WIFSIGNALED(status))
-		 //   ctx->ret_exit = 128 + WTERMSIG(status); // Signal exit status
+    // External command handling
+    pid_t pid = fork();
+    if (pid == -1)
+    {
+        perror("fork");
+        return -1;
+    }
 
-		return 0; // Indicate success
-	}
-	return -1; 
+    if (pid == FORKED_CHILD)
+    {
+        // Redirect input/output for the child process
+        if (ctx->fd[0] != STDIN_FILENO)
+        {
+            dup2(ctx->fd[0], STDIN_FILENO);
+            close(ctx->fd[0]);
+        }
+        if (ctx->fd[1] != STDOUT_FILENO)
+        {
+            dup2(ctx->fd[1], STDOUT_FILENO);
+            close(ctx->fd[1]);
+        }
+        if (ctx->fd_close >= 0)
+            close(ctx->fd_close);
+
+        // Execute the command
+        execvp(node->data.exec_u.args[0], node->data.exec_u.args);
+        perror("execvp"); // If execvp fails
+        exit(127);
+    }
+    else
+    {
+        // Parent process waits for the child
+        int status;
+        waitpid(pid, &status, 0);
+        if (WIFEXITED(status))
+            ctx->ret_exit = WEXITSTATUS(status);
+        else if (WIFSIGNALED(status))
+            ctx->ret_exit = 128 + WTERMSIG(status); // Signal exit status
+
+        return ctx->ret_exit;
+    }
 }
 
 static int exec_pipe(t_tree_node *node, t_context *ctx)
 {
-	t_tree_node *lhs;
-	t_tree_node *rhs;
-	t_context lhs_ctx;
-	t_context rhs_ctx;
-	int p[2];
-	int children;
+    int pipe_fds[2];
+    t_context lhs_ctx, rhs_ctx;
 
-	children = 0;
-	if (pipe(p) == -1)
-	{
-		perror("pipe");
-		exit(EXIT_FAILURE);
-	}
+    if (pipe(pipe_fds) == -1)
+    {
+        perror("pipe");
+        return -1;
+    }
 
-	// Set up left side of pipe
-	lhs = node->data.pipe_u.left;
-	lhs_ctx = *ctx;
-	lhs_ctx.fd[STDOUT_FILENO] = p[1];
-	lhs_ctx.fd_close = p[0];
-	children += exec_node(lhs, &lhs_ctx);
+    // Set up the left context (write end of the pipe)
+    lhs_ctx = *ctx;
+    lhs_ctx.fd[STDOUT_FILENO] = pipe_fds[1];
+    lhs_ctx.fd_close = pipe_fds[0];
 
-	// Close write end in parent
-	close(p[1]);
+    // Execute the left-hand side of the pipe
+    if (is_builtin(node->data.pipe_u.left))
+        pipe_builtin(node->data.pipe_u.left, &lhs_ctx);
+    else
+        exec_node(node->data.pipe_u.left, &lhs_ctx);
 
-	// Set up right side of pipe
-	rhs = node->data.pipe_u.right;
-	rhs_ctx = *ctx;
-	rhs_ctx.fd[STDIN_FILENO] = p[0];
-	rhs_ctx.fd_close = -1;
-	children += exec_node(rhs, &rhs_ctx);
+    close(pipe_fds[1]); // Close write end of the pipe in the parent
 
-	// Close read end in parent
-	close(p[0]);
+    // Set up the right context (read end of the pipe)
+    rhs_ctx = *ctx;
+    rhs_ctx.fd[STDIN_FILENO] = pipe_fds[0];
+    rhs_ctx.fd_close = -1;
 
-	return (children);
+    // Execute the right-hand side of the pipe
+    if (is_builtin(node->data.pipe_u.right))
+        pipe_builtin(node->data.pipe_u.right, &rhs_ctx);
+    else
+        exec_node(node->data.pipe_u.right, &rhs_ctx);
+
+    close(pipe_fds[0]); // Close read end of the pipe in the parent
+
+    // Return the exit status of the last command in the pipeline
+    ctx->ret_exit = rhs_ctx.ret_exit;
+    return ctx->ret_exit;
 }
+
+
+// static int exec_command(t_tree_node *node, t_context *ctx)
+// {
+// 	pid_t pid;
+	
+// 	pid = fork();
+// 	if (pid == -1)
+// 	{
+// 		perror("fork");
+// 		return -1;
+// 	}
+// 	if (pid == FORKED_CHILD)
+// 	{
+// 		//printf("Child pID: %d\n", getpid());
+// 		//evaluate the context and act on
+// 		dup2(ctx->fd[STDIN_FILENO], STDIN_FILENO);
+// 		dup2(ctx->fd[STDOUT_FILENO], STDOUT_FILENO);
+// 		if(ctx->fd_close >= 0)
+// 			close(ctx->fd_close);
+// 		//printf("+++Exec_command()check+++\n");
+// 		//check_null_array(node->data.exec_u.args);
+// 		execvp(node->data.exec_u.args[0], node->data.exec_u.args);
+// 		perror("execvp"); // If execvp fails
+// 		exit(EXIT_FAILURE);
+// 	}
+// 	else if (pid > 0)
+// 	{
+// 		// Wait for the child process to finish
+// 		//int status;
+// 		//waitpid(pid, &status, 0);
+
+// 		// Update the context's exit code with the child's exit status
+// 		//if (WIFEXITED(status))
+// 		//	ctx->ret_exit = WEXITSTATUS(status);
+// 		//else if (WIFSIGNALED(status))
+// 		 //   ctx->ret_exit = 128 + WTERMSIG(status); // Signal exit status
+
+// 		return 0; // Indicate success
+// 	}
+// 	return -1; 
+// }
+
+// static int exec_pipe(t_tree_node *node, t_context *ctx)
+// {
+// 	t_tree_node *lhs;
+// 	t_tree_node *rhs;
+// 	t_context lhs_ctx;
+// 	t_context rhs_ctx;
+// 	int p[2];
+// 	int children;
+
+// 	children = 0;
+// 	if (pipe(p) == -1)
+// 	{
+// 		perror("pipe");
+// 		exit(EXIT_FAILURE);
+// 	}
+
+// 	// Set up left side of pipe
+// 	lhs = node->data.pipe_u.left;
+// 	lhs_ctx = *ctx;
+// 	lhs_ctx.fd[STDOUT_FILENO] = p[1];
+// 	lhs_ctx.fd_close = p[0];
+// 	children += exec_node(lhs, &lhs_ctx);
+
+// 	// Close write end in parent
+// 	close(p[1]);
+
+// 	// Set up right side of pipe
+// 	rhs = node->data.pipe_u.right;
+// 	rhs_ctx = *ctx;
+// 	rhs_ctx.fd[STDIN_FILENO] = p[0];
+// 	rhs_ctx.fd_close = -1;
+// 	children += exec_node(rhs, &rhs_ctx);
+
+// 	// Close read end in parent
+// 	close(p[0]);
+
+// 	return (children);
+// }
 
 void cleanup(t_tree_node *node, int exit_code)
 {
