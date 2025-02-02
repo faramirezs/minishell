@@ -89,6 +89,7 @@ void shell_loop(t_context *msh)
 	t_scanner		scanner;
 	t_tree_node		*tree_node;
 
+	setup_global_signals();
 	while (1)
 	{
 		line = readline("minishell> ");
@@ -102,14 +103,17 @@ void shell_loop(t_context *msh)
 		scanner = scanner_value(itr);
 		scanner.msh = msh;
 		tree_node = parse_tree_node(&scanner);
-		msh->ret_exit = exec(tree_node, msh);
-
+		if(tree_node)
+		{
+			msh->ret_exit = exec(tree_node, msh);
+			free_tree_node(tree_node);
+		}
 		/* if (is_builtin(tree_node))
 			msh->ret_exit = execute_builtin(tree_node, msh);
 		else
 			msh->ret_exit = exec(tree_node); */
 		free(line);
-		free(tree_node);
+		//free(tree_node);
 	}
 }
 
@@ -123,9 +127,8 @@ int main(int argc, char **argv, char **envp)
 	msh = init_context(envp);
 	builtins = create_builtin_list();
 	shell_loop(msh);
+	free_env(msh->env);
 	cleanup_context(msh);
 	free_builtin_list(builtins);
-	free_env(msh->env);
-
 	return msh->ret_exit;
 }

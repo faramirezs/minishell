@@ -185,7 +185,7 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 					dup2(ctx->fd[1], STDOUT_FILENO);
 					close(ctx->fd[1]);
 				}
-			printf("Executing builtin\n");
+			//printf("Executing builtin\n");
 			return execute_builtin(node, ctx);
         }
 	/* if (is_builtin(node) && ctx->fd[0] == STDIN_FILENO && ctx->fd[1] == STDOUT_FILENO)
@@ -220,7 +220,7 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 			exit(execute_builtin(node, ctx));
 		}
 		else */
-		printf("Executing $PATH function\n");
+		//printf("Executing $PATH function\n");
 		execvp(node->data.exec_u.args[0], node->data.exec_u.args);
 		perror("execvp");
 		exit(127);
@@ -254,13 +254,28 @@ static int exec_pipe(t_tree_node *node, t_context *ctx)
     // Set up contexts for left and right commands
     left_ctx.fd[1] = pipefd[1];
     right_ctx.fd[0] = pipefd[0];
-	 // Fork for left side
-    left_pid = fork();
-    if (left_pid == 0)
+
+
+	// If left side is a builtin that modifies environment, execute it directly
+    if (pcmd->left->type == N_EXEC && is_builtin(pcmd->left))
     {
-        close(pipefd[0]);  // Close unused read end
         status = exec_node(pcmd->left, &left_ctx);
-        exit(status);
+        if (status == 0)
+        {
+            // Update main context with environment changes
+            ctx->env = left_ctx.env;
+        }
+    }
+    else
+    {
+        // Fork only for non-environment-modifying commands
+        left_pid = fork();
+        if (left_pid == 0)
+        {
+            close(pipefd[0]);
+            status = exec_node(pcmd->left, &left_ctx);
+            exit(status);
+        }
     }
 
     // Fork for right side
@@ -276,8 +291,9 @@ static int exec_pipe(t_tree_node *node, t_context *ctx)
     close(pipefd[0]);
     close(pipefd[1]);
 
-    // Wait for both children
-    waitpid(left_pid, &status, 0);
+	// Wait for processes
+    if (pcmd->left->type != N_EXEC || !is_builtin(pcmd->left))
+        waitpid(left_pid, &status, 0);
     waitpid(right_pid, &status, 0);
 
     return WEXITSTATUS(status);
