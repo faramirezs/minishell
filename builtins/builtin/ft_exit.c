@@ -1,13 +1,15 @@
 #include "../headers/built_in.h"
 #include "../headers/minishell.h"
 
+#include <stdio.h> // For printf, fprintf
+
+
 static int ms_check_exit_arg(const char *arg, int *exit_code)
 {
-    int			i;
-    char		*endptr;
-    long long	num;
+    int i = 0;
+    char *endptr;
+    long long num;
 
-	i = 0;
     while (arg[i] == ' ') // Skip leading spaces
         i++;
     if (arg[i] == '+' || arg[i] == '-') // Handle optional sign
@@ -19,12 +21,12 @@ static int ms_check_exit_arg(const char *arg, int *exit_code)
         return 1;         // Error: Non-numeric argument
     }
     num = strtoll(arg, &endptr, 10); // Convert string to number
-    if (*endptr != '\0' || num < -9223372036854775807LL || num > 9223372036854775807LL) // Invalid number
-    {
-        fprintf(stderr, "minishell: exit: %s: numeric argument required\n", arg);
-        *exit_code = 255;
-        return 1;
-    }
+    // if (*endptr != '\0' || num < -9223372036854775808LL || num > 9223372036854775807LL) // Invalid number
+    // {
+    //     fprintf(stderr, "minishell: exit: %s: numeric argument required\n", arg);
+    //     *exit_code = 255;
+    //     return 1;
+    // }
     *exit_code = (int)(num % 256); // Normalize to range [0-255]
     if (*exit_code < 0)
         *exit_code += 256; // Handle negative values

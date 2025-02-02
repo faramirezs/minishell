@@ -191,6 +191,10 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 	/* if (is_builtin(node) && ctx->fd[0] == STDIN_FILENO && ctx->fd[1] == STDOUT_FILENO)
         {
             printf("Executing builtin\n");
+			ctx->ret_exit = execute_builtin(node, ctx);
+			return (ctx->ret_exit);
+        }
+	printf("Executing $PATH functions\n");
 			return execute_builtin(node, ctx);
         } */
 
