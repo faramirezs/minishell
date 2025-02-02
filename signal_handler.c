@@ -12,6 +12,7 @@
 
 #include "headers/minishell.h"
 
+
 volatile sig_atomic_t g_heredoc_interrupt = 0;
 
 void handle_sigint(int sig)
