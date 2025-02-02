@@ -108,8 +108,9 @@ void shell_loop(t_context *msh)
 			msh->ret_exit = execute_builtin(tree_node, msh);
 		else
 			msh->ret_exit = exec(tree_node); */
+		free_tree_node(tree_node);
 		free(line);
-		free(tree_node);
+		//free(tree_node);
 	}
 }
 
@@ -117,15 +118,17 @@ int main(int argc, char **argv, char **envp)
 {
 	t_context *msh;
 	bld_in *builtins;
+	int		ret_exit;
 	(void)argc;
 	(void)argv;
 
 	msh = init_context(envp);
 	builtins = create_builtin_list();
 	shell_loop(msh);
+	ret_exit = msh->ret_exit;
 	cleanup_context(msh);
 	free_builtin_list(builtins);
-	free_env(msh->env);
+	//free_env(msh->env);
 
-	return msh->ret_exit;
+	return ret_exit;
 }

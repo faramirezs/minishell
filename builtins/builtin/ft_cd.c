@@ -47,7 +47,7 @@ int	handle_cd(struct s_tree_node *node, t_context *msh)
 	}
 	if (chdir(dir) == -1)
 	{
-		fprintf (stderr, "cd: %s no such file or dir", dir);
+		fprintf (stderr, "cd: %s no such file or dir\n", dir);
 		return (1);
 	}
 	set_pwd (msh, "OLDPWD=", cwd);
