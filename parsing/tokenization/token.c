@@ -229,7 +229,6 @@ t_token single_quote_token(t_scanner *self)
     self->next.lexeme.start = ++self->char_itr.cursor; // Skip the opening single quote
     while (1)
     {
-        // Handle EOF or closing quote
         if (*self->char_itr.cursor == '\'')
         {
             self->char_itr.cursor++; // Skip closing quote
@@ -249,11 +248,9 @@ t_token single_quote_token(t_scanner *self)
             free(continuation);
             continue;
         }
-
         self->next.lexeme.length++;
         self->char_itr.cursor++;
     }
-
     self->next.lexeme.length = self->char_itr.cursor - self->next.lexeme.start - 1;
     return self->next;
 }
