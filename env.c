@@ -238,18 +238,33 @@ int ms_unset_env(t_context *msh, const char *key)
 
 void free_env(char **env)
 {
-	for (int i = 0; env[i]; i++)
+	int i;
+
+	i = 0;
+	while(env[i])
+	{
 		free(env[i]);
+		env[i] = NULL;
+	}
 	free(env);
+	env = NULL;
 }
 
 void cleanup_context(t_context *msh)
 {
 	if (msh)
 	{
-		free_env(msh->env);
-		free_env(msh->env_export);
-		free(msh);
+		if (msh->env)
+        {
+            free_env(msh->env);
+            msh->env = NULL;
+        }
+        if (msh->env_export)
+        {
+            free_env(msh->env_export);
+            msh->env_export = NULL;
+        }
+        free(msh);
 	}
 }
 
