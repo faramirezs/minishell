@@ -285,10 +285,6 @@ static int exec_pipe(t_tree_node *node, t_context *ctx)
 
 void cleanup(t_tree_node *node, int exit_code)
 {
-/* 	if (node && node->type == N_REDIR)  // Only clean heredoc for redirection nodes
-	{
-		cleanup_heredoc(&node->data.redir_u);
-	} */
 	free_tree_node(node);
 	clear_history();
 	exit(exit_code);
