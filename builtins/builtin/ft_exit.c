@@ -1,26 +1,65 @@
 #include "../headers/built_in.h"
 #include "../headers/minishell.h"
 
+static int ms_check_exit_arg(const char *arg, int *exit_code)
+{
+    int			i;
+    char		*endptr;
+    long long	num;
+
+	i = 0;
+    while (arg[i] == ' ') // Skip leading spaces
+        i++;
+    if (arg[i] == '+' || arg[i] == '-') // Handle optional sign
+        i++;
+    if (!isdigit(arg[i])) // If first non-sign character isn't a digit
+    {
+        fprintf(stderr, "minishell: exit: %s: numeric argument required\n", arg);
+        *exit_code = 255; // Numeric argument required -> Exit with 255
+        return 1;         // Error: Non-numeric argument
+    }
+    num = strtoll(arg, &endptr, 10); // Convert string to number
+    if (*endptr != '\0' || num < -9223372036854775807LL || num > 9223372036854775807LL) // Invalid number
+    {
+        fprintf(stderr, "minishell: exit: %s: numeric argument required\n", arg);
+        *exit_code = 255;
+        return 1;
+    }
+    *exit_code = (int)(num % 256); // Normalize to range [0-255]
+    if (*exit_code < 0)
+        *exit_code += 256; // Handle negative values
+    return 0; // Success
+}
+
 int handle_exit(struct s_tree_node *node, t_context *msh)
 {
-	long	exit_code;
-	const char	*av;
-	char	*endptr;
+    int exit_code;
 
-	if (!node || !node->data.exec_u.args[1] || !node->data.exec_u.args)
-	{
-		msh->ret_exit = 0;
-		exit(0);
-	}
-	av = node->data.exec_u.args[1];
-	endptr = NULL;
-	exit_code = ft_strtol (av, &endptr, 10);
-	if (*endptr != '\0' || exit_code < 0 || exit_code > 255)
-	{
-		fprintf (stderr, "exit: %s numeric av requided\n", av);
-		msh->ret_exit = 255;
-		exit (255);
-	}
-	msh->ret_exit = (int)exit_code;
-	exit ((int)exit_code);
+    // No arguments: Exit with status 0
+    if (!node || !node->data.exec_u.args[1])
+    {
+        msh->ret_exit = 0;
+        printf("exit\n");
+        exit(0);
+    }
+
+    // Check and validate the first argument
+    if (ms_check_exit_arg(node->data.exec_u.args[1], &exit_code))
+    {
+        msh->ret_exit = 255; // Assign error exit code
+        exit(255);           // Exit with 255 for invalid argument
+    }
+
+    // If more than one argument is passed, print error but don't exit
+    if (node->data.exec_u.args[2] != NULL)
+    {
+        fprintf(stderr, "minishell: exit: too many arguments\n");
+        msh->ret_exit = 1; // Error for too many arguments
+        return 1;
+    }
+
+    // Valid exit code: Exit with the parsed value
+    msh->ret_exit = exit_code;
+    printf("exit\n");
+    exit(exit_code);
 }

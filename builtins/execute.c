@@ -37,32 +37,3 @@ int execute_builtin(t_tree_node *node, t_context *msh)
 	free_builtin_list(builtins);
 	return (msh->ret_exit);
 }
-/*
-void execute_builtin(t_tree_node *node, t_context *msh)
-{
-	char **args;
-
-	args = node->data.exec_u.args;
-
-	if (strcmp(args[0], "cd") == 0)
-		handle_cd(args, msh);
-	else if (strcmp(args[0], "echo") == 0)
-		handle_echo(args, msh);
-	else if (strcmp(args[0], "pwd") == 0)
-		handle_pwd(args, msh);
-	else if (strcmp(args[0], "export") == 0)
-		handle_export(args, msh);
-	else if (strcmp(args[0], "unset") == 0)
-		handle_unset(args, msh);
-	else if (strcmp(args[0], "env") == 0)
-		handle_env(args, msh);
-	else if (strcmp(args[0], "exit") == 0)
-		handle_exit(args, msh);
-	else
-	{
-		// Error handling for unknown commands
-		fprintf(stderr, "minishell: %s: command not found\n", args[0]);
-		msh->ret_exit = 127; // Set exit code for "command not found"
-	}
-}
-*/

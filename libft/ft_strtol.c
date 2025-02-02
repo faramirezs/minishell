@@ -2,12 +2,15 @@
 
 long ft_strtol(const char *str, char **endptr, int base)
 {
-    const char *ptr = str;
-    long result = 0;
-    int sign = 1;
-    int digit;
+    const char	*ptr;
+    long		result;
+    int			sign;
+    int			digit;
 
-    // Skip leading whitespace
+    ptr = str;
+	result = 0;
+	sign = 1;
+	// Skip leading whitespace
     while (*ptr == ' ' || *ptr == '\t' || *ptr == '\n' ||
            *ptr == '\v' || *ptr == '\f' || *ptr == '\r')
         ptr++;

@@ -32,9 +32,11 @@ int process_key_value(char *arg, t_context *msh)
 
 int	handle_export(struct s_tree_node *node, t_context *msh)
 {
-	int i;
-	char *arg;
-	int in_pipe = (msh->fd[0] != STDIN_FILENO || msh->fd[1] != STDOUT_FILENO);
+	int		i;
+	char	*arg;
+	int		in_pipe;
+	
+	in_pipe = (msh->fd[0] != STDIN_FILENO || msh->fd[1] != STDOUT_FILENO);
 
 	if (!node->data.exec_u.args[1])
 	{

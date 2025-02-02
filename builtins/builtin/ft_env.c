@@ -10,11 +10,13 @@ int handle_env(struct s_tree_node *node, t_context *msh)
 	if (!msh->env)
 	{
 		fprintf(stderr, "Error: msh->env is NULL in handle_env\n");
+		msh->ret_exit = 1;
 		return (1);
 	}
 	while (msh->env[i])
 	{
 		printf("%s\n", msh->env[i++]);
 	}
+	msh->ret_exit = 0;
 	return (0);
 }
