@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:32:06 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/24 18:42:37 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/02 17:00:30 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ void free_string_array(char ***array)
 			while ((*array)[i] != NULL)
 			{
 				free((*array)[i]);
-				//(*array)[i] = NULL;
+				(*array)[i] = NULL;
 				i++;
 			}
 			free((*array));
