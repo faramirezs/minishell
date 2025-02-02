@@ -185,8 +185,8 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 					dup2(ctx->fd[1], STDOUT_FILENO);
 					close(ctx->fd[1]);
 				}
-			printf("Executing builtin\n");
-			return execute_builtin(node, ctx);
+			//printf("Executing builtin\n");
+			return (execute_builtin(node, ctx));
         }
 	/* if (is_builtin(node) && ctx->fd[0] == STDIN_FILENO && ctx->fd[1] == STDOUT_FILENO)
         {
