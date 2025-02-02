@@ -35,25 +35,25 @@ void	check_shlvl(t_context *msh)
 	free (new_var);
 }
 
-void	init_env(char **env, t_context *msh)
-{
-	int i;
+// void	init_env(char **env, t_context *msh)
+// {
+// 	int i;
 
-	i = 0;
-	if (!env)
-	{
-		fprintf(stderr, "Error: env is NULL\n");
-		exit(EXIT_FAILURE);
-	}
-	while (env[i])
-		i++;
-	msh->env = OOM_GUARD(malloc(sizeof(char *) * (i + 1)), __FILE__, __LINE__);
-	i = 0;
-	while (env[i])
-	{
-		msh->env[i] = ft_strdup (env[i]);
-		i++;
-	}
-	msh->env[i] = NULL;
-	check_shlvl(msh);
-}
+// 	i = 0;
+// 	if (!env)
+// 	{
+// 		fprintf(stderr, "Error: env is NULL\n");
+// 		exit(EXIT_FAILURE);
+// 	}
+// 	while (env[i])
+// 		i++;
+// 	msh->env = OOM_GUARD(malloc(sizeof(char *) * (i + 1)), __FILE__, __LINE__);
+// 	i = 0;
+// 	while (env[i])
+// 	{
+// 		msh->env[i] = ft_strdup (env[i]);
+// 		i++;
+// 	}
+// 	msh->env[i] = NULL;
+// 	check_shlvl(msh);
+// }

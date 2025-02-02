@@ -239,12 +239,15 @@ int ms_unset_env(t_context *msh, const char *key)
 void free_env(char **env)
 {
 	int i;
-
-	i = 0;
-	while(env[i])
+	if(env)
 	{
-		free(env[i]);
-		env[i] = NULL;
+		i = 0;
+		while(env[i])
+		{
+			free(env[i]);
+			env[i] = NULL;
+			i++;
+		}
 	}
 	free(env);
 	env = NULL;

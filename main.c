@@ -120,6 +120,7 @@ void shell_loop(t_context *msh)
 int main(int argc, char **argv, char **envp)
 {
 	t_context *msh;
+	int ret_exit;
 	bld_in *builtins;
 	(void)argc;
 	(void)argv;
@@ -127,8 +128,9 @@ int main(int argc, char **argv, char **envp)
 	msh = init_context(envp);
 	builtins = create_builtin_list();
 	shell_loop(msh);
-	free_env(msh->env);
+	//free_env(msh->env);
+	ret_exit = msh->ret_exit;
 	cleanup_context(msh);
 	free_builtin_list(builtins);
-	return msh->ret_exit;
+	return (ret_exit);
 }
