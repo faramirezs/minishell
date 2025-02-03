@@ -224,9 +224,9 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 			exit(execute_builtin(node, ctx));
 		}
 		else */
-		printf("Executing $PATH function\n");
+		//printf("Executing $PATH function\n");
 		execvp(node->data.exec_u.args[0], node->data.exec_u.args);
-		perror("execvp");
+		//perror("execvp");
 		exit(127);
 
     }

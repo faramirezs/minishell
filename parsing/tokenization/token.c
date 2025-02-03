@@ -208,6 +208,7 @@ t_token double_quote_token(t_scanner *self)
         {
             var = expand_env_var(self);
             expanded = ft_strjoin_free_s1(expanded, var.start);
+            printf ("the var in quotes is %s\n", var.start);
         }
         else
         {
