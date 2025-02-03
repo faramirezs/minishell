@@ -56,68 +56,6 @@ void args_collector(t_token *token, t_args *args)
 }
 
 
-// void args_collector(t_token *token, t_args *args)
-// {
-//     char **temp;
-//     int i = 0, j = 0;
-//     char quote_char = 0;
-
-//     // Handle the case where no arguments are provided (empty input or just pressing Enter)
-//     if (*(args->count) == 0)
-//     {
-//         args->words = NULL; // No arguments to process
-//         return;
-//     }
-
-//     // Always allocate space for at least one argument (count + 1 for NULL termination)
-//     temp = OOM_GUARD(malloc((*(args->count) + 1) * sizeof(char *)), __FILE__, __LINE__);
-
-//     while (i < *(args->count))
-//     {
-//         // Handle quoted arguments (either single or double quotes)
-//         if (args->words[i][0] == '\'' || args->words[i][0] == '"')
-//         {
-//             quote_char = args->words[i][0];  // Remember which quote is used
-//             // Use the token's start pointer and length to extract the argument with quotes
-//             temp[j] = OOM_GUARD(malloc((token->lexeme.length + 1) * sizeof(char)), __FILE__, __LINE__);
-//             ft_strlcpy(temp[j], token->lexeme.start, token->lexeme.length + 1);
-//             j++;
-
-//             i++;  // Move to the next word
-
-//             // Collect characters until closing quote is found
-//             while (args->words[i] && args->words[i][0] != quote_char)
-//             {
-//                 temp[j] = OOM_GUARD(malloc((token->lexeme.length + 1) * sizeof(char)), __FILE__, __LINE__);
-//                 j++;
-//                 i++;
-//             }
-
-//             // Handle the closing quote
-//             if (args->words[i] && args->words[i][0] == quote_char)
-//             {
-//                 temp[j] = OOM_GUARD(ft_strdup(args->words[i]), __FILE__, __LINE__);
-//                 j++;
-//                 i++;
-//             }
-//         }
-//         else
-//         {
-//             // Handle normal arguments (non-quoted)
-//             temp[j] = OOM_GUARD(ft_strdup(args->words[i]), __FILE__, __LINE__);
-//             j++;
-//             i++;
-//         }
-//     }
-
-//     temp[j] = NULL;  // Null-terminate the argument array
-//     free_string_array(&args->words);
-//     args->words = temp;
-
-//     print_args(args);  // Print the result
-// }
-
-
 char **copy_string_array(t_args *args)
 {
 	int i;
