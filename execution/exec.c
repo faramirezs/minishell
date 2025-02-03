@@ -165,7 +165,7 @@ int exec(t_tree_node *node, t_context *msh)
 		wait(&status);
 		children--;
 	}
-	return (0);
+	return (msh->ret_exit);
 }
 
 static int exec_command(t_tree_node *node, t_context *ctx)
@@ -221,9 +221,10 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 		}
 		else */
 		printf("Executing $PATH function\n");
-		//execvp(node->data.exec_u.args[0], node->data.exec_u.args);
+		execvp(node->data.exec_u.args[0], node->data.exec_u.args);
 		perror("execvp");
-		exit(127);
+		cleanup(node, 127);
+		//exit(127);
 
     }
 	// Parent process
@@ -232,6 +233,8 @@ static int exec_command(t_tree_node *node, t_context *ctx)
     if (ctx->fd[1] != STDOUT_FILENO)
         close(ctx->fd[1]);
     waitpid(pid, &status, 0);
+	//printf("External command returned: %d\n", WEXITSTATUS(status));
+	//ctx->ret_exit = WEXITSTATUS(status);
     return WEXITSTATUS(status);
 }
 
