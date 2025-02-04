@@ -5,17 +5,17 @@ int is_valid_key(const char *key)
 {
 	int i;
 
-	i = 1;
+	i = 0;
     if (!key || (!ft_isalpha(key[0]) && key[0] != '_'))  // Key must start with a letter or underscore
-        return 0;
+        return (0);
     
     while (key[i] != '\0')  // After the first character, key must contain only alphanumeric or underscores
     {
         if (!ft_isalnum(key[i]) && key[i] != '_')
-            return 0;
+            return (0);
 		i++;
     }
-    return 1;
+    return (1);
 }
 
 int process_key_value(char *arg, t_context *msh)
@@ -48,12 +48,16 @@ int process_key_value(char *arg, t_context *msh)
         *equal_sign = '='; // Restore the original argument
         return (1); // Successfully processed
     }
-    else if (is_valid_key(arg))
+    else
     {
-        // Valid identifier without assignment (e.g., export VAR)
-        return 1;
+        if (is_valid_key(arg)){
+            fprintf(stderr, "DEBUG: Valid key without '=': %s\n", arg);
+            return (1);
+        }
+        fprintf(stderr, "DEBUG: Invalid key without '=': %s\n", arg);
+        return (0);
     }
-    return 0; // Failed to process (no '=' found)
+    return (0); // Failed to process (no '=' found)
 }
 
 int	handle_export(struct s_tree_node *node, t_context *msh)
@@ -92,5 +96,7 @@ int	handle_export(struct s_tree_node *node, t_context *msh)
             i++;
         }
     }
+    msh->ret_exit = status;
+    fprintf (stderr, "the status is %d\n", status);
 	return (status);
 }
