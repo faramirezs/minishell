@@ -19,7 +19,7 @@
 
 # define WHITESPACES " \t\r\n\a\""
 # define SYMBOLS "\\;()#&`*~|"
-# define NOBRKSYMS "_.?:-+=^ "
+# define NOBRKSYMS "_.?:-+=^ " //check this space as nonbreaking symb
 
 typedef struct s_chart_itr
 {
