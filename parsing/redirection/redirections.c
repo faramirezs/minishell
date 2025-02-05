@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/24 18:47:58 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/05 18:01:33 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,9 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 		redir_node->data.redir_u.heredoc_content = heredoc_input;
 	}
     // Continue parsing if there are more tokens
-	//if (cmd_args && cmd_args->words)
-	//	redir_node->data.redir_u.cmd = parse_exec(cmd_args);
-	// Continue parsing if there are more tokens
+	if (cmd_args && cmd_args->words != NULL)
+		redir_node->data.redir_u.cmd = parse_exec(cmd_args);
+
 	if (scanner_has_next(scanner))
 	{
 		scanner->next = scanner_next(scanner);
@@ -70,7 +70,7 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 			redir_node->data.redir_u.cmd = parse_exec(cmd_args);
 		}
 	}
-	if (cmd_args && cmd_args->words)
+	if (cmd_args && cmd_args->words != NULL)
 		redir_node->data.redir_u.cmd = parse_exec(cmd_args);
 	//I've done the free in line 45
 	//free(file_args->count);
