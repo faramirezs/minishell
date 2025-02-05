@@ -65,42 +65,15 @@ t_token scanner_peek(t_scanner *self)
 		else if (c == '$')
 			return (env_var_token(self));
 		else if (c == '\"')
-		{
-			// Print the characters after the opening quote
-            const char *start = self->char_itr.cursor + 1; // Start after the opening quote
-            const char *end = start;
-            
-            // Iterate until we reach the closing quote or end of string
-            while (*end != '\"' && *end != '\0')
-            {
-                end++;  // Move to the next character
-            }
-            
-            // If we have a valid ending quote, print the string inside quotes
-            if (*end == '\"')
-            {
-                // Temporarily null-terminate the string at the closing quote for printing
-				*((char *)end) = '\0';
-                printf("the string inside quotes is: \"%s\"\n", start);
-                *((char *)end) = '\"'; // Restore the quote character
-                
-                return (double_quote_token(self)); // Proceed with the tokenization process
-            }
-            else
-            {
-                // Handle the case where no closing quote is found
-                fprintf(stderr, "Error: unmatched double quote\n");
-                return (tmp_unknown_token(self)); // Error case, returning unknown token
-            }
-		}
+            return (tmp_unknown_token(self)); // Error case, returning unknown token
 		else if (c == '\'')
 			return (single_quote_token(self));
-		/* else if (c == '/')
+		else if (c == '/')
 			return (abs_path_token(self));
 		else if (c == '.' && ((*(self->char_itr.cursor + 1) == '/') || (*(self->char_itr.cursor + 1) == '.' && *(self->char_itr.cursor + 2) == '/')))
 			return (rel_path_token(self));
-		else if (c == '-')
-			return (option_token(self)); */
+		/*else if (c == '-')
+			return (option_token(self));*/
 		else if (ft_isalnum(c) || ft_strchr(NOBRKSYMS, *self->char_itr.cursor))
 			return (word_token(self));
 		else

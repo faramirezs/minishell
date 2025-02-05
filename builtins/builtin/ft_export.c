@@ -50,11 +50,8 @@ int process_key_value(char *arg, t_context *msh)
     }
     else
     {
-        if (is_valid_key(arg)){
-            fprintf(stderr, "DEBUG: Valid key without '=': %s\n", arg);
+        if (is_valid_key(arg))
             return (1);
-        }
-        fprintf(stderr, "DEBUG: Invalid key without '=': %s\n", arg);
         return (0);
     }
     return (0); // Failed to process (no '=' found)

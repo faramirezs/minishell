@@ -17,7 +17,7 @@
 
 //# include <stddef.h>
 
-# define WHITESPACES " \t\r\n\a\""
+# define WHITESPACES " \t\r\n\a"
 # define SYMBOLS "\\;()#&`*~|"
 # define NOBRKSYMS "_.?:-+="
 

@@ -148,6 +148,34 @@ static int exec_node(t_tree_node *node, t_context *ctx)
 	}
 }
 
+//imho the builtins should be here in something like this:
+// int exec(t_tree_node *node, t_context *msh)
+// {
+//     int status = 0;
+
+//     if (is_builtin(node) && !is_in_pipeline(node))  // ✅ No pipeline, execute directly
+//     {
+//         return execute_builtin(node, msh);  // Built-in sets msh->ret_exit
+//     }
+
+//     // For external commands or built-ins in a pipeline, fork
+//     pid_t pid = fork();
+//     if (pid == 0)  // Child process
+//     {
+//         if (is_builtin(node))
+//             exit(execute_builtin(node, msh));  // ✅ Built-in in a pipeline
+//         else
+//             execvp(node->data.exec_u.args[0], node->data.exec_u.args);
+//         perror("execvp");
+//         exit(127);
+//     }
+//     else if (pid > 0)  // Parent process
+//     {
+//         waitpid(pid, &status, 0);
+//     }
+
+//     return WEXITSTATUS(status);
+// }
 
 int exec(t_tree_node *node, t_context *msh)
 {
@@ -160,11 +188,15 @@ int exec(t_tree_node *node, t_context *msh)
 
 	children = exec_node(node, msh);
 
+	fprintf(stderr, "DEBUG: children before command = %d\n", children);
+
 	// Wait for all child processes to complete
 	while (children > 0) {
 		wait(&status);
 		children--;
 	}
+	fprintf(stderr, "DEBUG: children after builtin = %d\n", children);
+	printf ("the status is %d\n", msh->ret_exit);
 	return (0);
 }
 

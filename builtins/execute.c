@@ -27,7 +27,7 @@ int execute_builtin(t_tree_node *node, t_context *msh)
 	if (builtin)
 	{
 		builtin->func(node, msh);
-		msh->ret_exit = 0;
+		printf ("status is %d\n", msh->ret_exit);
 	}
 	else
 	{
