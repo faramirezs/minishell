@@ -186,7 +186,8 @@ int exec(t_tree_node *node, t_context *msh)
 	msh->fd[1] = STDOUT_FILENO;
 	msh->fd_close = -1;
 
-	children = exec_node(node, msh);
+	msh->ret_exit = exec_node(node, msh);
+	children = msh->ret_exit;
 
 	fprintf(stderr, "DEBUG: children before command = %d\n", children);
 

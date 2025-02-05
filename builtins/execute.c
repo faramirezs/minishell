@@ -35,5 +35,6 @@ int execute_builtin(t_tree_node *node, t_context *msh)
 		msh->ret_exit = 127;
 	}
 	free_builtin_list(builtins);
+	fprintf(stderr, "DEBUG: execute_builtin return = %d\n", msh->ret_exit);
 	return (msh->ret_exit);
 }
