@@ -30,6 +30,134 @@ static int exec_redir(t_tree_node *node, t_context *ctx);
 
 static int exec_redir(t_tree_node *node, t_context *ctx)
 {
+    t_redircmd *rcmd;
+    int saved_stdin;
+    int saved_stdout;
+    int result;
+    int fd;
+
+    rcmd = &node->data.redir_u;
+    saved_stdin = dup(STDIN_FILENO);
+    saved_stdout = dup(STDOUT_FILENO);
+    result = 0;
+
+    if (saved_stdin == -1 || saved_stdout == -1)
+    {
+        perror("dup");
+        cleanup(node, 1);
+    }
+
+    // Perform pipe setup first
+    if (ctx->fd[0] != STDIN_FILENO)
+    {
+        if (dup2(ctx->fd[0], STDIN_FILENO) == -1)
+        {
+            perror("dup2");
+            close(saved_stdin);
+            close(saved_stdout);
+            cleanup(node, 1);
+        }
+        close(ctx->fd[0]);
+    }
+
+    if (ctx->fd[1] != STDOUT_FILENO)
+    {
+        if (dup2(ctx->fd[1], STDOUT_FILENO) == -1)
+        {
+            perror("dup2");
+            close(saved_stdin);
+            close(saved_stdout);
+            cleanup(node, 1);
+        }
+        close(ctx->fd[1]);
+    }
+
+    // Apply redirection logic
+    if (rcmd->redir_type == REDIR_IN)
+    {
+        fd = open(rcmd->target, O_RDONLY);
+        if (fd < 0)
+        {
+            perror("open");
+            close(saved_stdin);
+            close(saved_stdout);
+            cleanup(node, 1); // General error
+        }
+        if (dup2(fd, STDIN_FILENO) == -1)
+        {
+            perror("dup2");
+            close(fd);
+            close(saved_stdin);
+            close(saved_stdout);
+            cleanup(node, 1); // General error
+        }
+        close(fd);
+    }
+    else if (rcmd->redir_type == HEREDOC)
+    {
+        if (handle_heredoc(rcmd) < 0)
+        {
+            close(saved_stdin);
+            close(saved_stdout);
+            cleanup(node, EXIT_FAILURE);
+        }
+        result = exec_command(node, ctx);
+        if (dup2(saved_stdin, STDIN_FILENO) == -1)
+        {
+            perror("dup2");
+            close(saved_stdin);
+            close(saved_stdout);
+            cleanup(node, EXIT_FAILURE);
+        }
+        close(saved_stdin);
+        close(saved_stdout);
+        return result;
+    }
+    else if (rcmd->redir_type == REDIR_OUT || rcmd->redir_type == APPEND_OUT)
+    {
+        fd = open(rcmd->target, rcmd->flags, rcmd->mode);
+        if (fd < 0)
+        {
+            perror("open");
+            close(saved_stdin);
+            close(saved_stdout);
+            cleanup(node, 1); // General error
+        }
+        if (dup2(fd, STDOUT_FILENO) == -1)
+        {
+            perror("dup2");
+            close(fd);
+            close(saved_stdin);
+            close(saved_stdout);
+            cleanup(node, 1); // General error
+        }
+        close(fd);
+    }
+
+    if (rcmd->cmd == NULL)
+    {
+        fprintf(stderr, "Error: Command node is NULL\n");
+        close(saved_stdin);
+        close(saved_stdout);
+        cleanup(node, 1); // General error
+    }
+
+    result = exec_node(rcmd->cmd, ctx);
+
+    if (dup2(saved_stdin, STDIN_FILENO) == -1 || dup2(saved_stdout, STDOUT_FILENO) == -1)
+    {
+        perror("dup2");
+        close(saved_stdin);
+        close(saved_stdout);
+        cleanup(node, 1);
+    }
+    close(saved_stdin);
+    close(saved_stdout);
+    return result;
+}
+
+/* static int exec_redir(t_tree_node *node, t_context *ctx)
+{
 	t_redircmd *rcmd;
 	int saved_stdin;
 	int saved_stdout;
@@ -76,7 +204,8 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
             close(saved_stdout);
             cleanup(node, EXIT_FAILURE);
         }
-		result = exec_node(rcmd->cmd, ctx);
+		//result = exec_node(rcmd->cmd, ctx);
+		result = exec_command(node, ctx);
 		if (dup2(saved_stdin, STDIN_FILENO) == -1)
     	{
         	perror("dup2");
@@ -120,6 +249,7 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
 		cleanup(node, 1); // General error
 	}
 	result = exec_node(rcmd->cmd, ctx);
+	//result = exec_command(node, ctx);
 	if (dup2(saved_stdin, STDIN_FILENO) == -1 || dup2(saved_stdout, STDOUT_FILENO) == -1)
 	{
 		perror("dup2");
@@ -130,7 +260,7 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
 	close(saved_stdin);
 	close(saved_stdout);
 	return (result);
-}
+} */
 
 static int exec_node(t_tree_node *node, t_context *ctx)
 {
