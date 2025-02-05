@@ -78,10 +78,11 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
         fd = open(rcmd->target, O_RDONLY);
         if (fd < 0)
         {
-            perror("open");
+			perror("open");
             close(saved_stdin);
             close(saved_stdout);
-            cleanup(node, 1); // General error
+			return 1;
+            //cleanup(node, 1); // General error
         }
         if (dup2(fd, STDIN_FILENO) == -1)
         {
@@ -118,7 +119,8 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
         fd = open(rcmd->target, rcmd->flags, rcmd->mode);
         if (fd < 0)
         {
-            perror("open");
+            //printf("Not open out\n");
+			perror("open");
             close(saved_stdin);
             close(saved_stdout);
             cleanup(node, 1); // General error

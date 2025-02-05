@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/05 20:23:01 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/05 22:29:27 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,43 @@
 
 //YouTube video min 7:45 https://youtu.be/sUxFE32tXF0?si=73UiqQEYAERD3fdD
 
-t_tree_node *parse_tree_node (t_scanner *scanner)
+
+t_tree_node *parse_tree_node(t_scanner *scanner)
+{
+    t_args *args;
+    args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
+    args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
+
+    scanner->next = scanner_next(scanner);
+    *(args->count) = 1;
+
+    // Check if it starts with redirection
+    if (check_redir(scanner)) {
+        // Pass the args to parse_redir so it can continue parsing after redirection
+        return parse_redir(scanner, args);
+    }
+
+    args_collector(&scanner->next, args);
+
+    // Continue parsing tokens
+    while (scanner_has_next(scanner)) {
+        scanner->next = scanner_next(scanner);
+        
+        if (check_redir(scanner)) {
+            return parse_redir(scanner, args);
+        }
+        else if (scanner->next.type == PIPE) {
+            return parse_pipe(scanner, args);
+        }
+
+        (*(args->count))++;
+        args_collector(&scanner->next, args);
+    }
+
+    return parse_exec(args);
+}
+
+/* t_tree_node *parse_tree_node (t_scanner *scanner)
 {
 	//t_tree_node	*node;
 	t_args		*args;
@@ -94,7 +130,8 @@ t_tree_node *parse_tree_node (t_scanner *scanner)
 		return(parse_exec(args));
 	}
 
-}
+} */
+
 t_tree_node *parse_exec(t_args *args)
 {
 	t_tree_node *node;
