@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/05 22:31:56 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/05 22:55:59 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,10 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
         {
             t_tree_node *pipe_node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
             pipe_node->type = N_PIPE;
+			if (cmd_args && cmd_args->words != NULL)
+			{
+        		redir_node->data.redir_u.cmd = parse_exec(cmd_args);
+    		}
             pipe_node->data.pipe_u.left = redir_node;
             pipe_node->data.pipe_u.right = parse_tree_node(scanner);
             return pipe_node;
@@ -82,7 +86,16 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 			{
 				if (scanner->next.type == PIPE)
         		{
-            		redir_node->data.redir_u.cmd = parse_pipe(scanner, cmd_args);
+            		t_tree_node *pipe_node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
+            		pipe_node->type = N_PIPE;
+					if (cmd_args && cmd_args->words != NULL)
+					{
+        				redir_node->data.redir_u.cmd = parse_exec(cmd_args);
+    				}
+            		pipe_node->data.pipe_u.left = redir_node;
+            		pipe_node->data.pipe_u.right = parse_tree_node(scanner);
+            		return pipe_node;
+					//redir_node->data.redir_u.cmd = parse_pipe(scanner, cmd_args);
         		}
 				else
 				{
