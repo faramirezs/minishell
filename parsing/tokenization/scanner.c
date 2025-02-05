@@ -65,7 +65,7 @@ t_token scanner_peek(t_scanner *self)
 		else if (c == '$')
 			return (env_var_token(self));
 		else if (c == '\"')
-            return (tmp_unknown_token(self)); // Error case, returning unknown token
+            return (double_quote_token(self));
 		else if (c == '\'')
 			return (single_quote_token(self));
 		else if (c == '/')

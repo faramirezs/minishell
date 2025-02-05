@@ -8,7 +8,7 @@ int is_valid_key(const char *key)
 	i = 0;
     if (!key || (!ft_isalpha(key[0]) && key[0] != '_'))  // Key must start with a letter or underscore
         return (0);
-    
+
     while (key[i] != '\0')  // After the first character, key must contain only alphanumeric or underscores
     {
         if (!ft_isalnum(key[i]) && key[i] != '_')
@@ -63,7 +63,7 @@ int	handle_export(struct s_tree_node *node, t_context *msh)
 	char	*arg;
 	int		in_pipe;
     int     status;
-	
+
 	in_pipe = (msh->fd[0] != STDIN_FILENO || msh->fd[1] != STDOUT_FILENO);
     status = 0;
 	if (!node->data.exec_u.args[1])
@@ -94,6 +94,6 @@ int	handle_export(struct s_tree_node *node, t_context *msh)
         }
     }
     msh->ret_exit = status;
-    fprintf (stderr, "the status is %d\n", status);
+    //fprintf (stderr, "the status is %d\n", status);
 	return (status);
 }

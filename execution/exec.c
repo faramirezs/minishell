@@ -189,16 +189,16 @@ int exec(t_tree_node *node, t_context *msh)
 	msh->ret_exit = exec_node(node, msh);
 	children = msh->ret_exit;
 
-	fprintf(stderr, "DEBUG: children before command = %d\n", children);
+	//fprintf(stderr, "DEBUG: children before command = %d\n", children);
 
 	// Wait for all child processes to complete
 	while (children > 0) {
 		wait(&status);
 		children--;
 	}
-	fprintf(stderr, "DEBUG: children after builtin = %d\n", children);
-	printf ("the status is %d\n", msh->ret_exit);
-	return (0);
+	//fprintf(stderr, "DEBUG: children after builtin = %d\n", children);
+	//printf ("the status is %d\n", msh->ret_exit);
+	return (msh->ret_exit);
 }
 
 static int exec_command(t_tree_node *node, t_context *ctx)
@@ -260,7 +260,7 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 		//printf("Executing $PATH function\n");
 		execvp(node->data.exec_u.args[0], node->data.exec_u.args);
 		//perror("execvp");
-		exit(127);
+		return(127);
 
     }
 	// Parent process
