@@ -175,9 +175,9 @@ t_token heredoc_token(t_scanner *self)
 
 t_token double_quote_token(t_scanner *self)
 {
-	char	*expanded;
-	t_slice	var;
-	char	*continuation;
+    char    *expanded;
+    t_slice var;
+    char    *continuation;
 
     self->next.type = STRING_D_QUOTES;
     self->next.lexeme.start = ++self->char_itr.cursor;
@@ -186,7 +186,7 @@ t_token double_quote_token(t_scanner *self)
     {
         if (*self->char_itr.cursor == '"')
         {
-            self->char_itr.cursor++; // Skip closing quote
+            self->char_itr.cursor++;
             break;
         }
         if (*self->char_itr.cursor == '\0')
@@ -204,11 +204,12 @@ t_token double_quote_token(t_scanner *self)
             free(continuation);
             continue;
         }
-        if (*self->char_itr.cursor == '$')
+        if (*self->char_itr.cursor == '$' && *(self->char_itr.cursor + 1) 
+            && ft_is_valid_env_name(self->char_itr.cursor + 1))
         {
             var = expand_env_var(self);
             expanded = ft_strjoin_free_s1(expanded, var.start);
-            //printf ("the var in quotes is %s\n", var.start);
+            self->char_itr.cursor += var.length;  // Move past the expanded variable
         }
         else
         {
@@ -253,7 +254,10 @@ t_token single_quote_token(t_scanner *self)
         self->char_itr.cursor++;
     }
     self->next.lexeme.length = self->char_itr.cursor - self->next.lexeme.start - 1;
-    return self->next;
+    
+    fprintf(stderr, "DEBUG: Token = '%zu', Type = %s\n", self->next.lexeme.length, self->next.lexeme.start);
+
+    return (self->next);
 }
 
 char *get_env_vvalue(t_scanner *self)

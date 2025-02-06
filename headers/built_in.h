@@ -20,9 +20,10 @@ int		handle_pwd(struct s_tree_node *node, t_context *msh);
 int		handle_unset(struct s_tree_node *node, t_context *msh);
 int 	handle_env(struct s_tree_node *node, t_context *msh);
 void	free_builtin_list(bld_in *head);
-int	 is_builtin(t_tree_node *node);
+int		is_builtin(t_tree_node *node);
 int 	execute_builtin(t_tree_node *node, t_context *msh);
 void 	add_builtin(bld_in **head, const char *name, int (*func)(struct s_tree_node *node, t_context *msh));
+int		ft_is_valid_env_name(const char *name);
 
 #endif
 

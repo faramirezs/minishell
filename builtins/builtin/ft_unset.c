@@ -3,9 +3,11 @@
 
 int ms_unset_export(t_context *msh, const char *key)
 {
-    int i = 0;
-    size_t key_len = ft_strlen(key);
+    int     i;
+    size_t  key_len;
 
+    i = 0;
+    key_len = ft_strlen(key);
     while (msh->env_export[i])
     {
         if (ft_strncmp(msh->env_export[i], key, key_len) == 0 && msh->env_export[i][key_len] == '=')
@@ -22,7 +24,7 @@ int ms_unset_export(t_context *msh, const char *key)
         i++;
     }
 
-    return -1;
+    return (0);
 }
 
 

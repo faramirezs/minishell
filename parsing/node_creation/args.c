@@ -37,6 +37,9 @@ void args_collector(t_token *token, t_args *args)
 		//check_null_array(args->words);
 		free_string_array(&args->words);
 		args->words = temp;
+
+		//printf("DEB: arg is: %s\n", args->words[1]);
+
 		//print_args (args);
 		//check_null_array(args->words);
 	}
