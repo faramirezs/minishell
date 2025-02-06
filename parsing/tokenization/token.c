@@ -186,8 +186,14 @@ t_token double_quote_token(t_scanner *self)
     {
         if (*self->char_itr.cursor == '"')
         {
-            self->char_itr.cursor++;
-            break;
+            if(char_itr_has_next(&self->char_itr))
+			{
+				self->char_itr.cursor++;
+				if(*self->char_itr.cursor == '"' && char_itr_has_next(&self->char_itr))
+					self->char_itr.cursor++;
+				else
+					break;
+			}
         }
         if (*self->char_itr.cursor == '\0')
         {
@@ -204,7 +210,7 @@ t_token double_quote_token(t_scanner *self)
             free(continuation);
             continue;
         }
-        if (*self->char_itr.cursor == '$' && *(self->char_itr.cursor + 1) 
+        if (*self->char_itr.cursor == '$' && *(self->char_itr.cursor + 1)
             && ft_is_valid_env_name(self->char_itr.cursor + 1))
         {
             var = expand_env_var(self);
@@ -254,7 +260,7 @@ t_token single_quote_token(t_scanner *self)
         self->char_itr.cursor++;
     }
     self->next.lexeme.length = self->char_itr.cursor - self->next.lexeme.start - 1;
-    
+
     fprintf(stderr, "DEBUG: Token = '%zu', Type = %s\n", self->next.lexeme.length, self->next.lexeme.start);
 
     return (self->next);
