@@ -28,7 +28,171 @@ static int exec_redir(t_tree_node *node, t_context *ctx);
 // Executing command https://www.youtube.com/watch?v=HzAQCUB9Ifw&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=63&t=826s
 //
 
+static void cleanup_fds(int saved_stdin, int saved_stdout, t_tree_node *node, int exit_code)
+{
+    close(saved_stdin);
+    close(saved_stdout);
+    cleanup(node, exit_code);
+}
+
+static int save_original_fds(int *saved_stdin, int *saved_stdout, t_tree_node *node)
+{
+    *saved_stdin = dup(STDIN_FILENO);
+    *saved_stdout = dup(STDOUT_FILENO);
+
+    if (*saved_stdin == -1 || *saved_stdout == -1)
+    {
+        perror("dup");
+        cleanup(node, 1);
+        return -1;
+    }
+    return 0;
+}
+
+static int restore_fds(int saved_stdin, int saved_stdout)
+{
+    if (dup2(saved_stdin, STDIN_FILENO) == -1 ||
+        dup2(saved_stdout, STDOUT_FILENO) == -1)
+    {
+        perror("dup2");
+        return -1;
+    }
+    return 0;
+}
+
+static int setup_pipe_redirections(t_context *ctx, int saved_stdin, int saved_stdout, t_tree_node *node)
+{
+    if (ctx->fd[0] != STDIN_FILENO)
+    {
+        if (dup2(ctx->fd[0], STDIN_FILENO) == -1)
+        {
+            perror("dup2");
+            cleanup_fds(saved_stdin, saved_stdout, node, 1);
+            return -1;
+        }
+        close(ctx->fd[0]);
+    }
+
+    if (ctx->fd[1] != STDOUT_FILENO)
+    {
+        if (dup2(ctx->fd[1], STDOUT_FILENO) == -1)
+        {
+            perror("dup2");
+            cleanup_fds(saved_stdin, saved_stdout, node, 1);
+            return -1;
+        }
+        close(ctx->fd[1]);
+    }
+    return 0;
+}
+
+static int handle_input_redirection(t_redircmd *rcmd, int saved_stdin, int saved_stdout)
+{
+    int fd;
+
+    fd = open(rcmd->target, O_RDONLY);
+    if (fd < 0)
+    {
+        close(saved_stdin);
+        close(saved_stdout);
+        return 1;
+    }
+    dup2(fd, STDIN_FILENO);
+    close(fd);
+    return 0;
+}
+
+static int handle_output_redirection(t_redircmd *rcmd, int saved_stdin, int saved_stdout)
+{
+    int fd;
+
+    fd = open(rcmd->target, rcmd->flags, rcmd->mode);
+    if (fd < 0)
+    {
+        perror("open");
+        close(saved_stdin);
+        close(saved_stdout);
+        return 1;
+    }
+    if (dup2(fd, STDOUT_FILENO) == -1)
+    {
+        perror("dup2");
+        close(fd);
+        close(saved_stdin);
+        close(saved_stdout);
+        return 1;
+    }
+    close(fd);
+    return 0;
+}
+
+
 static int exec_redir(t_tree_node *node, t_context *ctx)
+{
+    t_redircmd *rcmd;
+    int saved_stdin;
+    int saved_stdout;
+    int result;
+
+    rcmd = &node->data.redir_u;
+    if (save_original_fds(&saved_stdin, &saved_stdout, node) < 0)
+        return 1;
+
+    if (setup_pipe_redirections(ctx, saved_stdin, saved_stdout, node) < 0)
+        return 1;
+
+    // Special handling for echo with input redirection
+/*     if (rcmd->cmd && rcmd->cmd->type == N_EXEC &&
+        ft_strcmp(rcmd->cmd->data.exec_u.args[0], "echo") == 0 &&
+        rcmd->redir_type == REDIR_IN)
+    {
+        result = exec_node(rcmd->cmd, ctx);
+        goto cleanup;
+    } */
+   if (rcmd->cmd && rcmd->cmd->type == N_EXEC &&
+        ft_strcmp(rcmd->cmd->data.exec_u.args[0], "echo") == 0)
+    {
+        if (rcmd->redir_type == REDIR_IN)
+        {
+            return exec_node(rcmd->cmd, ctx);
+            goto cleanup;
+        }
+    }
+    // Handle different redirection types
+    if (rcmd->redir_type == REDIR_IN)
+    {
+        if (handle_input_redirection(rcmd, saved_stdin, saved_stdout) != 0)
+            return 1;
+    }
+    else if (rcmd->redir_type == REDIR_OUT || rcmd->redir_type == APPEND_OUT)
+    {
+        if (handle_output_redirection(rcmd, saved_stdin, saved_stdout) != 0)
+            return 1;
+    }
+
+    if (rcmd->cmd == NULL)
+    {
+        fprintf(stderr, "Error: Command node is NULL\n");
+        cleanup_fds(saved_stdin, saved_stdout, node, 1);
+        return 1;
+    }
+
+    result = exec_node(rcmd->cmd, ctx);
+
+cleanup:
+    if (restore_fds(saved_stdin, saved_stdout) < 0)
+        cleanup_fds(saved_stdin, saved_stdout, node, 1);
+
+    close(saved_stdin);
+    close(saved_stdout);
+    return result;
+}
+
+
+
+
+
+/* static int exec_redir(t_tree_node *node, t_context *ctx)
 {
     t_redircmd *rcmd;
     int saved_stdin;
@@ -46,8 +210,6 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
         perror("dup");
         cleanup(node, 1);
     }
-
-    // Perform pipe setup first
     if (ctx->fd[0] != STDIN_FILENO)
     {
         if (dup2(ctx->fd[0], STDIN_FILENO) == -1)
@@ -71,27 +233,27 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
         }
         close(ctx->fd[1]);
     }
-
+    if (rcmd->cmd && rcmd->cmd->type == N_EXEC &&
+        ft_strcmp(rcmd->cmd->data.exec_u.args[0], "echo") == 0)
+    {
+        if (rcmd->redir_type == REDIR_IN)
+        {
+            return exec_node(rcmd->cmd, ctx);
+        }
+    }
     // Apply redirection logic
     if (rcmd->redir_type == REDIR_IN)
     {
         fd = open(rcmd->target, O_RDONLY);
         if (fd < 0)
         {
-			perror("open");
+			//perror("open");
             close(saved_stdin);
             close(saved_stdout);
 			return 1;
             //cleanup(node, 1); // General error
         }
-        if (dup2(fd, STDIN_FILENO) == -1)
-        {
-            perror("dup2");
-            close(fd);
-            close(saved_stdin);
-            close(saved_stdout);
-            cleanup(node, 1); // General error
-        }
+        dup2(fd, STDIN_FILENO);
         close(fd);
     }
     else if (rcmd->redir_type == HEREDOC)
@@ -123,7 +285,8 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
 			perror("open");
             close(saved_stdin);
             close(saved_stdout);
-            cleanup(node, 1); // General error
+            //cleanup(node, 1); // General error
+            return 1;
         }
         if (dup2(fd, STDOUT_FILENO) == -1)
         {
@@ -156,7 +319,8 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
     close(saved_stdin);
     close(saved_stdout);
     return result;
-}
+} */
+
 
 /* static int exec_redir(t_tree_node *node, t_context *ctx)
 {
@@ -446,7 +610,7 @@ static int exec_pipe(t_tree_node *node, t_context *ctx)
     close(pipefd[1]);
 
     // Wait for both children
-    waitpid(left_pid, &status, 0);
+    waitpid(left_pid, NULL, 0);
     waitpid(right_pid, &status, 0);
 
     return WEXITSTATUS(status);
