@@ -261,17 +261,21 @@ t_token double_quote_token(t_scanner *self)
 t_token single_quote_token(t_scanner *self)
 {
     char *continuation;
+    char *expanded;
+    const char *start;
+
     self->next.type = STRING_S_QUOTES;
-    self->next.lexeme.start = ++self->char_itr.cursor;
+    start = ++self->char_itr.cursor; // Store start position (skip opening quote)
+    expanded = ft_strdup(""); // Start with an empty string
 
     while (1)
     {
-        if (*self->char_itr.cursor == '\'')
+        if (*self->char_itr.cursor == '\'')  // Found closing quote
         {
             self->char_itr.cursor++;
             break;
         }
-        if (*self->char_itr.cursor == '\0')
+        if (*self->char_itr.cursor == '\0')  // Handle multi-line input
         {
             continuation = readline("quote> ");
             if (!continuation)  // User pressed Ctrl+D
@@ -279,17 +283,23 @@ t_token single_quote_token(t_scanner *self)
                 fprintf(stderr, "minishell: unexpected EOF while looking for matching `'\n");
                 self->msh->ret_exit = 2;
                 self->next.type = UNKNOWN;
+                free(expanded);
                 return self->next;
             }
-            self->char_itr.cursor = ft_strjoin_free_s1((char *)self->char_itr.cursor, continuation);
+            expanded = ft_strjoin_free_s1(expanded, continuation);
             free(continuation);
             continue;
         }
+        expanded = ft_strjoin_free_s1(expanded, ft_substr(self->char_itr.cursor, 0, 1));
         self->char_itr.cursor++; // ✅ Move forward normally
     }
-    self->next.lexeme.length = self->char_itr.cursor - self->next.lexeme.start - 1;
+    
+    self->next.lexeme.start = expanded;  // ✅ Store the extracted string
+    self->next.lexeme.length = ft_strlen(expanded);
+
     return self->next;
 }
+
 
 char *get_env_vvalue(t_scanner *self)
 {
