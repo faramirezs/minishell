@@ -175,36 +175,32 @@ t_token heredoc_token(t_scanner *self)
 
 t_token non_delimited_token(t_scanner *self)
 {
-    const char  *start;
-    char        *temp;
+    char *temp = ft_strdup("");
 
-    start = self->char_itr.cursor;
-    temp = ft_strdup("");
-    while (*self->char_itr.cursor && !ft_strchr("\"'$", *self->char_itr.cursor))
+    while (*self->char_itr.cursor)
     {
         if (*self->char_itr.cursor == '"')
             temp = ft_strjoin_free_s1(temp, double_quote_token(self).lexeme.start);
         else if (*self->char_itr.cursor == '\'')
             temp = ft_strjoin_free_s1(temp, single_quote_token(self).lexeme.start);
-        else if (*self->char_itr.cursor == '$')
-        {
-            if (ft_is_valid_env_name(self->char_itr.cursor + 1))
-                temp = ft_strjoin_free_s1(temp, env_var_token(self).lexeme.start);
-            else
-            {
-                temp = ft_strjoin_free_s1(temp, "$");
-                self->char_itr.cursor++;
-            }
-        }
+        //else if (*self->char_itr.cursor == '$' && ft_is_valid_env_name(self->char_itr.cursor + 1))
+            //temp = ft_strjoin_free_s1(temp, env_var_token(self).lexeme.start);
         else
+        {
             temp = ft_strjoin_free_s1(temp, ft_substr(self->char_itr.cursor, 0, 1));
-        self->char_itr.cursor++;
+            self->char_itr.cursor++;  // ✅ Move forward normally
+        }
+
+        if (*self->char_itr.cursor == '\0' || ft_strchr(" \t\n|><", *self->char_itr.cursor))
+            break;  // ✅ Stop at delimiters like space, pipes, or redirections
     }
+
     self->next.type = WORD;
     self->next.lexeme.start = temp;
     self->next.lexeme.length = ft_strlen(temp);
     return self->next;
 }
+
 
 
 t_token double_quote_token(t_scanner *self)
