@@ -102,7 +102,7 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
             close(saved_stdout);
             cleanup(node, EXIT_FAILURE);
         }
-        result = exec_command(node, ctx);
+        /* result = exec_command(node, ctx);
         if (dup2(saved_stdin, STDIN_FILENO) == -1)
         {
             perror("dup2");
@@ -112,7 +112,7 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
         }
         close(saved_stdin);
         close(saved_stdout);
-        return result;
+        return result; */
     }
     else if (rcmd->redir_type == REDIR_OUT || rcmd->redir_type == APPEND_OUT)
     {
@@ -481,15 +481,15 @@ int handle_heredoc(t_redircmd *rcmd)
     {
         close(rcmd->heredoc_pipe[0]);
         if (rcmd->heredoc_content)
-        {
-            bytes_written = write(rcmd->heredoc_pipe[1], rcmd->heredoc_content,
-                  ft_strlen(rcmd->heredoc_content));
-			if (bytes_written == -1)
-            {
-                perror("write");
-                exit(1);
-            }
-        }
+		{
+			size_t content_len = ft_strlen(rcmd->heredoc_content);
+			bytes_written = write(rcmd->heredoc_pipe[1], rcmd->heredoc_content, content_len);
+			if (bytes_written == -1 || bytes_written != (ssize_t)content_len)
+			{
+				perror("write");
+				exit(1);
+			}
+		}
         close(rcmd->heredoc_pipe[1]);
         exit(0);
     }
