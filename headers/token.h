@@ -87,4 +87,5 @@ t_token		double_quote_token(t_scanner *self, t_context *msh);
 char 		*get_env_vvalue(t_scanner *self, t_context *msh);
 t_slice 	expand_env_var(t_scanner *self, t_context *msh);
 */
+
 #endif

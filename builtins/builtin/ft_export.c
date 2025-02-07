@@ -1,5 +1,5 @@
-#include "../headers/built_in.h"
-#include "../headers/minishell.h"
+#include "../../headers/built_in.h"
+#include "../../headers/minishell.h"
 
 int is_valid_key(const char *key)
 {

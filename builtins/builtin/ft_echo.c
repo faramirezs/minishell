@@ -1,5 +1,5 @@
-#include "../headers/built_in.h"
-#include "../headers/minishell.h"
+//#include "../headers/built_in.h"
+#include "../../headers/minishell.h"
 
 int	ft_newline(char *av)
 {
@@ -20,7 +20,6 @@ int	ft_newline(char *av)
 	return (false);
 }
 
-#include <ctype.h>
 
 int ft_is_valid_env_name(const char *name)
 {

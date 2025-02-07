@@ -64,29 +64,29 @@ t_token redir_in_token (t_scanner *self)
 	return (self->next);
 }
 
-t_token word_token (t_scanner *self)
-{
-	self->next.lexeme.start = self->char_itr.cursor;
-	//self->next.lexeme.length = 1;
-	//while(self->char_itr.cursor && ft_isalnum(*self->char_itr.cursor))
-	while(self->char_itr.cursor && *self->char_itr.cursor != '\0' && (ft_isalnum(*self->char_itr.cursor) || ft_strchr(NOBRKSYMS, *self->char_itr.cursor)))
-	{
-		/* printf("Char: %c, isalnum: %d, strchr: %p, Token lexeme length: %zu in file %s at line %d\n",
-			*self->char_itr.cursor,
-			ft_isalnum(*self->char_itr.cursor),
-			ft_strchr(NOBRKSYMS, *self->char_itr.cursor),
-			self->next.lexeme.length,
-			__FILE__,
-			__LINE__); */
-		self->next.lexeme.length++;
-		if(char_itr_has_next(&self->char_itr))
-			self->char_itr.cursor++;
-		else
-			break;
-	}
-	check_cmd(self);
-	return (self->next);
-}
+// t_token word_token (t_scanner *self)
+// {
+// 	self->next.lexeme.start = self->char_itr.cursor;
+// 	//self->next.lexeme.length = 1;
+// 	//while(self->char_itr.cursor && ft_isalnum(*self->char_itr.cursor))
+// 	while(self->char_itr.cursor && *self->char_itr.cursor != '\0' && (ft_isalnum(*self->char_itr.cursor) || ft_strchr(NOBRKSYMS, *self->char_itr.cursor)))
+// 	{
+// 		/* printf("Char: %c, isalnum: %d, strchr: %p, Token lexeme length: %zu in file %s at line %d\n",
+// 			*self->char_itr.cursor,
+// 			ft_isalnum(*self->char_itr.cursor),
+// 			ft_strchr(NOBRKSYMS, *self->char_itr.cursor),
+// 			self->next.lexeme.length,
+// 			__FILE__,
+// 			__LINE__); */
+// 		self->next.lexeme.length++;
+// 		if(char_itr_has_next(&self->char_itr))
+// 			self->char_itr.cursor++;
+// 		else
+// 			break;
+// 	}
+// 	check_cmd(self);
+// 	return (self->next);
+// }
 
 t_token tmp_unknown_token (t_scanner *self)
 {
@@ -173,6 +173,40 @@ t_token heredoc_token(t_scanner *self)
 	return (self->next);
 }
 
+t_token non_delimited_token(t_scanner *self)
+{
+    const char  *start;
+    char        *temp;
+
+    start = self->char_itr.cursor;
+    temp = ft_strdup("");
+    while (*self->char_itr.cursor && !ft_strchr("\"'$", *self->char_itr.cursor))
+    {
+        if (*self->char_itr.cursor == '"')
+            temp = ft_strjoin_free_s1(temp, double_quote_token(self).lexeme.start);
+        else if (*self->char_itr.cursor == '\'')
+            temp = ft_strjoin_free_s1(temp, single_quote_token(self).lexeme.start);
+        else if (*self->char_itr.cursor == '$')
+        {
+            if (ft_is_valid_env_name(self->char_itr.cursor + 1))
+                temp = ft_strjoin_free_s1(temp, env_var_token(self).lexeme.start);
+            else
+            {
+                temp = ft_strjoin_free_s1(temp, "$");
+                self->char_itr.cursor++;
+            }
+        }
+        else
+            temp = ft_strjoin_free_s1(temp, ft_substr(self->char_itr.cursor, 0, 1));
+        self->char_itr.cursor++;
+    }
+    self->next.type = WORD;
+    self->next.lexeme.start = temp;
+    self->next.lexeme.length = ft_strlen(temp);
+    return self->next;
+}
+
+
 t_token double_quote_token(t_scanner *self)
 {
     char    *expanded;
@@ -186,8 +220,14 @@ t_token double_quote_token(t_scanner *self)
     {
         if (*self->char_itr.cursor == '"')
         {
-            self->char_itr.cursor++;
-            break;
+            if(char_itr_has_next(&self->char_itr))
+			{
+				self->char_itr.cursor++;
+				if(*self->char_itr.cursor == '"' && char_itr_has_next(&self->char_itr))
+					self->char_itr.cursor++;
+				else
+					break ;
+			}
         }
         if (*self->char_itr.cursor == '\0')
         {
@@ -204,7 +244,7 @@ t_token double_quote_token(t_scanner *self)
             free(continuation);
             continue;
         }
-        if (*self->char_itr.cursor == '$' && *(self->char_itr.cursor + 1) 
+        if (*self->char_itr.cursor == '$' && *(self->char_itr.cursor + 1)
             && ft_is_valid_env_name(self->char_itr.cursor + 1))
         {
             var = expand_env_var(self);
@@ -222,24 +262,23 @@ t_token double_quote_token(t_scanner *self)
     return self->next;
 }
 
-
 t_token single_quote_token(t_scanner *self)
 {
-	char *continuation;
-
+    char *continuation;
     self->next.type = STRING_S_QUOTES;
-    self->next.lexeme.start = ++self->char_itr.cursor; // Skip the opening single quote
+    self->next.lexeme.start = ++self->char_itr.cursor;
+
     while (1)
     {
         if (*self->char_itr.cursor == '\'')
         {
-            self->char_itr.cursor++; // Skip closing quote
+            self->char_itr.cursor++;
             break;
         }
-        if (*self->char_itr.cursor == '\0') // Unmatched quote, wait for continuation
+        if (*self->char_itr.cursor == '\0')
         {
             continuation = readline("quote> ");
-            if (!continuation)
+            if (!continuation)  // User pressed Ctrl+D
             {
                 fprintf(stderr, "minishell: unexpected EOF while looking for matching `'\n");
                 self->msh->ret_exit = 2;
@@ -250,14 +289,10 @@ t_token single_quote_token(t_scanner *self)
             free(continuation);
             continue;
         }
-        self->next.lexeme.length++;
-        self->char_itr.cursor++;
+        self->char_itr.cursor++; // ✅ Move forward normally
     }
     self->next.lexeme.length = self->char_itr.cursor - self->next.lexeme.start - 1;
-    
-    fprintf(stderr, "DEBUG: Token = '%zu', Type = %s\n", self->next.lexeme.length, self->next.lexeme.start);
-
-    return (self->next);
+    return self->next;
 }
 
 char *get_env_vvalue(t_scanner *self)

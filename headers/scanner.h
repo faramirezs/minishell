@@ -67,5 +67,6 @@ t_token			double_quote_token(t_scanner *self);
 char 			*get_env_vvalue(t_scanner *self);
 t_slice 		expand_env_var(t_scanner *self);
 char			*handle_expansions(const char *arg, t_context *msh);
+t_token			non_delimited_token(t_scanner *self);
 
 #endif

@@ -21,7 +21,8 @@ void args_collector(t_token *token, t_args *args)
 
 	i = 0;
 	//printf("It entered to args_collector()\n");
-	//printf("args->count is %i\n", *(args->count));
+	//fprintf(stderr, "DEBUG: Token received -> Length: %zu, Start: \"%.*s\"\n", token->lexeme.length, (int)token->lexeme.length, token->lexeme.start);
+
 	if (*(args->count) > 1)
 	{
 
@@ -40,7 +41,7 @@ void args_collector(t_token *token, t_args *args)
 
 		//printf("DEB: arg is: %s\n", args->words[1]);
 
-		//print_args (args);
+		print_args (args);
 		//check_null_array(args->words);
 	}
 	else
@@ -53,11 +54,10 @@ void args_collector(t_token *token, t_args *args)
 		// printf("Last string from words is %s\n", args->words[(*(args->count)) - 1]);
 		// printf("in file %s at line %d\n", __FILE__, __LINE__);
 		args->words[1] = NULL;
-		//print_args (args);
+		print_args (args);
 		//check_null_array(args->words);
 	}
 }
-
 
 char **copy_string_array(t_args *args)
 {

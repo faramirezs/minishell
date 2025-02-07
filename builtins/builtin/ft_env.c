@@ -1,5 +1,5 @@
-#include "../headers/built_in.h"
-#include "../headers/minishell.h"
+#include "../../headers/built_in.h"
+#include "../../headers/minishell.h"
 
 int handle_env(struct s_tree_node *node, t_context *msh)
 {

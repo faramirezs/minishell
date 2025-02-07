@@ -1,5 +1,5 @@
-#include "../headers/minishell.h"
-#include "../headers/env_var.h"
+#include "headers/minishell.h"
+#include "headers/env_var.h"
 
 t_context *init_context(char **envp)
 {
