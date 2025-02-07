@@ -164,6 +164,27 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
         if (handle_input_redirection(rcmd, saved_stdin, saved_stdout) != 0)
             return 1;
     }
+	//HEREDOC
+	else if (rcmd->redir_type == HEREDOC)
+    {
+        if (handle_heredoc(rcmd) < 0)
+        {
+            close(saved_stdin);
+            close(saved_stdout);
+            cleanup(node, EXIT_FAILURE);
+        }
+        result = exec_node(node, ctx);
+        if (dup2(saved_stdin, STDIN_FILENO) == -1)
+        {
+            perror("dup2");
+            close(saved_stdin);
+            close(saved_stdout);
+            cleanup(node, EXIT_FAILURE);
+        }
+        close(saved_stdin);
+        close(saved_stdout);
+        return result;
+    }
     else if (rcmd->redir_type == REDIR_OUT || rcmd->redir_type == APPEND_OUT)
     {
         if (handle_output_redirection(rcmd, saved_stdin, saved_stdout) != 0)
@@ -616,16 +637,18 @@ static int exec_pipe(t_tree_node *node, t_context *ctx)
     return WEXITSTATUS(status);
 }
 
-void cleanup(t_tree_node *node, int exit_code)
+int cleanup(t_tree_node *node, int exit_code)
 {
 	free_tree_node(node);
 	clear_history();
-	exit(exit_code);
+	g_heredoc_interrupt = 1;
+	//exit(exit_code);
+	return exit_code;
 }
 
 int handle_heredoc(t_redircmd *rcmd)
 {
-	ssize_t bytes_written;
+	//ssize_t bytes_written;
 
 	if (pipe(rcmd->heredoc_pipe) == -1)
 	{
@@ -646,11 +669,11 @@ int handle_heredoc(t_redircmd *rcmd)
         close(rcmd->heredoc_pipe[0]);
         if (rcmd->heredoc_content)
         {
-            bytes_written = write(rcmd->heredoc_pipe[1], rcmd->heredoc_content,
-                  ft_strlen(rcmd->heredoc_content));
-			if (bytes_written == -1)
+            size_t content_len = strlen(rcmd->heredoc_content);
+            if (write(rcmd->heredoc_pipe[1], rcmd->heredoc_content, content_len) == -1)
             {
                 perror("write");
+                close(rcmd->heredoc_pipe[1]);
                 exit(1);
             }
         }
@@ -670,13 +693,13 @@ int handle_heredoc(t_redircmd *rcmd)
     close(rcmd->heredoc_pipe[0]);
 
         // Wait for child to finish writing
-    int status;
+    /* int status;
     waitpid(rcmd->heredoc_pid, &status, 0);
 
 	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
     {
         return -1;
-    }
+    } */
     return 0;
 }
 

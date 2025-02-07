@@ -20,7 +20,7 @@
 //# include "../headers/minishell.h"
 
 int		exec(t_tree_node *node, t_context *msh);
-void	cleanup(t_tree_node *node, int exit_code);
+int	cleanup(t_tree_node *node, int exit_code);
 int		command_uses_stdin(const char *cmd);
 
 #endif
