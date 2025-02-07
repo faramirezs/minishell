@@ -26,7 +26,9 @@ ENV_BLD	= ./env.c \
 			./builtins/execute.c \
 			./builtins/utils_bultin.c \
 
-EXECUTION	= ./execution/exec.c
+EXECUTION	= ./execution/exec.c \
+				./execution/exec_redir.c \
+				./execution/exec_redir_helper.c
 
 SIGNALS     = ./signal_handler.c
 
@@ -48,7 +50,9 @@ HEADERS	= ./headers/minishell.h \
 			./headers/built_in.h \
 			./headers/env_var.h \
 			./headers/redirections.h \
-			./headers/signals.h
+			./headers/signals.h \
+			./headers/exec.h \
+			./headers/exec_redir.h
 
 OBJS = $(SRC:.c=.o)
 

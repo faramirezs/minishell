@@ -61,6 +61,7 @@ extern volatile sig_atomic_t g_heredoc_interrupt;
 // Execution headers
 # include "built_in.h"
 	// this already should include all the builtins headers inside
+# include "exec_redir.h"
 
 # include "exec.h"
 	// this already should include all the pipes headers inside

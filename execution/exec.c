@@ -11,188 +11,26 @@
 	127	- Command not found: Command is missing in the system's PATH.
 	130	- Script interrupted (SIGINT): Process terminated via Ctrl+C. */
 
-//From this video https://www.youtube.com/watch?v=KbhDPYHRqkY&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=67
-// Execute pipe node https://www.youtube.com/watch?v=KbhDPYHRqkY&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=65
-
-/* typedef struct s_context
+int exec_node(t_tree_node *node, t_context *ctx)
 {
-	int fd[2]; //for stdin and stdout
-	int fd_close; // Close an fd? -1 if not
-} t_context; */
-
-static int exec_node(t_tree_node *node, t_context *ctx);
-static int exec_command(t_tree_node *node, t_context *ctx);
-static int exec_pipe(t_tree_node *node, t_context *ctx);
-static int exec_redir(t_tree_node *node, t_context *ctx);
+	if (node->type == N_EXEC)
+		return (exec_command(node, ctx));
+	else if (node->type == N_PIPE)
+		return (exec_pipe(node, ctx));
+	else if (node->type == N_REDIR)
+		return (exec_redir(node, ctx));
+	else
+	{
+		printf("in file %s at line %d\n", __FILE__, __LINE__);
+		printf("It is not a EXE_N node\n");
+		return (0);
+	}
+}
 
 // Executing command https://www.youtube.com/watch?v=HzAQCUB9Ifw&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=63&t=826s
 //
 
-static void cleanup_fds(int saved_stdin, int saved_stdout, t_tree_node *node, int exit_code)
-{
-    close(saved_stdin);
-    close(saved_stdout);
-    cleanup(node, exit_code);
-}
-
-static int save_original_fds(int *saved_stdin, int *saved_stdout, t_tree_node *node)
-{
-    *saved_stdin = dup(STDIN_FILENO);
-    *saved_stdout = dup(STDOUT_FILENO);
-
-    if (*saved_stdin == -1 || *saved_stdout == -1)
-    {
-        perror("dup");
-        cleanup(node, 1);
-        return -1;
-    }
-    return 0;
-}
-
-static int restore_fds(int saved_stdin, int saved_stdout)
-{
-    if (dup2(saved_stdin, STDIN_FILENO) == -1 ||
-        dup2(saved_stdout, STDOUT_FILENO) == -1)
-    {
-        perror("dup2");
-        return -1;
-    }
-    return 0;
-}
-
-static int setup_pipe_redirections(t_context *ctx, int saved_stdin, int saved_stdout, t_tree_node *node)
-{
-    if (ctx->fd[0] != STDIN_FILENO)
-    {
-        if (dup2(ctx->fd[0], STDIN_FILENO) == -1)
-        {
-            perror("dup2");
-            cleanup_fds(saved_stdin, saved_stdout, node, 1);
-            return -1;
-        }
-        close(ctx->fd[0]);
-    }
-
-    if (ctx->fd[1] != STDOUT_FILENO)
-    {
-        if (dup2(ctx->fd[1], STDOUT_FILENO) == -1)
-        {
-            perror("dup2");
-            cleanup_fds(saved_stdin, saved_stdout, node, 1);
-            return -1;
-        }
-        close(ctx->fd[1]);
-    }
-    return 0;
-}
-
-static int handle_input_redirection(t_redircmd *rcmd, int saved_stdin, int saved_stdout)
-{
-    int fd;
-
-    fd = open(rcmd->target, O_RDONLY);
-    if (fd < 0)
-    {
-        close(saved_stdin);
-        close(saved_stdout);
-        return 1;
-    }
-    dup2(fd, STDIN_FILENO);
-    close(fd);
-    return 0;
-}
-
-static int handle_output_redirection(t_redircmd *rcmd, int saved_stdin, int saved_stdout)
-{
-    int fd;
-
-    fd = open(rcmd->target, rcmd->flags, rcmd->mode);
-    if (fd < 0)
-    {
-        perror("open");
-        close(saved_stdin);
-        close(saved_stdout);
-        return 1;
-    }
-    if (dup2(fd, STDOUT_FILENO) == -1)
-    {
-        perror("dup2");
-        close(fd);
-        close(saved_stdin);
-        close(saved_stdout);
-        return 1;
-    }
-    close(fd);
-    return 0;
-}
-
-
-static int exec_redir(t_tree_node *node, t_context *ctx)
-{
-    t_redircmd *rcmd;
-    int saved_stdin;
-    int saved_stdout;
-    int result;
-
-    rcmd = &node->data.redir_u;
-    if (save_original_fds(&saved_stdin, &saved_stdout, node) < 0)
-        return 1;
-
-    if (setup_pipe_redirections(ctx, saved_stdin, saved_stdout, node) < 0)
-        return 1;
-
-    // Special handling for echo with input redirection
-/*     if (rcmd->cmd && rcmd->cmd->type == N_EXEC &&
-        ft_strcmp(rcmd->cmd->data.exec_u.args[0], "echo") == 0 &&
-        rcmd->redir_type == REDIR_IN)
-    {
-        result = exec_node(rcmd->cmd, ctx);
-        goto cleanup;
-    } */
-   if (rcmd->cmd && rcmd->cmd->type == N_EXEC &&
-        ft_strcmp(rcmd->cmd->data.exec_u.args[0], "echo") == 0)
-    {
-        if (rcmd->redir_type == REDIR_IN)
-        {
-            return exec_node(rcmd->cmd, ctx);
-            goto cleanup;
-        }
-    }
-    // Handle different redirection types
-    if (rcmd->redir_type == REDIR_IN)
-    {
-        if (handle_input_redirection(rcmd, saved_stdin, saved_stdout) != 0)
-            return 1;
-    }
-    else if (rcmd->redir_type == REDIR_OUT || rcmd->redir_type == APPEND_OUT)
-    {
-        if (handle_output_redirection(rcmd, saved_stdin, saved_stdout) != 0)
-            return 1;
-    }
-
-    if (rcmd->cmd == NULL)
-    {
-        fprintf(stderr, "Error: Command node is NULL\n");
-        cleanup_fds(saved_stdin, saved_stdout, node, 1);
-        return 1;
-    }
-
-    result = exec_node(rcmd->cmd, ctx);
-
-cleanup:
-    if (restore_fds(saved_stdin, saved_stdout) < 0)
-        cleanup_fds(saved_stdin, saved_stdout, node, 1);
-
-    close(saved_stdin);
-    close(saved_stdout);
-    return result;
-}
-
-
-
-
-
-/* static int exec_redir(t_tree_node *node, t_context *ctx)
+/* int exec_redir(t_tree_node *node, t_context *ctx)
 {
     t_redircmd *rcmd;
     int saved_stdin;
@@ -210,50 +48,24 @@ cleanup:
         perror("dup");
         cleanup(node, 1);
     }
-    if (ctx->fd[0] != STDIN_FILENO)
-    {
-        if (dup2(ctx->fd[0], STDIN_FILENO) == -1)
-        {
-            perror("dup2");
-            close(saved_stdin);
-            close(saved_stdout);
-            cleanup(node, 1);
-        }
-        close(ctx->fd[0]);
-    }
-
-    if (ctx->fd[1] != STDOUT_FILENO)
-    {
-        if (dup2(ctx->fd[1], STDOUT_FILENO) == -1)
-        {
-            perror("dup2");
-            close(saved_stdin);
-            close(saved_stdout);
-            cleanup(node, 1);
-        }
-        close(ctx->fd[1]);
-    }
-    if (rcmd->cmd && rcmd->cmd->type == N_EXEC &&
-        ft_strcmp(rcmd->cmd->data.exec_u.args[0], "echo") == 0)
-    {
-        if (rcmd->redir_type == REDIR_IN)
-        {
-            return exec_node(rcmd->cmd, ctx);
-        }
-    }
-    // Apply redirection logic
     if (rcmd->redir_type == REDIR_IN)
     {
         fd = open(rcmd->target, O_RDONLY);
         if (fd < 0)
         {
-			//perror("open");
+            perror("open");
             close(saved_stdin);
             close(saved_stdout);
-			return 1;
-            //cleanup(node, 1); // General error
+            cleanup(node, 1); // General error
         }
-        dup2(fd, STDIN_FILENO);
+        if (dup2(fd, STDIN_FILENO) == -1)
+        {
+            perror("dup2");
+            close(fd);
+            close(saved_stdin);
+            close(saved_stdout);
+            cleanup(node, 1); // General error
+        }
         close(fd);
     }
     else if (rcmd->redir_type == HEREDOC)
@@ -281,12 +93,10 @@ cleanup:
         fd = open(rcmd->target, rcmd->flags, rcmd->mode);
         if (fd < 0)
         {
-            //printf("Not open out\n");
-			perror("open");
+            perror("open");
             close(saved_stdin);
             close(saved_stdout);
-            //cleanup(node, 1); // General error
-            return 1;
+            cleanup(node, 1); // General error
         }
         if (dup2(fd, STDOUT_FILENO) == -1)
         {
@@ -298,7 +108,6 @@ cleanup:
         }
         close(fd);
     }
-
     if (rcmd->cmd == NULL)
     {
         fprintf(stderr, "Error: Command node is NULL\n");
@@ -306,9 +115,7 @@ cleanup:
         close(saved_stdout);
         cleanup(node, 1); // General error
     }
-
     result = exec_node(rcmd->cmd, ctx);
-
     if (dup2(saved_stdin, STDIN_FILENO) == -1 || dup2(saved_stdout, STDOUT_FILENO) == -1)
     {
         perror("dup2");
@@ -318,160 +125,8 @@ cleanup:
     }
     close(saved_stdin);
     close(saved_stdout);
-    return result;
+    return (result);
 } */
-
-
-/* static int exec_redir(t_tree_node *node, t_context *ctx)
-{
-	t_redircmd *rcmd;
-	int saved_stdin;
-	int saved_stdout;
-	int result;
-	int fd;
-
-
-	rcmd = &node->data.redir_u;
-	saved_stdin = dup(STDIN_FILENO);
-	saved_stdout = dup(STDOUT_FILENO);
-	result = 0;
-
-	if (saved_stdin == -1 || saved_stdout == -1)
-	{
-		perror("dup");
-		cleanup(node, 1);
-	}
-	if (rcmd->redir_type == REDIR_IN)
-	{
-		fd = open(rcmd->target, O_RDONLY);
-		if (fd < 0)
-		{
-			perror("open");
-			close(saved_stdin);
-			close(saved_stdout);
-			cleanup(node, 1); // General error
-		}
-		if (dup2(fd, STDIN_FILENO) == -1)
-		{
-			perror("dup2");
-			close(fd);
-			close(saved_stdin);
-			close(saved_stdout);
-			cleanup(node, 1); // General error
-		}
-		close(fd);
-	}
-	else if (rcmd->redir_type == HEREDOC)
-    {
-        if (handle_heredoc(rcmd) < 0)
-        {
-            //if it is 0, then we could do the cleanup with node info.
-			close(saved_stdin);
-            close(saved_stdout);
-            cleanup(node, EXIT_FAILURE);
-        }
-		//result = exec_node(rcmd->cmd, ctx);
-		result = exec_command(node, ctx);
-		if (dup2(saved_stdin, STDIN_FILENO) == -1)
-    	{
-        	perror("dup2");
-        	close(saved_stdin);
-        	close(saved_stdout);
-        	cleanup(node, EXIT_FAILURE);
-    	}
-   		close(saved_stdin);
-    	close(saved_stdout);
-    	return result;
-		//else
-		//{
-		//	cleanup(node, EXIT_SUCCESS);
-		//}
-    }
-	else if (rcmd->redir_type == REDIR_OUT || rcmd->redir_type == APPEND_OUT)
-	{
-		fd = open(rcmd->target, rcmd->flags, rcmd->mode);
-		if (fd < 0)
-		{
-			perror("open");
-			close(saved_stdin);
-			close(saved_stdout);
-			cleanup(node, 1); // General error
-		}
-		if (dup2(fd, STDOUT_FILENO) == -1)
-		{
-			perror("dup2");
-			close(fd);
-			close(saved_stdin);
-			close(saved_stdout);
-			cleanup(node, 1); // General error
-		}
-		close(fd);
-	}
-	if (rcmd->cmd == NULL)
-	{
-		fprintf(stderr, "Error: Command node is NULL\n");
-		close(saved_stdin);
-		close(saved_stdout);
-		cleanup(node, 1); // General error
-	}
-	result = exec_node(rcmd->cmd, ctx);
-	//result = exec_command(node, ctx);
-	if (dup2(saved_stdin, STDIN_FILENO) == -1 || dup2(saved_stdout, STDOUT_FILENO) == -1)
-	{
-		perror("dup2");
-		close(saved_stdin);
-		close(saved_stdout);
-		cleanup(node, 1);
-	}
-	close(saved_stdin);
-	close(saved_stdout);
-	return (result);
-} */
-
-static int exec_node(t_tree_node *node, t_context *ctx)
-{
-	if (node->type == N_EXEC)
-		return (exec_command(node, ctx));
-	else if (node->type == N_PIPE)
-		return (exec_pipe(node, ctx));
-	else if (node->type == N_REDIR)
-		return (exec_redir(node, ctx));
-	else
-	{
-		printf("in file %s at line %d\n", __FILE__, __LINE__);
-		printf("It is not a EXE_N node\n");
-		return (0);
-	}
-}
-
-//imho the builtins should be here in something like this:
-// int exec(t_tree_node *node, t_context *msh)
-// {
-//     int status = 0;
-
-//     if (is_builtin(node) && !is_in_pipeline(node))  // ✅ No pipeline, execute directly
-//     {
-//         return execute_builtin(node, msh);  // Built-in sets msh->ret_exit
-//     }
-
-//     // For external commands or built-ins in a pipeline, fork
-//     pid_t pid = fork();
-//     if (pid == 0)  // Child process
-//     {
-//         if (is_builtin(node))
-//             exit(execute_builtin(node, msh));  // ✅ Built-in in a pipeline
-//         else
-//             execvp(node->data.exec_u.args[0], node->data.exec_u.args);
-//         perror("execvp");
-//         exit(127);
-//     }
-//     else if (pid > 0)  // Parent process
-//     {
-//         waitpid(pid, &status, 0);
-//     }
-
-//     return WEXITSTATUS(status);
-// }
 
 int exec(t_tree_node *node, t_context *msh)
 {
@@ -497,7 +152,7 @@ int exec(t_tree_node *node, t_context *msh)
 	return (msh->ret_exit);
 }
 
-static int exec_command(t_tree_node *node, t_context *ctx)
+int exec_command(t_tree_node *node, t_context *ctx)
 {
 	pid_t pid;
 	int status;
@@ -568,7 +223,7 @@ static int exec_command(t_tree_node *node, t_context *ctx)
     return WEXITSTATUS(status);
 }
 
-static int exec_pipe(t_tree_node *node, t_context *ctx)
+int exec_pipe(t_tree_node *node, t_context *ctx)
 {
 	t_pipecmd *pcmd = &node->data.pipe_u;
     int pipefd[2];

@@ -6,7 +6,7 @@
 /*   By: alejandroramirez <alejandroramirez@stud	+#+  +:+	   +#+		*/
 /*												+#+#+#+#+#+   +#+		   */
 /*   Created: 2025/01/10 17:09:13 by alramire		  #+#	#+#			 */
-/*   Updated: 2025/01/15 14:04:26 by alejandrora	  ###   ########.fr	   */
+/*   Updated: 2025/02/07 15:00:00 by alramire         ###   ########.fr       */
 /*																			*/
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@
 
 int		exec(t_tree_node *node, t_context *msh);
 void	cleanup(t_tree_node *node, int exit_code);
-int		command_uses_stdin(const char *cmd);
+int exec_command(t_tree_node *node, t_context *ctx);
+int exec_pipe(t_tree_node *node, t_context *ctx);
+int exec_node(t_tree_node *node, t_context *ctx);
+
 
 #endif
