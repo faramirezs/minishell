@@ -62,7 +62,7 @@ t_token scanner_peek(t_scanner *self)
 			return (redir_out_token(self));
 		else if (c == '<')
 			return (redir_in_token(self));
-		else if (c == '$')
+		else if (c == '$' && self->next.type != HEREDOC)
 			return (env_var_token(self));
 		else if (c == '\"')
             return (double_quote_token(self));

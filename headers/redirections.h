@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:40:19 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/24 18:42:09 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/08 20:00:41 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ t_tree_node					*parse_redir(t_scanner *scanner, t_args *cmd_args);
 int							check_redir(t_scanner *scanner);
 int							determine_target_type(const char *target);
 int							get_redir_flags(int redir_type);
-int							handle_heredoc(t_redircmd *rcmd);
+void						handle_heredoc(t_redircmd *redir_node);
 void						cleanup_heredoc(t_redircmd *rcmd);
 void						handle_heredoc_sigint(int sig);
 void						setup_heredoc_signals(void);

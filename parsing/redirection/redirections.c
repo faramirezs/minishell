@@ -6,29 +6,41 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/05 22:55:59 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/08 20:08:49 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/minishell.h"
 
-t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
+t_tree_node *create_redir_node(t_scanner *scanner)
 {
-	t_tree_node	*redir_node;
-	t_args		*file_args;
-
-	redir_node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
+	t_tree_node *redir_node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
 	redir_node->type = N_REDIR;
 	redir_node->data.redir_u.cmd = NULL;
-	file_args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
-	file_args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
 	redir_node->data.redir_u.redir_type = scanner->next.type;
-	if(scanner->next.type == REDIR_IN || scanner->next.type == HEREDOC)
+	if (scanner->next.type == REDIR_IN || scanner->next.type == HEREDOC)
 		redir_node->data.redir_u.source_fd = STDIN_FILENO;
 	else
 		redir_node->data.redir_u.source_fd = STDOUT_FILENO;
-    redir_node->data.redir_u.flags = get_redir_flags(scanner->next.type);
-    redir_node->data.redir_u.mode = 0644;  // Default file permissions
+	redir_node->data.redir_u.flags = get_redir_flags(scanner->next.type);
+	redir_node->data.redir_u.mode = 0644;  // Default file permissions
+	return redir_node;
+}
+
+void handle_heredoc(t_redircmd *redir_node)
+{
+	char *heredoc_input = collect_heredoc_input(redir_node->target);
+	if (!heredoc_input)
+	{
+		redir_node->heredoc_content = ft_strdup("");
+		redir_node->heredoc_pid = -1;
+		//cleanup(redir_node, EXIT_FAILURE);
+	}
+	redir_node->heredoc_content = heredoc_input;
+}
+
+void parse_redir_target(t_scanner *scanner, t_tree_node *redir_node, t_args *file_args)
+{
 	if (!scanner_has_next(scanner))
 	{
 		printf("Syntax error: nothing after redirection token\n");
@@ -37,26 +49,32 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 	scanner->next = scanner_next(scanner);
 	*(file_args->count) = 1;
 	args_collector(&scanner->next, file_args);
-	// Set target and its properties
 	redir_node->data.redir_u.target = ft_strdup(file_args->words[0]);
 	free_args(&file_args);
 	redir_node->data.redir_u.target_type = determine_target_type(redir_node->data.redir_u.target);
-	// Handle heredoc case
 	if (redir_node->data.redir_u.redir_type == HEREDOC)
+		handle_heredoc(&redir_node->data.redir_u);
+}
+
+t_tree_node *handle_pipe(t_scanner *scanner, t_tree_node *redir_node, t_args *cmd_args)
+{
+	t_tree_node *pipe_node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
+	pipe_node->type = N_PIPE;
+	if (cmd_args && cmd_args->words != NULL)
 	{
-		char *heredoc_input = collect_heredoc_input(redir_node->data.redir_u.target);
-		if (!heredoc_input)
-		{
-			redir_node->data.redir_u.heredoc_content = ft_strdup("");
-			redir_node->data.redir_u.heredoc_pid = -1;
-			free_args(&cmd_args);
-			cleanup(redir_node, EXIT_FAILURE);
-		}
-		redir_node->data.redir_u.heredoc_content = heredoc_input;
+		redir_node->data.redir_u.cmd = parse_exec(cmd_args);
 	}
-    // Continue parsing if there are more tokens
-	/* if (cmd_args && cmd_args->words != NULL)
-		redir_node->data.redir_u.cmd = parse_exec(cmd_args); */
+	pipe_node->data.pipe_u.left = redir_node;
+	pipe_node->data.pipe_u.right = parse_tree_node(scanner);
+	return pipe_node;
+}
+
+t_tree_node *parse_redir(t_scanner *scanner, t_args *cmd_args)
+{
+	t_tree_node *redir_node = create_redir_node(scanner);
+	t_args *file_args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
+	file_args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
+	parse_redir_target(scanner, redir_node, file_args);
 
 	if (scanner_has_next(scanner))
 	{
@@ -66,37 +84,19 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 			redir_node->data.redir_u.cmd = parse_redir(scanner, cmd_args);
 		}
 		else if (scanner->next.type == PIPE)
-        {
-            t_tree_node *pipe_node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
-            pipe_node->type = N_PIPE;
-			if (cmd_args && cmd_args->words != NULL)
-			{
-        		redir_node->data.redir_u.cmd = parse_exec(cmd_args);
-    		}
-            pipe_node->data.pipe_u.left = redir_node;
-            pipe_node->data.pipe_u.right = parse_tree_node(scanner);
-            return pipe_node;
-			//redir_node->data.redir_u.cmd = parse_pipe(scanner, cmd_args);
-        }
+		{
+			return handle_pipe(scanner, redir_node, cmd_args);
+		}
 		else
 		{
-			(*(cmd_args->count))++;
+			*(cmd_args->count) = 1;
 			args_collector(&scanner->next, cmd_args);
-			while(scanner_has_next(scanner))
+			while (scanner_has_next(scanner))
 			{
 				if (scanner->next.type == PIPE)
-        		{
-            		t_tree_node *pipe_node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
-            		pipe_node->type = N_PIPE;
-					if (cmd_args && cmd_args->words != NULL)
-					{
-        				redir_node->data.redir_u.cmd = parse_exec(cmd_args);
-    				}
-            		pipe_node->data.pipe_u.left = redir_node;
-            		pipe_node->data.pipe_u.right = parse_tree_node(scanner);
-            		return pipe_node;
-					//redir_node->data.redir_u.cmd = parse_pipe(scanner, cmd_args);
-        		}
+				{
+					return handle_pipe(scanner, redir_node, cmd_args);
+				}
 				else
 				{
 					scanner->next = scanner_next(scanner);
@@ -111,10 +111,7 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args)
 	{
 		redir_node->data.redir_u.cmd = parse_exec(cmd_args);
 	}
-	//I've done the free in line 45
-	//free(file_args->count);
-	//free(file_args);
-	return (redir_node);
+	return redir_node;
 }
 
 int	determine_target_type(const char *target)
