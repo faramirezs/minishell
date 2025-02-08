@@ -101,24 +101,6 @@ t_token tmp_unknown_token (t_scanner *self)
 	return (self->next);
 }
 
-// t_token env_var_token(t_scanner *self)
-// {
-//     t_slice var;
-//     char    *expanded;
-    
-//     var = expand_env_var(self);
-//     while (ft_isalnum(*self->char_itr.cursor) || *self->char_itr.cursor == '_')
-//     {
-//         expanded = ft_strjoin_free_s1((char *)var.start, ft_substr(self->char_itr.cursor, 0, 1));
-//         self->char_itr.cursor++;
-//         var.start = expanded;
-//     }
-//     self->next.lexeme.start = var.start;
-//     self->next.lexeme.length = var.length;
-//     self->next.type = WORD;
-//     return (self->next);
-// }
-
 t_token abs_path_token(t_scanner *self)
 {
 	self->next.type = ABS_PATH;
@@ -305,36 +287,6 @@ t_token single_quote_token(t_scanner *self)
     return (self->next);
 }
 
-
-// char *get_env_vvalue(t_scanner *self)
-// {
-//     const char	*start;
-//     size_t		length;
-//     char		*var_name;
-//     char		*value;
-
-//     start = self->char_itr.cursor;
-//     length = 0;
-
-//     // Extract the variable name
-//     while (*self->char_itr.cursor && (ft_isalnum(*self->char_itr.cursor) || *self->char_itr.cursor == '_'))
-//     {
-//         length++;
-//         self->char_itr.cursor++;
-//     }
-
-//     // Get the variable name as a string
-//     var_name = ft_substr(start, 0, length);
-
-//     // Fetch the value from the environment
-//     value = ms_get_env(self->msh->env, var_name);
-
-//     // Clean up
-//     free(var_name);
-
-//     return value;
-// }
-
 char *expand_special_vars(char c, t_context *msh)
 {
     if (c == '$')  // ✅ Handle `$$` (Process ID)
@@ -344,15 +296,36 @@ char *expand_special_vars(char c, t_context *msh)
     return NULL;
 }
 
+char *expand_normal_var(t_scanner *self)
+{
+    char var_name[256];
+    int i = 0;
+    char *value;
+
+    // ✅ Extract variable name (letters, digits, underscores)
+    while (ft_isalnum(*self->char_itr.cursor) || *self->char_itr.cursor == '_')
+    {
+        if (i < 255)
+            var_name[i++] = *self->char_itr.cursor;
+        self->char_itr.cursor++;
+    }
+    var_name[i] = '\0';  // Null-terminate
+
+    // ✅ Get environment variable value
+    value = ms_get_env(self->msh->env, var_name);
+    if (!value)
+        return ft_strdup("");  // Variable not found → empty string
+    return ft_strdup(value);
+}
+
 t_token handle_expansions(t_scanner *self)
 {
     t_token token;
-    char    *value;
-    char    var_name[256];  // Buffer for variable name
-    int     i;
+    char *value;
+    char *suffix;
+    char *temp;
 
-    i = 0;
-    self->char_itr.cursor++;  // Skip `$`
+    self->char_itr.cursor++;
     if (!ft_isalnum(*self->char_itr.cursor) && *self->char_itr.cursor != '?' && *self->char_itr.cursor != '_')
     {
         token.type = WORD;
@@ -364,87 +337,18 @@ t_token handle_expansions(t_scanner *self)
     if (value)
         self->char_itr.cursor++;
     else
+        value = expand_normal_var(self);
+    if (*self->char_itr.cursor && (ft_isalnum(*self->char_itr.cursor) || *self->char_itr.cursor == '_'))
     {
-        // ✅ Extract variable name (letters, digits, underscores)
-        while (ft_isalnum(*self->char_itr.cursor) || *self->char_itr.cursor == '_')
-        {
-            if (i < 255)
-                var_name[i++] = *self->char_itr.cursor;
-            self->char_itr.cursor++;
-        }
-        var_name[i] = '\0';  // Null-terminate the variable name
-
-        // ✅ Get environment variable value
-        value = ms_get_env(self->msh->env, var_name);
-        if (!value)
-            value = ft_strdup("");  // Variable not found → empty string
-        else
-            value = ft_strdup(value);
+        suffix = ft_substr(self->char_itr.cursor, 0, ft_strlen(self->char_itr.cursor));
+        temp = ft_strjoin(value, suffix);
+        free(value);
+        free(suffix);
+        value = temp;
+        self->char_itr.cursor += ft_strlen(self->char_itr.cursor);
     }
-
-    // ✅ Store expanded value in token
     token.type = WORD;
     token.lexeme.start = value;
     token.lexeme.length = ft_strlen(value);
-
-    return (token);
+    return token;
 }
-
-
-
-// t_slice expand_env_var(t_scanner *self)
-// {
-//     char        *value;
-//     t_slice     res;
-
-//     self->char_itr.cursor++;  // Skip the `$`
-//     if (*self->char_itr.cursor == '$')  // Special case: `$$`
-//     {
-//         value = ft_itoa(getpid());
-//         self->char_itr.cursor++;
-//     }
-//     else if (*self->char_itr.cursor == '?')  // Special case: `$?`
-//     {
-//         value = ft_itoa(self->msh->ret_exit);
-//         self->char_itr.cursor++;
-//     }
-//     else
-//     {
-//         value = get_env_vvalue(self);  // Lookup variable value
-//     }
-
-//     if (value)
-//     {
-//         res.start = ft_strdup(value);  // ✅ Store safe copy
-//         res.length = ft_strlen(value);
-//         free(value);  // ✅ Avoid memory leak
-//     }
-//     else
-//     {
-//         res.start = ft_strdup("");  // ✅ Empty string if variable is not found
-//         res.length = 0;
-//     }
-
-//     return res;
-// }
-
-// ... existing code ...
-
-// char *handle_expansions(const char *arg, t_context *msh)
-// {
-//     char *var_name;
-//     char *value;
-
-//     if (!arg || !*arg)
-//         return ft_strdup("");
-
-//     if (arg[0] == '$')
-//     {
-//         var_name = ft_strdup(arg + 1);
-//         value = expand_env_var_value(var_name, msh);
-//         free(var_name);
-//         return value;
-//     }
-
-//     return ft_strdup(arg);
-// }
