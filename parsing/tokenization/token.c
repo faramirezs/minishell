@@ -101,20 +101,23 @@ t_token tmp_unknown_token (t_scanner *self)
 	return (self->next);
 }
 
-t_token env_var_token(t_scanner *self)
-{
-    t_slice expanded;
-
-    self->next.type = ENV_VAR;
-
-    // Get the expanded value
-    expanded = expand_env_var(self);
-
-    // Store the expansion directly in the scanner's next token
-    self->next.lexeme = expanded;
-
-    return self->next;
-}
+// t_token env_var_token(t_scanner *self)
+// {
+//     t_slice var;
+//     char    *expanded;
+    
+//     var = expand_env_var(self);
+//     while (ft_isalnum(*self->char_itr.cursor) || *self->char_itr.cursor == '_')
+//     {
+//         expanded = ft_strjoin_free_s1((char *)var.start, ft_substr(self->char_itr.cursor, 0, 1));
+//         self->char_itr.cursor++;
+//         var.start = expanded;
+//     }
+//     self->next.lexeme.start = var.start;
+//     self->next.lexeme.length = var.length;
+//     self->next.type = WORD;
+//     return (self->next);
+// }
 
 t_token abs_path_token(t_scanner *self)
 {
@@ -175,16 +178,16 @@ t_token heredoc_token(t_scanner *self)
 
 t_token non_delimited_token(t_scanner *self)
 {
-    char *temp = ft_strdup("");
+    char *temp;
 
+    temp = ft_strdup("");
     while (*self->char_itr.cursor)
     {
         if (*self->char_itr.cursor == '"')
             temp = ft_strjoin_free_s1(temp, double_quote_token(self).lexeme.start);
         else if (*self->char_itr.cursor == '\'')
             temp = ft_strjoin_free_s1(temp, single_quote_token(self).lexeme.start);
-        //else if (*self->char_itr.cursor == '$' && ft_is_valid_env_name(self->char_itr.cursor + 1))
-            //temp = ft_strjoin_free_s1(temp, env_var_token(self).lexeme.start);
+        
         else
         {
             temp = ft_strjoin_free_s1(temp, ft_substr(self->char_itr.cursor, 0, 1));
@@ -192,7 +195,7 @@ t_token non_delimited_token(t_scanner *self)
         }
 
         if (*self->char_itr.cursor == '\0' || ft_strchr(" \t\n|><", *self->char_itr.cursor))
-            break;  // ✅ Stop at delimiters like space, pipes, or redirections
+            break ;  // ✅ Stop at delimiters like space, pipes, or redirections
     }
 
     self->next.type = WORD;
@@ -206,8 +209,9 @@ t_token non_delimited_token(t_scanner *self)
 t_token double_quote_token(t_scanner *self)
 {
     char    *expanded;
-    t_slice var;
+    t_token var;
     char    *continuation;
+
 
     self->next.type = STRING_D_QUOTES;
     self->next.lexeme.start = ++self->char_itr.cursor;
@@ -241,17 +245,18 @@ t_token double_quote_token(t_scanner *self)
             continue;
         }
         if (*self->char_itr.cursor == '$' && *(self->char_itr.cursor + 1)
-            && ft_is_valid_env_name(self->char_itr.cursor + 1))
+            && find_env_index(self->msh->env, self->char_itr.cursor + 1))
         {
-            var = expand_env_var(self);
-            expanded = ft_strjoin_free_s1(expanded, var.start);
-            self->char_itr.cursor += var.length;  // Move past the expanded variable
+            var = handle_expansions (self);
+            expanded = ft_strjoin_free_s1(expanded, var.lexeme.start);
+            //self->char_itr.cursor += var.lexeme.length;  // Move past the expanded variable
         }
         else
         {
             expanded = ft_strjoin_free_s1(expanded, ft_substr(self->char_itr.cursor, 0, 1));
             self->char_itr.cursor++;
         }
+        
     }
     self->next.lexeme.start = expanded;
     self->next.lexeme.length = ft_strlen(expanded);
@@ -260,9 +265,9 @@ t_token double_quote_token(t_scanner *self)
 
 t_token single_quote_token(t_scanner *self)
 {
-    char *continuation;
-    char *expanded;
-    const char *start;
+    char        *continuation;
+    char        *expanded;
+    const char  *start;
 
     self->next.type = STRING_S_QUOTES;
     start = ++self->char_itr.cursor; // Store start position (skip opening quote)
@@ -273,7 +278,7 @@ t_token single_quote_token(t_scanner *self)
         if (*self->char_itr.cursor == '\'')  // Found closing quote
         {
             self->char_itr.cursor++;
-            break;
+            break ;
         }
         if (*self->char_itr.cursor == '\0')  // Handle multi-line input
         {
@@ -297,7 +302,7 @@ t_token single_quote_token(t_scanner *self)
     self->next.lexeme.start = expanded;  // ✅ Store the extracted string
     self->next.lexeme.length = ft_strlen(expanded);
 
-    return self->next;
+    return (self->next);
 }
 
 
@@ -330,55 +335,108 @@ char *get_env_vvalue(t_scanner *self)
     return value;
 }
 
-t_slice expand_env_var(t_scanner *self)
+t_token handle_expansions(t_scanner *self)
 {
-    char *value;
-    t_slice res;
+    t_token token;
+    char    *value;
+    char    var_name[256];  // Buffer for variable name
+    int     i;
 
-    self->char_itr.cursor++;
-    if (*self->char_itr.cursor == '$')
+    i = 0;
+    self->char_itr.cursor++;  // Skip `$`
+
+    if (*self->char_itr.cursor == '$')  // ✅ Special case: `$$` (process ID)
     {
         value = ft_itoa(getpid());
         self->char_itr.cursor++;
     }
-    else if (*self->char_itr.cursor == '?')
+    else if (*self->char_itr.cursor == '?')  // ✅ Special case: `$?` (last exit status)
     {
         value = ft_itoa(self->msh->ret_exit);
         self->char_itr.cursor++;
     }
     else
     {
-        value = get_env_vvalue(self);
+        // ✅ Extract variable name (letters, digits, underscores)
+        while (ft_isalnum(*self->char_itr.cursor) || *self->char_itr.cursor == '_')
+        {
+            if (i < 255)
+                var_name[i++] = *self->char_itr.cursor;
+            self->char_itr.cursor++;
+        }
+        var_name[i] = '\0';  // Null-terminate the variable name
+
+        // ✅ Get environment variable value
+        value = ms_get_env(self->msh->env, var_name);
+        if (!value)
+            value = ft_strdup("");  // Variable not found → empty string
+        else
+            value = ft_strdup(value);
     }
 
-    if (value)
-    {
-        res.start = value;
-        res.length = ft_strlen(value);
-    }
-    else
-    {
-        res.start = NULL;
-        res.length = 0;
-    }
+    // ✅ Store expanded value in token
+    token.type = WORD;
+    token.lexeme.start = value;
+    token.lexeme.length = ft_strlen(value);
 
-    return res;
+    return (token);
 }
+
+
+
+// t_slice expand_env_var(t_scanner *self)
+// {
+//     char        *value;
+//     t_slice     res;
+
+//     self->char_itr.cursor++;  // Skip the `$`
+//     if (*self->char_itr.cursor == '$')  // Special case: `$$`
+//     {
+//         value = ft_itoa(getpid());
+//         self->char_itr.cursor++;
+//     }
+//     else if (*self->char_itr.cursor == '?')  // Special case: `$?`
+//     {
+//         value = ft_itoa(self->msh->ret_exit);
+//         self->char_itr.cursor++;
+//     }
+//     else
+//     {
+//         value = get_env_vvalue(self);  // Lookup variable value
+//     }
+
+//     if (value)
+//     {
+//         res.start = ft_strdup(value);  // ✅ Store safe copy
+//         res.length = ft_strlen(value);
+//         free(value);  // ✅ Avoid memory leak
+//     }
+//     else
+//     {
+//         res.start = ft_strdup("");  // ✅ Empty string if variable is not found
+//         res.length = 0;
+//     }
+
+//     return res;
+// }
 
 // ... existing code ...
 
-char *handle_expansions(const char *arg, t_context *msh)
-{
-    if (!arg || !*arg)
-        return ft_strdup("");
+// char *handle_expansions(const char *arg, t_context *msh)
+// {
+//     char *var_name;
+//     char *value;
 
-    if (arg[0] == '$')
-    {
-        char *var_name = ft_strdup(arg + 1);
-        char *value = expand_env_var_value(var_name, msh);
-        free(var_name);
-        return value;
-    }
+//     if (!arg || !*arg)
+//         return ft_strdup("");
 
-    return ft_strdup(arg);
-}
+//     if (arg[0] == '$')
+//     {
+//         var_name = ft_strdup(arg + 1);
+//         value = expand_env_var_value(var_name, msh);
+//         free(var_name);
+//         return value;
+//     }
+
+//     return ft_strdup(arg);
+// }
