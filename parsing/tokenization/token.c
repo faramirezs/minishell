@@ -306,33 +306,42 @@ t_token single_quote_token(t_scanner *self)
 }
 
 
-char *get_env_vvalue(t_scanner *self)
+// char *get_env_vvalue(t_scanner *self)
+// {
+//     const char	*start;
+//     size_t		length;
+//     char		*var_name;
+//     char		*value;
+
+//     start = self->char_itr.cursor;
+//     length = 0;
+
+//     // Extract the variable name
+//     while (*self->char_itr.cursor && (ft_isalnum(*self->char_itr.cursor) || *self->char_itr.cursor == '_'))
+//     {
+//         length++;
+//         self->char_itr.cursor++;
+//     }
+
+//     // Get the variable name as a string
+//     var_name = ft_substr(start, 0, length);
+
+//     // Fetch the value from the environment
+//     value = ms_get_env(self->msh->env, var_name);
+
+//     // Clean up
+//     free(var_name);
+
+//     return value;
+// }
+
+char *expand_special_vars(char c, t_context *msh)
 {
-    const char	*start;
-    size_t		length;
-    char		*var_name;
-    char		*value;
-
-    start = self->char_itr.cursor;
-    length = 0;
-
-    // Extract the variable name
-    while (*self->char_itr.cursor && (ft_isalnum(*self->char_itr.cursor) || *self->char_itr.cursor == '_'))
-    {
-        length++;
-        self->char_itr.cursor++;
-    }
-
-    // Get the variable name as a string
-    var_name = ft_substr(start, 0, length);
-
-    // Fetch the value from the environment
-    value = ms_get_env(self->msh->env, var_name);
-
-    // Clean up
-    free(var_name);
-
-    return value;
+    if (c == '$')  // ✅ Handle `$$` (Process ID)
+        return ft_itoa(getpid());
+    if (c == '?')  // ✅ Handle `$?` (Last exit code)
+        return ft_itoa(msh->ret_exit);
+    return NULL;
 }
 
 t_token handle_expansions(t_scanner *self)
@@ -344,17 +353,16 @@ t_token handle_expansions(t_scanner *self)
 
     i = 0;
     self->char_itr.cursor++;  // Skip `$`
-
-    if (*self->char_itr.cursor == '$')  // ✅ Special case: `$$` (process ID)
+    if (!ft_isalnum(*self->char_itr.cursor) && *self->char_itr.cursor != '?' && *self->char_itr.cursor != '_')
     {
-        value = ft_itoa(getpid());
-        self->char_itr.cursor++;
+        token.type = WORD;
+        token.lexeme.start = ft_strdup("$");
+        token.lexeme.length = 1;
+        return token;
     }
-    else if (*self->char_itr.cursor == '?')  // ✅ Special case: `$?` (last exit status)
-    {
-        value = ft_itoa(self->msh->ret_exit);
+    value = expand_special_vars(*self->char_itr.cursor, self->msh);
+    if (value)
         self->char_itr.cursor++;
-    }
     else
     {
         // ✅ Extract variable name (letters, digits, underscores)
