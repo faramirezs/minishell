@@ -47,6 +47,8 @@ int handle_echo(struct s_tree_node *node, t_context *msh)
     char    *expanded_arg;
     (void)msh;
 
+	close(STDIN_FILENO);
+
     i = 1;
     n = false;
     if (!node || !node->data.exec_u.args)
@@ -62,7 +64,7 @@ int handle_echo(struct s_tree_node *node, t_context *msh)
         //     expanded_arg = expand_env_var_value(node->data.exec_u.args[i] + 1, msh);
         // else
         expanded_arg = ft_strdup(node->data.exec_u.args[i]);
-        printf("%s", expanded_arg); 
+        printf("%s", expanded_arg);
         if (node->data.exec_u.args[i + 1])
             printf(" ");
         free(expanded_arg);
