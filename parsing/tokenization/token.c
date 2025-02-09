@@ -227,7 +227,7 @@ t_token double_quote_token(t_scanner *self)
             continue;
         }
         if (*self->char_itr.cursor == '$' && *(self->char_itr.cursor + 1)
-            && ft_is_valid_env_name(self->char_itr.cursor + 1))
+            && find_env_index(self->msh->env, self->char_itr.cursor + 1))
         {
             var = handle_expansions (self);
             expanded = ft_strjoin_free_s1(expanded, var.lexeme.start);
@@ -280,9 +280,8 @@ t_token single_quote_token(t_scanner *self)
         expanded = ft_strjoin_free_s1(expanded, ft_substr(self->char_itr.cursor, 0, 1));
         self->char_itr.cursor++; // ✅ Move forward normally
     }
-    self->next.lexeme.length = self->char_itr.cursor - self->next.lexeme.start - 1;
-
-    fprintf(stderr, "DEBUG: Token = '%zu', Type = %s\n", self->next.lexeme.length, self->next.lexeme.start);
+    self->next.lexeme.start = expanded;  // ✅ Store the extracted string
+    self->next.lexeme.length = ft_strlen(expanded);
 
     return (self->next);
 }
