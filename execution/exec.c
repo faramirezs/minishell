@@ -11,247 +11,116 @@
 	127	- Command not found: Command is missing in the system's PATH.
 	130	- Script interrupted (SIGINT): Process terminated via Ctrl+C. */
 
-//From this video https://www.youtube.com/watch?v=KbhDPYHRqkY&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=67
-// Execute pipe node https://www.youtube.com/watch?v=KbhDPYHRqkY&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=65
-
-/* typedef struct s_context
-{
-	int fd[2]; //for stdin and stdout
-	int fd_close; // Close an fd? -1 if not
-} t_context; */
-
 static int exec_node(t_tree_node *node, t_context *ctx);
 static int exec_command(t_tree_node *node, t_context *ctx);
 static int exec_pipe(t_tree_node *node, t_context *ctx);
 static int exec_redir(t_tree_node *node, t_context *ctx);
 
-// Executing command https://www.youtube.com/watch?v=HzAQCUB9Ifw&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=63&t=826s
-//
-
-static int exec_redir(t_tree_node *node, t_context *ctx)
+static int setup_pipe_redirection(t_context *ctx, int saved_stdin, int saved_stdout, t_tree_node *node)
 {
-    t_redircmd *rcmd;
-    int saved_stdin;
-    int saved_stdout;
-    int result;
-    int fd;
+	if (ctx->fd[0] != STDIN_FILENO)
+	{
+		if (dup2(ctx->fd[0], STDIN_FILENO) == -1)
+		{
+			perror("dup2");
+			close(saved_stdin);
+			close(saved_stdout);
+			cleanup(node, 1);
+		}
+		close(ctx->fd[0]);
+	}
 
-    rcmd = &node->data.redir_u;
-    saved_stdin = dup(STDIN_FILENO);
-    saved_stdout = dup(STDOUT_FILENO);
-    result = 0;
-
-    if (saved_stdin == -1 || saved_stdout == -1)
-    {
-        perror("dup");
-        cleanup(node, 1);
-    }
-
-    // Perform pipe setup first
-    if (ctx->fd[0] != STDIN_FILENO)
-    {
-        if (dup2(ctx->fd[0], STDIN_FILENO) == -1)
-        {
-            perror("dup2");
-            close(saved_stdin);
-            close(saved_stdout);
-            cleanup(node, 1);
-        }
-        close(ctx->fd[0]);
-    }
-
-    if (ctx->fd[1] != STDOUT_FILENO)
-    {
-        if (dup2(ctx->fd[1], STDOUT_FILENO) == -1)
-        {
-            perror("dup2");
-            close(saved_stdin);
-            close(saved_stdout);
-            cleanup(node, 1);
-        }
-        close(ctx->fd[1]);
-    }
-
-    // Apply redirection logic
-    if (rcmd->redir_type == REDIR_IN)
-    {
-        fd = open(rcmd->target, O_RDONLY);
-        if (fd < 0)
-        {
-			perror("open");
-            close(saved_stdin);
-            close(saved_stdout);
-			return 1;
-            //cleanup(node, 1); // General error
-        }
-        if (dup2(fd, STDIN_FILENO) == -1)
-        {
-            perror("dup2");
-            close(fd);
-            close(saved_stdin);
-            close(saved_stdout);
-            cleanup(node, 1); // General error
-        }
-        close(fd);
-    }
-    else if (rcmd->redir_type == HEREDOC)
-    {
-        if (handle_heredoc(rcmd) < 0)
-        {
-            close(saved_stdin);
-            close(saved_stdout);
-            cleanup(node, EXIT_FAILURE);
-        }
-        /* result = exec_command(node, ctx);
-        if (dup2(saved_stdin, STDIN_FILENO) == -1)
-        {
-            perror("dup2");
-            close(saved_stdin);
-            close(saved_stdout);
-            cleanup(node, EXIT_FAILURE);
-        }
-        close(saved_stdin);
-        close(saved_stdout);
-        return result; */
-    }
-    else if (rcmd->redir_type == REDIR_OUT || rcmd->redir_type == APPEND_OUT)
-    {
-        fd = open(rcmd->target, rcmd->flags, rcmd->mode);
-        if (fd < 0)
-        {
-            //printf("Not open out\n");
-			perror("open");
-            close(saved_stdin);
-            close(saved_stdout);
-            cleanup(node, 1); // General error
-        }
-        if (dup2(fd, STDOUT_FILENO) == -1)
-        {
-            perror("dup2");
-            close(fd);
-            close(saved_stdin);
-            close(saved_stdout);
-            cleanup(node, 1); // General error
-        }
-        close(fd);
-    }
-
-    if (rcmd->cmd == NULL)
-    {
-        fprintf(stderr, "Error: Command node is NULL\n");
-        close(saved_stdin);
-        close(saved_stdout);
-        cleanup(node, 1); // General error
-    }
-
-    result = exec_node(rcmd->cmd, ctx);
-
-    if (dup2(saved_stdin, STDIN_FILENO) == -1 || dup2(saved_stdout, STDOUT_FILENO) == -1)
-    {
-        perror("dup2");
-        close(saved_stdin);
-        close(saved_stdout);
-        cleanup(node, 1);
-    }
-    close(saved_stdin);
-    close(saved_stdout);
-    return result;
+	if (ctx->fd[1] != STDOUT_FILENO)
+	{
+		if (dup2(ctx->fd[1], STDOUT_FILENO) == -1)
+		{
+			perror("dup2");
+			close(saved_stdin);
+			close(saved_stdout);
+			cleanup(node, 1);
+		}
+		close(ctx->fd[1]);
+	}
+	return 0;
 }
 
-/* static int exec_redir(t_tree_node *node, t_context *ctx)
+static int redirect_input(t_redircmd *rcmd, int saved_stdin, int saved_stdout, t_tree_node *node)
 {
-	t_redircmd *rcmd;
-	int saved_stdin;
-	int saved_stdout;
-	int result;
-	int fd;
+	int fd = open(rcmd->target, O_RDONLY);
+	if (fd < 0)
+	{
+		perror("open");
+		close(saved_stdin);
+		close(saved_stdout);
+		return 1;
+	}
+	if (dup2(fd, STDIN_FILENO) == -1)
+	{
+		perror("dup2");
+		close(fd);
+		close(saved_stdin);
+		close(saved_stdout);
+		cleanup(node, 1);
+	}
+	close(fd);
+	return 0;
+}
 
+static int redirect_output(t_redircmd *rcmd, int saved_stdin, int saved_stdout, t_tree_node *node)
+{
+	int fd = open(rcmd->target, rcmd->flags, rcmd->mode);
+	if (fd < 0)
+	{
+		perror("open");
+		close(saved_stdin);
+		close(saved_stdout);
+		cleanup(node, 1);
+	}
+	if (dup2(fd, STDOUT_FILENO) == -1)
+	{
+		perror("dup2");
+		close(fd);
+		close(saved_stdin);
+		close(saved_stdout);
+		cleanup(node, 1);
+	}
+	close(fd);
+	return 0;
+}
 
-	rcmd = &node->data.redir_u;
-	saved_stdin = dup(STDIN_FILENO);
-	saved_stdout = dup(STDOUT_FILENO);
-	result = 0;
+static int apply_redirection(t_redircmd *rcmd, int saved_stdin, int saved_stdout, t_tree_node *node)
+{
+	if (rcmd->redir_type == REDIR_IN)
+		return redirect_input(rcmd, saved_stdin, saved_stdout, node);
+	else if (rcmd->redir_type == HEREDOC)
+	{
+		if (handle_heredoc(rcmd) < 0)
+		{
+			close(saved_stdin);
+			close(saved_stdout);
+			cleanup(node, EXIT_FAILURE);
+		}
+	}
+	else if (rcmd->redir_type == REDIR_OUT || rcmd->redir_type == APPEND_OUT)
+		return redirect_output(rcmd, saved_stdin, saved_stdout, node);
+	return 0;
+}
 
-	if (saved_stdin == -1 || saved_stdout == -1)
+static int save_std_fds(int *saved_stdin, int *saved_stdout, t_tree_node *node)
+{
+	*saved_stdin = dup(STDIN_FILENO);
+	*saved_stdout = dup(STDOUT_FILENO);
+	if (*saved_stdin == -1 || *saved_stdout == -1)
 	{
 		perror("dup");
 		cleanup(node, 1);
+		return 1;
 	}
-	if (rcmd->redir_type == REDIR_IN)
-	{
-		fd = open(rcmd->target, O_RDONLY);
-		if (fd < 0)
-		{
-			perror("open");
-			close(saved_stdin);
-			close(saved_stdout);
-			cleanup(node, 1); // General error
-		}
-		if (dup2(fd, STDIN_FILENO) == -1)
-		{
-			perror("dup2");
-			close(fd);
-			close(saved_stdin);
-			close(saved_stdout);
-			cleanup(node, 1); // General error
-		}
-		close(fd);
-	}
-	else if (rcmd->redir_type == HEREDOC)
-    {
-        if (handle_heredoc(rcmd) < 0)
-        {
-            //if it is 0, then we could do the cleanup with node info.
-			close(saved_stdin);
-            close(saved_stdout);
-            cleanup(node, EXIT_FAILURE);
-        }
-		//result = exec_node(rcmd->cmd, ctx);
-		result = exec_command(node, ctx);
-		if (dup2(saved_stdin, STDIN_FILENO) == -1)
-    	{
-        	perror("dup2");
-        	close(saved_stdin);
-        	close(saved_stdout);
-        	cleanup(node, EXIT_FAILURE);
-    	}
-   		close(saved_stdin);
-    	close(saved_stdout);
-    	return result;
-		//else
-		//{
-		//	cleanup(node, EXIT_SUCCESS);
-		//}
-    }
-	else if (rcmd->redir_type == REDIR_OUT || rcmd->redir_type == APPEND_OUT)
-	{
-		fd = open(rcmd->target, rcmd->flags, rcmd->mode);
-		if (fd < 0)
-		{
-			perror("open");
-			close(saved_stdin);
-			close(saved_stdout);
-			cleanup(node, 1); // General error
-		}
-		if (dup2(fd, STDOUT_FILENO) == -1)
-		{
-			perror("dup2");
-			close(fd);
-			close(saved_stdin);
-			close(saved_stdout);
-			cleanup(node, 1); // General error
-		}
-		close(fd);
-	}
-	if (rcmd->cmd == NULL)
-	{
-		fprintf(stderr, "Error: Command node is NULL\n");
-		close(saved_stdin);
-		close(saved_stdout);
-		cleanup(node, 1); // General error
-	}
-	result = exec_node(rcmd->cmd, ctx);
-	//result = exec_command(node, ctx);
+	return 0;
+}
+
+static void restore_std_fds(int saved_stdin, int saved_stdout, t_tree_node *node)
+{
 	if (dup2(saved_stdin, STDIN_FILENO) == -1 || dup2(saved_stdout, STDOUT_FILENO) == -1)
 	{
 		perror("dup2");
@@ -261,8 +130,34 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
 	}
 	close(saved_stdin);
 	close(saved_stdout);
-	return (result);
-} */
+}
+
+static int exec_redir(t_tree_node *node, t_context *ctx)
+{
+	t_redircmd *rcmd = &node->data.redir_u;
+	int saved_stdin, saved_stdout, result = 0;
+
+	if (save_std_fds(&saved_stdin, &saved_stdout, node) != 0)
+		return 1;
+
+	if (setup_pipe_redirection(ctx, saved_stdin, saved_stdout, node) != 0)
+		return 1;
+
+	if (apply_redirection(rcmd, saved_stdin, saved_stdout, node) != 0)
+		return 1;
+
+	if (rcmd->cmd == NULL)
+	{
+		fprintf(stderr, "Error: Command node is NULL\n");
+		close(saved_stdin);
+		close(saved_stdout);
+		cleanup(node, 1);
+	}
+
+	result = exec_node(rcmd->cmd, ctx);
+	restore_std_fds(saved_stdin, saved_stdout, node);
+	return result;
+}
 
 static int exec_node(t_tree_node *node, t_context *ctx)
 {
@@ -279,35 +174,6 @@ static int exec_node(t_tree_node *node, t_context *ctx)
 		return (0);
 	}
 }
-
-//imho the builtins should be here in something like this:
-// int exec(t_tree_node *node, t_context *msh)
-// {
-//     int status = 0;
-
-//     if (is_builtin(node) && !is_in_pipeline(node))  // ✅ No pipeline, execute directly
-//     {
-//         return execute_builtin(node, msh);  // Built-in sets msh->ret_exit
-//     }
-
-//     // For external commands or built-ins in a pipeline, fork
-//     pid_t pid = fork();
-//     if (pid == 0)  // Child process
-//     {
-//         if (is_builtin(node))
-//             exit(execute_builtin(node, msh));  // ✅ Built-in in a pipeline
-//         else
-//             execvp(node->data.exec_u.args[0], node->data.exec_u.args);
-//         perror("execvp");
-//         exit(127);
-//     }
-//     else if (pid > 0)  // Parent process
-//     {
-//         waitpid(pid, &status, 0);
-//     }
-
-//     return WEXITSTATUS(status);
-// }
 
 int exec(t_tree_node *node, t_context *msh)
 {
@@ -353,15 +219,6 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 			//printf("Executing builtin\n");
 			return (execute_builtin(node, ctx));
         }
-	/* if (is_builtin(node) && ctx->fd[0] == STDIN_FILENO && ctx->fd[1] == STDOUT_FILENO)
-        {
-            printf("Executing builtin\n");
-			ctx->ret_exit = execute_builtin(node, ctx);
-			return (ctx->ret_exit);
-        }
-	printf("Executing $PATH functions\n");
-			return execute_builtin(node, ctx);
-        } */
 
 	pid = fork();
 	if (pid == -1)
@@ -382,20 +239,11 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 			dup2(ctx->fd[1], STDOUT_FILENO);
 			close(ctx->fd[1]);
 		}
-		// Execute builtin or external command
-		/* if (is_builtin(node))
-		{
-			printf("Executing BUILTIN function\n");
-			exit(execute_builtin(node, ctx));
-		}
-		else */
-		//printf("Executing $PATH function\n");
 		execvp(node->data.exec_u.args[0], node->data.exec_u.args);
 		perror("execvp");
 		return(127);
 
     }
-	// Parent process
 	if (ctx->fd[0] != STDIN_FILENO)
         close(ctx->fd[0]);
     if (ctx->fd[1] != STDOUT_FILENO)
@@ -420,10 +268,8 @@ static int exec_pipe(t_tree_node *node, t_context *ctx)
         return -1;
     }
 
-    // Set up contexts for left and right commands
     left_ctx.fd[1] = pipefd[1];
     right_ctx.fd[0] = pipefd[0];
-	 // Fork for left side
     left_pid = fork();
     if (left_pid == 0)
     {
@@ -441,11 +287,9 @@ static int exec_pipe(t_tree_node *node, t_context *ctx)
         exit(status);
     }
 
-    // Parent closes both ends of pipe
     close(pipefd[0]);
     close(pipefd[1]);
 
-    // Wait for both children
     waitpid(left_pid, &status, 0);
     waitpid(right_pid, &status, 0);
 
