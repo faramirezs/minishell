@@ -40,14 +40,22 @@ int	handle_cd(struct s_tree_node *node, t_context *msh)
 			return (1);
 		}
 	}
+	else if (node->data.exec_u.args[2])  // More than one argument (Error)
+    {
+        fprintf(stderr, "minishell: cd: too many arguments\n");
+        msh->ret_exit = 1;
+        return (1);
+    }
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
 		perror("getcwd");
+		msh->ret_exit = 1;
 		return (1);
 	}
 	if (chdir(dir) == -1)
 	{
 		fprintf (stderr, "cd: %s no such file or dir\n", dir);
+		msh->ret_exit = 1;
 		return (1);
 	}
 	set_pwd (msh, "OLDPWD=", cwd);
@@ -55,5 +63,6 @@ int	handle_cd(struct s_tree_node *node, t_context *msh)
 		set_pwd (msh, "PWD=", cwd);
 	else
 		perror("getcwd");
+	msh->ret_exit = 0;
 	return (0);
 }

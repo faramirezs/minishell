@@ -519,7 +519,7 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 		}
 		execvp(node->data.exec_u.args[0], node->data.exec_u.args);
 		perror("execvp");
-		return(127);
+		exit(127);
 
     }
 	if (ctx->fd[0] != STDIN_FILENO)
@@ -527,7 +527,8 @@ static int exec_command(t_tree_node *node, t_context *ctx)
     if (ctx->fd[1] != STDOUT_FILENO)
         close(ctx->fd[1]);
     waitpid(pid, &status, 0);
-    return WEXITSTATUS(status);
+	ctx->ret_exit = WEXITSTATUS(status);
+	return (ctx->ret_exit);
 }
 
 static int exec_pipe(t_tree_node *node, t_context *ctx)
