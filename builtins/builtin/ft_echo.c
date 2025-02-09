@@ -51,6 +51,50 @@ int handle_echo(struct s_tree_node *node, t_context *msh)
     n = false;
     if (!node || !node->data.exec_u.args)
         return 1;
+
+    while (node->data.exec_u.args[i] && ft_newline(node->data.exec_u.args[i]))
+    {
+        n = true;
+        i++;
+    }
+
+    while (node->data.exec_u.args[i])
+    {
+        expanded_arg = ft_strdup(node->data.exec_u.args[i]);
+        if (write(STDOUT_FILENO, expanded_arg, ft_strlen(expanded_arg)) < 0)
+        {
+            free(expanded_arg);
+            return 1;  // Return error if write fails
+        }
+        if (node->data.exec_u.args[i + 1])
+        {
+            if (write(STDOUT_FILENO, " ", 1) < 0)
+            {
+                free(expanded_arg);
+                return 1;
+            }
+        }
+        free(expanded_arg);
+        i++;
+    }
+    
+    if (!n && write(STDOUT_FILENO, "\n", 1) < 0)
+        return 1;
+
+    return 0;
+}
+
+/* int handle_echo(struct s_tree_node *node, t_context *msh)
+{
+    int     i;
+    int     n;
+    char    *expanded_arg;
+    (void)msh;
+
+    i = 1;
+    n = false;
+    if (!node || !node->data.exec_u.args)
+        return 1;
     while (node->data.exec_u.args[i] && ft_newline(node->data.exec_u.args[i]))
     {
         n = true;
@@ -78,7 +122,7 @@ int handle_echo(struct s_tree_node *node, t_context *msh)
     if (!n && printf("\n") < 0)  // Check for write errors
         return 1;
     return 0;
-}
+} */
 
 /* int handle_echo(struct s_tree_node *node, t_context *msh)
 {
