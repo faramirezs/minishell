@@ -72,21 +72,26 @@ static int redirect_input(t_redircmd *rcmd, int saved_stdin, int saved_stdout, t
 
 static int redirect_output(t_redircmd *rcmd, int saved_stdin, int saved_stdout, t_tree_node *node)
 {
+	(void)saved_stdin;
+	(void)saved_stdout;
+	(void)node;
 	int fd = open(rcmd->target, rcmd->flags, rcmd->mode);
 	if (fd < 0)
 	{
-		perror("open");
-		close(saved_stdin);
-		close(saved_stdout);
-		cleanup(node, 1);
+		perror(rcmd->target);
+		//close(saved_stdin);
+		//close(saved_stdout);
+		//cleanup(node, 1);
+		return 1;
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
 		perror("dup2");
 		close(fd);
-		close(saved_stdin);
-		close(saved_stdout);
-		cleanup(node, 1);
+		//close(saved_stdin);
+		//close(saved_stdout);
+		//cleanup(node, 1);
+		return 1;
 	}
 	close(fd);
 	return 0;
@@ -135,8 +140,42 @@ static void restore_std_fds(int saved_stdin, int saved_stdout, t_tree_node *node
 	close(saved_stdin);
 	close(saved_stdout);
 }
-
 static int exec_redir(t_tree_node *node, t_context *ctx)
+{
+    t_redircmd *rcmd = &node->data.redir_u;
+    int saved_stdin, saved_stdout;
+    int result = 0;
+    int redir_failed = 0;
+
+    if (save_std_fds(&saved_stdin, &saved_stdout, node) != 0)
+        return 1;
+
+    if (setup_pipe_redirection(ctx, saved_stdin, saved_stdout, node) != 0)
+    {
+        restore_std_fds(saved_stdin, saved_stdout, node);
+        return 1;
+    }
+
+    if (apply_redirection(rcmd, saved_stdin, saved_stdout, node) != 0)
+        redir_failed = 1;
+
+    if (rcmd->cmd == NULL)
+    {
+        restore_std_fds(saved_stdin, saved_stdout, node);
+        return redir_failed;
+    }
+
+    // Only execute command if redirection succeeded or we're in a pipeline
+    if (!redir_failed || rcmd->cmd->type == N_PIPE)
+        result = exec_node(rcmd->cmd, ctx);
+    else
+        result = 1;
+
+    restore_std_fds(saved_stdin, saved_stdout, node);
+    return result;
+}
+
+/* static int exec_redir(t_tree_node *node, t_context *ctx)
 {
     t_redircmd *rcmd = &node->data.redir_u;
     int saved_stdin, saved_stdout;
@@ -168,7 +207,7 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
     int result = exec_node(rcmd->cmd, ctx);
     restore_std_fds(saved_stdin, saved_stdout, node);
     return result;
-}
+} */
 
 /* static int exec_redir(t_tree_node *node, t_context *ctx)
 {
