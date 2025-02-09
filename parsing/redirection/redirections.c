@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/08 20:08:49 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/09 13:28:52 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,49 @@ t_tree_node *create_redir_node(t_scanner *scanner)
 	return redir_node;
 }
 
-void handle_heredoc(t_redircmd *redir_node)
+void handle_redir_heredoc(t_redircmd *redir_node, t_scanner *scanner)
+{
+	t_list *heredoc_list = NULL;
+	while (redir_node->redir_type == HEREDOC)
+	{
+		char *heredoc_input = collect_heredoc_input(redir_node->target);
+		if (!heredoc_input)
+		{
+			redir_node->heredoc_content = ft_strdup("");
+			redir_node->heredoc_pid = -1;
+			//free_args(&cmd_args);
+			//cleanup(redir_node, EXIT_FAILURE);
+			printf("In handle_redir_heredoc: !heredoc_input\n");
+		}
+		append_node(&heredoc_list, heredoc_input);
+		free(heredoc_input);
+		redir_node->heredoc_content = concatenate_lines(heredoc_list);
+		if (!scanner_has_next(scanner))
+			break;
+		scanner->next = scanner_next(scanner);
+		if (scanner->next.type != HEREDOC)
+			break;
+
+		if (!scanner_has_next(scanner))
+		{
+			printf("Syntax error: nothing after redirection token\n");
+			break;
+			//cleanup(redir_node, EXIT_FAILURE);
+		}
+		scanner->next = scanner_next(scanner);
+		t_args *file_args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
+		file_args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
+		*(file_args->count) = 1;
+		args_collector(&scanner->next, file_args);
+		redir_node->target = ft_strdup(file_args->words[0]);
+		free_args(&file_args);
+		redir_node->target_type = determine_target_type(redir_node->target);
+	}
+	free_list(heredoc_list);
+}
+
+
+/* void handle_redir_heredoc(t_redircmd *redir_node)
 {
 	char *heredoc_input = collect_heredoc_input(redir_node->target);
 	if (!heredoc_input)
@@ -37,7 +79,7 @@ void handle_heredoc(t_redircmd *redir_node)
 		//cleanup(redir_node, EXIT_FAILURE);
 	}
 	redir_node->heredoc_content = heredoc_input;
-}
+} */
 
 void parse_redir_target(t_scanner *scanner, t_tree_node *redir_node, t_args *file_args)
 {
@@ -53,7 +95,7 @@ void parse_redir_target(t_scanner *scanner, t_tree_node *redir_node, t_args *fil
 	free_args(&file_args);
 	redir_node->data.redir_u.target_type = determine_target_type(redir_node->data.redir_u.target);
 	if (redir_node->data.redir_u.redir_type == HEREDOC)
-		handle_heredoc(&redir_node->data.redir_u);
+		handle_redir_heredoc(&redir_node->data.redir_u, scanner);
 }
 
 t_tree_node *handle_pipe(t_scanner *scanner, t_tree_node *redir_node, t_args *cmd_args)

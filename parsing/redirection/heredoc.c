@@ -6,18 +6,17 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:18:13 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/24 19:49:14 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/09 12:46:42 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/minishell.h"
-//#include "../../headers/redirections.h"
 
-typedef struct s_list
+/* typedef struct s_list
 {
 	char *line;
 	struct s_list *next;
-} t_list;
+} t_list; */
 
 static t_list *create_node(const char *line)
 {
@@ -29,7 +28,7 @@ static t_list *create_node(const char *line)
 	return node;
 }
 
-static void append_node(t_list **head, const char *line)
+void append_node(t_list **head, const char *line)
 {
 	t_list *new_node = create_node(line);
 	if (!new_node)
@@ -58,7 +57,7 @@ static size_t get_total_length(t_list *head)
 	return total_length;
 }
 
-static char *concatenate_lines(t_list *head)
+char *concatenate_lines(t_list *head)
 {
 	size_t total_length = get_total_length(head);
 	char *result = malloc(total_length + 1); // +1 for null terminator
@@ -78,7 +77,7 @@ static char *concatenate_lines(t_list *head)
 	return result;
 }
 
-static void free_list(t_list *head)
+void free_list(t_list *head)
 {
 	while (head)
 	{
