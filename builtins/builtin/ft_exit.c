@@ -1,5 +1,5 @@
-#include "../headers/built_in.h"
-#include "../headers/minishell.h"
+#include "../../headers/built_in.h"
+#include "../../headers/minishell.h"
 
 #include <stdio.h> // For printf, fprintf
 
