@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/09 13:28:52 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/09 15:23:20 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ t_tree_node *parse_redir(t_scanner *scanner, t_args *cmd_args)
 		}
 		else
 		{
-			*(cmd_args->count) = 1;
+			(*(cmd_args->count))++;
 			args_collector(&scanner->next, cmd_args);
 			while (scanner_has_next(scanner))
 			{
