@@ -498,6 +498,19 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 			return (execute_builtin(node, ctx));
         }
 
+    {
+		if (ctx->fd[0] != STDIN_FILENO)
+		{
+			dup2(ctx->fd[0], STDIN_FILENO);
+			close(ctx->fd[0]);
+		}
+		if (ctx->fd[1] != STDOUT_FILENO)
+		{
+			dup2(ctx->fd[1], STDOUT_FILENO);
+			close(ctx->fd[1]);
+		}
+		return (execute_builtin(node, ctx));
+     }
 	pid = fork();
 	if (pid == -1)
 	{
@@ -527,7 +540,8 @@ static int exec_command(t_tree_node *node, t_context *ctx)
     if (ctx->fd[1] != STDOUT_FILENO)
         close(ctx->fd[1]);
     waitpid(pid, &status, 0);
-    return WEXITSTATUS(status);
+    ctx->ret_exit = WEXITSTATUS(status);  // ✅ Store exit code in the shell context
+    return (ctx->ret_exit);
 }
 
 static int exec_pipe(t_tree_node *node, t_context *ctx)
