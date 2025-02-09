@@ -19,12 +19,11 @@ int ms_unset_export(t_context *msh, const char *key)
                 i++;
             }
             msh->env_export[i] = NULL;
-            return 0;
+            return (0);
         }
         i++;
     }
-
-    return (0);
+    return (-1);
 }
 
 
@@ -40,7 +39,8 @@ int handle_unset(t_tree_node *node, t_context *msh)
     if (!av[1])
     {
         //fprintf(stderr, "unset: missing argument\n");
-        msh->ret_exit = 1;
+        status = 1;
+        msh->ret_exit = status;
         return (1);
     }
 

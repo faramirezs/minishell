@@ -56,8 +56,9 @@ ft_strcmp.c \
 ft_free_tab.c \
 ft_atoll.c \
 ft_isllong.c \
-ft_strjoin_free_s1.c\
-ft_strtol.c
+ft_strjoin_free_s1.c \
+ft_strtol.c \
+ft_strspn.c
 
 
 

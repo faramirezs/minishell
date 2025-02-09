@@ -17,6 +17,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <ctype.h>
+# include <stddef.h>
 
 int		ft_atoi(const char *nptr);
 void	ft_bzero(void *s, size_t n);
@@ -61,5 +62,6 @@ char 	*ft_strjoin_free_s1(char *s1, const char *s2);
 //jess added functions
 int     ft_strcmp(const char *s1, const char *s2);
 long    ft_strtol(const char *str, char **endptr, int base);
+size_t  ft_strspn(const char *str, const char *accept);
 
 #endif

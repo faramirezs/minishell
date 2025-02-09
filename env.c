@@ -84,7 +84,6 @@ int ms_set_env(char **env, t_context *msh, const char *value)
 		fprintf(stderr, "setenv: %s: Invalid argument\n", value);
 		return (-1);
 	}
-
 	key_len = equals - value;
 	i = 0;
 	while (env[i])
@@ -99,11 +98,9 @@ int ms_set_env(char **env, t_context *msh, const char *value)
 		}
 		i++;
 	}
-
 	msh->env = ms_matrix_add_line(env, value);
 	if (!msh->env)
 		return (-1);
-
 	return (0);
 }
 
@@ -182,8 +179,6 @@ int ms_unset_env(t_context *msh, const char *key)
 		}
 		i++;
 	}
-
-	// Key not found
 	return (-1);
 }
 

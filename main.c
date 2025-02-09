@@ -92,11 +92,16 @@ void shell_loop(t_context *msh)
 	while (1)
 	{
 		line = readline("minishell> ");
-		if (!line)
-		{
-			printf("exit\n");
-			break; // Ctrl-D exit
-		}
+		if (!line || *line == '\0' || ft_strspn(line, " \t\n") == strlen(line))
+        {
+            free(line);
+            continue ; // Skip execution and prompt for input again
+        }
+		// if (!line)
+		// {
+		// 	printf("exit\n");
+		// 	break; // Ctrl-D exit
+		// }
 		add_history(line);
 		itr = char_itr_value(line, ft_strlen(line));
 		scanner = scanner_value(itr);
