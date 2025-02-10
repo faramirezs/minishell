@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:40:19 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/09 12:46:55 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/10 17:44:04 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ typedef struct s_list
 } t_list;
 
 
-t_tree_node					*parse_redir(t_scanner *scanner, t_args *cmd_args);
+t_tree_node					*parse_redir(t_scanner *scanner, t_args *cmd_args, t_tree_node *first_redir);
 int							check_redir(t_scanner *scanner);
 int							determine_target_type(const char *target);
 int							get_redir_flags(int redir_type);

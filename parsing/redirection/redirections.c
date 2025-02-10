@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/09 15:23:20 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/10 18:45:26 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,20 +98,20 @@ void parse_redir_target(t_scanner *scanner, t_tree_node *redir_node, t_args *fil
 		handle_redir_heredoc(&redir_node->data.redir_u, scanner);
 }
 
-t_tree_node *handle_pipe(t_scanner *scanner, t_tree_node *redir_node, t_args *cmd_args)
+t_tree_node *handle_pipe(t_scanner *scanner, t_tree_node *first_redir, t_tree_node *last_redir, t_args *cmd_args)
 {
 	t_tree_node *pipe_node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
 	pipe_node->type = N_PIPE;
 	if (cmd_args && cmd_args->words != NULL)
 	{
-		redir_node->data.redir_u.cmd = parse_exec(cmd_args);
+		last_redir->data.redir_u.cmd = parse_exec(cmd_args);
 	}
-	pipe_node->data.pipe_u.left = redir_node;
+	pipe_node->data.pipe_u.left = first_redir;
 	pipe_node->data.pipe_u.right = parse_tree_node(scanner);
 	return pipe_node;
 }
 
-t_tree_node *parse_redir(t_scanner *scanner, t_args *cmd_args)
+t_tree_node *parse_redir(t_scanner *scanner, t_args *cmd_args, t_tree_node *first_redir)
 {
 	t_tree_node *redir_node = create_redir_node(scanner);
 	t_args *file_args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
@@ -123,11 +123,14 @@ t_tree_node *parse_redir(t_scanner *scanner, t_args *cmd_args)
 		scanner->next = scanner_next(scanner);
 		if (check_redir(scanner))
 		{
-			redir_node->data.redir_u.cmd = parse_redir(scanner, cmd_args);
+			redir_node->data.redir_u.cmd = parse_redir(scanner, cmd_args, redir_node);
 		}
 		else if (scanner->next.type == PIPE)
 		{
-			return handle_pipe(scanner, redir_node, cmd_args);
+			if (first_redir != NULL)
+				return handle_pipe(scanner, first_redir, redir_node, cmd_args);
+			else
+				return handle_pipe(scanner, redir_node, redir_node, cmd_args);
 		}
 		else
 		{
@@ -137,7 +140,11 @@ t_tree_node *parse_redir(t_scanner *scanner, t_args *cmd_args)
 			{
 				if (scanner->next.type == PIPE)
 				{
-					return handle_pipe(scanner, redir_node, cmd_args);
+					if (first_redir != NULL)
+						return handle_pipe(scanner, first_redir, redir_node, cmd_args);
+					else
+						return handle_pipe(scanner, redir_node, redir_node, cmd_args);
+					//return handle_pipe(scanner, redir_node, cmd_args);
 				}
 				else
 				{
