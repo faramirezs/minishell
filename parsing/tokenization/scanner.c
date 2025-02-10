@@ -64,7 +64,7 @@ t_token scanner_peek(t_scanner *self)
 		else if (c == '<')
 			return (redir_in_token(self));
 		else if (c == '$' && self->next.type != HEREDOC)
-    		return (handle_expansions(self));
+			return (handle_expansions(self));
 		 else if (c == '/')
 			return (abs_path_token(self));
 		else if (c == '.' && ((*(self->char_itr.cursor + 1) == '/') || (*(self->char_itr.cursor + 1) == '.' && *(self->char_itr.cursor + 2) == '/')))

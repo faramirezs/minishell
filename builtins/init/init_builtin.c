@@ -1,9 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init_builtin.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mestefan <mestefan@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/10 01:34:58 by mestefan          #+#    #+#             */
+/*   Updated: 2025/02/10 01:35:00 by mestefan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 //#include "../../headers/built_in.h"
 #include "../../headers/minishell.h"
 
-void add_builtin(bld_in **head, const char *name, int (*func)(struct s_tree_node *node, t_context *msh))
+void	add_builtin(bld_in **head, const char *name,
+			int (*func)(struct s_tree_node *node, t_context *msh))
 {
-	bld_in  *new_node;
+	bld_in	*new_node;
 
 	new_node = malloc(sizeof(bld_in));
 	if (!new_node)
@@ -23,9 +36,9 @@ void add_builtin(bld_in **head, const char *name, int (*func)(struct s_tree_node
 	*head = new_node;
 }
 
-bld_in  *create_builtin_list(void)
+bld_in	*create_builtin_list(void)
 {
-	bld_in  *head;
+	bld_in	*head;
 
 	head = NULL;
 	add_builtin(&head, "echo", handle_echo);
@@ -35,16 +48,15 @@ bld_in  *create_builtin_list(void)
 	add_builtin (&head, "unset", handle_unset);
 	add_builtin (&head, "env", handle_env);
 	add_builtin (&head, "exit", handle_exit);
-
 	return (head);
 }
 
 void	free_builtin_list(bld_in *head)
 {
+	bld_in	*tmp;
+
 	while (head != NULL)
 	{
-		bld_in  *tmp;
-
 		tmp = head;
 		head = head->next;
 		free (tmp->name);

@@ -1,24 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_cd.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mestefan <mestefan@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/10 01:19:49 by mestefan          #+#    #+#             */
+/*   Updated: 2025/02/10 01:19:53 by mestefan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../headers/built_in.h"
 #include "../../headers/minishell.h"
 
-void set_pwd(t_context *msh, char *av, char *cwd)
+void	set_pwd(t_context *msh, char *av, char *cwd)
 {
 	char	*string;
-/* 	int		i;
 
-	printf("handle_env: msh->env = %p\n", (void *)msh->env);
-	i = 0;
-	while (msh->env && msh->env[i])
-	{
-		printf("  msh->env[%d]: %s\n", i, msh->env[i]);
-		i++;
-	} */
-
-
-	string = ft_strjoin(av, cwd); // Concatenate "PWD=" or "OLDPWD=" with the current directory
+	string = ft_strjoin(av, cwd);
 	if (!string)
-		return ; // Handle memory allocation failure gracefully
-	if (ms_set_env(msh->env, msh, string) == -1) // Pass the correct parameters
+		return ;
+	if (ms_set_env(msh->env, msh, string) == -1)
 		ft_putstr_fd("Failed to set environment variable\n", STDERR_FILENO);
 	free(string);
 }
@@ -40,12 +42,12 @@ int	handle_cd(struct s_tree_node *node, t_context *msh)
 			return (1);
 		}
 	}
-	else if (node->data.exec_u.args[2])  // More than one argument (Error)
-    {
-        fprintf(stderr, "minishell: cd: too many arguments\n");
-        msh->ret_exit = 1;
-        return (1);
-    }
+	else if (node->data.exec_u.args[2])
+	{
+		fprintf(stderr, "minishell: cd: too many arguments\n");
+		msh->ret_exit = 1;
+		return (1);
+	}
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
 		perror("getcwd");

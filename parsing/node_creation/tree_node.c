@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   tree_node.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/05 22:29:27 by alramire         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   tree_node.c										:+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: alramire <alramire@student.42.fr>		  +#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2025/01/10 17:35:15 by alramire		  #+#	#+#			 */
+/*   Updated: 2025/02/05 22:29:27 by alramire		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 //#include "../../headers/tree_node.h"
@@ -23,37 +23,37 @@
 
 t_tree_node *parse_tree_node(t_scanner *scanner)
 {
-    t_args *args;
-    args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
-    args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
+	t_args *args;
+	args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
+	args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
 
-    scanner->next = scanner_next(scanner);
-    *(args->count) = 1;
+	scanner->next = scanner_next(scanner);
+	*(args->count) = 1;
 
-    // Check if it starts with redirection
-    if (check_redir(scanner)) {
-        // Pass the args to parse_redir so it can continue parsing after redirection
-        return parse_redir(scanner, args);
-    }
+	// Check if it starts with redirection
+	if (check_redir(scanner)) {
+		// Pass the args to parse_redir so it can continue parsing after redirection
+		return parse_redir(scanner, args);
+	}
 
-    args_collector(&scanner->next, args);
+	args_collector(&scanner->next, args);
 
-    // Continue parsing tokens
-    while (scanner_has_next(scanner)) {
-        scanner->next = scanner_next(scanner);
-        
-        if (check_redir(scanner)) {
-            return parse_redir(scanner, args);
-        }
-        else if (scanner->next.type == PIPE) {
-            return parse_pipe(scanner, args);
-        }
+	// Continue parsing tokens
+	while (scanner_has_next(scanner)) {
+		scanner->next = scanner_next(scanner);
+		
+		if (check_redir(scanner)) {
+			return parse_redir(scanner, args);
+		}
+		else if (scanner->next.type == PIPE) {
+			return parse_pipe(scanner, args);
+		}
 
-        (*(args->count))++;
-        args_collector(&scanner->next, args);
-    }
+		(*(args->count))++;
+		args_collector(&scanner->next, args);
+	}
 
-    return parse_exec(args);
+	return parse_exec(args);
 }
 
 /* t_tree_node *parse_tree_node (t_scanner *scanner)
@@ -209,10 +209,10 @@ void free_tree_node(t_tree_node *node)
 		free(node->data.redir_u.target);
 		node->data.redir_u.target = NULL;
 		if (node->data.redir_u.cmd)
-        {
-            free_tree_node(node->data.redir_u.cmd);
-            node->data.redir_u.cmd = NULL;
-        }
+		{
+			free_tree_node(node->data.redir_u.cmd);
+			node->data.redir_u.cmd = NULL;
+		}
 	}
 	else if (node->type == N_PIPE)
 	{
