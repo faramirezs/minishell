@@ -16,7 +16,6 @@
 
 void initialize_args(t_token *token, t_args *args)
 {
-
 		args->words = oom_guard(malloc(2 * sizeof(char *)), __FILE__, __LINE__);
 		args->words[0] = oom_guard(malloc((token->lexeme.length + 1) * sizeof(char)), __FILE__, __LINE__);
 		ft_strlcpy(args->words[0], token->lexeme.start, token->lexeme.length + 1);
@@ -31,12 +30,8 @@ void	args_collector(t_token *token, t_args *args)
 	//int j;
 
 	i = 0;
-	//printf("It entered to args_collector()\n");
-	//fprintf(stderr, "DEBUG: Token received -> Length: %zu, Start: \"%.*s\"\n", token->lexeme.length, (int)token->lexeme.length, token->lexeme.start);
-
 	if (*(args->count) > 1)
 	{
-
 		temp = oom_guard(malloc(((*(args->count)) + 1) * sizeof(char *)), __FILE__, __LINE__);
 		while(i < *(args->count) - 1)
 		{
@@ -46,14 +41,8 @@ void	args_collector(t_token *token, t_args *args)
 		temp[i] = oom_guard(malloc((token->lexeme.length + 1) * sizeof(char)), __FILE__, __LINE__);
 		ft_strlcpy(temp[i], token->lexeme.start, token->lexeme.length + 1);
 		temp[i + 1] = NULL;
-		//check_null_array(args->words);
 		free_string_array(&args->words);
 		args->words = temp;
-
-		//printf("DEB: arg is: %s\n", args->words[1]);
-
-		//print_args (args);
-		//check_null_array(args->words);
 	}
 	else
 	{
