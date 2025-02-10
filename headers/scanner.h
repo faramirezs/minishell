@@ -47,7 +47,7 @@ t_token			heredoc_token(t_scanner *self);
 int				check_start_uknown(const char *input);
 t_token			single_quote_token(t_scanner *self);
 t_token			double_quote_token(t_scanner *self);
-char			*get_env_vvalue(t_scanner *self);
+//char 			*get_env_vvalue(t_scanner *self);
 t_token			handle_expansions(t_scanner *self);
 t_token			non_delimited_token(t_scanner *self);
 void			process_args(t_scanner *scanner, t_args *args);

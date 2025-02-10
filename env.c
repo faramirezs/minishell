@@ -12,19 +12,18 @@ t_context *init_context(char **envp)
 	msh->ret_exit = 0;
 	msh->user = getenv("USER");
 	if (envp)
-    {
-        msh->env = duplicate_env(envp);
-        msh->env_export = duplicate_env(envp);
-    }
-    else
-    {
-        msh->env = NULL;
-        msh->env_export = NULL;
-    }
+	{
+		msh->env = duplicate_env(envp);
+		msh->env_export = duplicate_env(envp);
+	}
+	else
+	{
+		msh->env = NULL;
+		msh->env_export = NULL;
+	}
 	check_shlvl(msh);
-	return msh;
+	return (msh);
 }
-
 
 char	*ms_get_env(char **env, const char *key)
 {
@@ -58,7 +57,8 @@ char	*ms_get_varenv(char **env, char *av)
 	while (env[i])
 	{
 		equals = ft_strchr(env[i], '=');
-		if (equals && (size_t)(equals - env[i]) == key_len && ft_strncmp(env[i], av, key_len) == 0)
+		if (equals && (size_t)(equals - env[i]) == key_len
+			&& ft_strncmp(env[i], av, key_len) == 0)
 			return (equals + 1);
 		i++;
 	}
@@ -70,7 +70,7 @@ int env_compare(char **env, char **av)
 	return (find_env_index(env, av[0]));
 }
 
-int ms_set_env(char **env, t_context *msh, const char *value)
+int	ms_set_env(char **env, t_context *msh, const char *value)
 {
 	int			i;
 	const char	*equals;
@@ -84,7 +84,6 @@ int ms_set_env(char **env, t_context *msh, const char *value)
 		fprintf(stderr, "setenv: %s: Invalid argument\n", value);
 		return (-1);
 	}
-
 	key_len = equals - value;
 	i = 0;
 	while (env[i])
@@ -99,16 +98,13 @@ int ms_set_env(char **env, t_context *msh, const char *value)
 		}
 		i++;
 	}
-
 	msh->env = ms_matrix_add_line(env, value);
 	if (!msh->env)
 		return (-1);
-
 	return (0);
 }
 
-
-int find_env_index(char **env, const char *key)
+int	find_env_index(char **env, const char *key)
 {
 	int		i;
 	size_t	key_len;
@@ -119,18 +115,19 @@ int find_env_index(char **env, const char *key)
 	while (env[i])
 	{
 		equals = ft_strchr(env[i], '=');
-		if (equals && (size_t)(equals - env[i]) == key_len && ft_strncmp(env[i], key, key_len) == 0)
+		if (equals && (size_t)(equals - env[i]) == key_len
+			&& ft_strncmp(env[i], key, key_len) == 0)
 			return (i);
 		i++;
 	}
 	return (-1);
 }
 
-char **ms_remove_line(char **matrix, int index)
+char	**ms_remove_line(char **matrix, int index)
 {
-	int	 i;
-	int	 j;
-	int	 size;
+	int		i;
+	int		j;
+	int		size;
 	char	**new_matrix;
 
 	i = 0;
@@ -160,43 +157,42 @@ char **ms_remove_line(char **matrix, int index)
 	return (new_matrix);
 }
 
-int ms_unset_env(t_context *msh, const char *key)
+int	ms_unset_env(t_context *msh, const char *key)
 {
-	int i = 0;
-	size_t key_len = ft_strlen(key);
+	int		i;
+	size_t	key_len;
 
-	// Search for the key in the environment
+	i = 0;
+	key_len = ft_strlen(key);
 	while (msh->env[i])
 	{
-		if (ft_strncmp(msh->env[i], key, key_len) == 0 && msh->env[i][key_len] == '=')
+		if (ft_strncmp(msh->env[i], key, key_len) == 0
+			&& msh->env[i][key_len] == '=')
 		{
-			// Free the matched entry and remove it from the environment
 			free(msh->env[i]);
 			while (msh->env[i + 1])
 			{
 				msh->env[i] = msh->env[i + 1];
 				i++;
 			}
-			msh->env[i] = NULL; // Null-terminate the array
-			return (0); // Success
+			msh->env[i] = NULL;
+			return (0);
 		}
 		i++;
 	}
-
-	// Key not found
 	return (-1);
 }
 
-
-void free_env(char **env)
+void	free_env(char **env)
 {
-	int i;
-	if(env)
+	int	i;
+
+	if (env)
 	{
 		i = 0;
-		while(env[i])
+		while (env[i])
 		{
-			free(env[i]);
+			free (env[i]);
 			env[i] = NULL;
 			i++;
 		}
@@ -205,29 +201,29 @@ void free_env(char **env)
 	env = NULL;
 }
 
-void cleanup_context(t_context *msh)
+void	cleanup_context(t_context *msh)
 {
 	if (msh)
 	{
 		if (msh->env)
-        {
-            free_env(msh->env);
-            msh->env = NULL;
-        }
-        if (msh->env_export)
-        {
-            free_env(msh->env_export);
-            msh->env_export = NULL;
-        }
-        free(msh);
+		{
+			free_env(msh->env);
+			msh->env = NULL;
+		}
+		if (msh->env_export)
+		{
+			free_env(msh->env_export);
+			msh->env_export = NULL;
+		}
+		free(msh);
 		msh = NULL;
 	}
 }
 
-char **duplicate_env(char **env)
+char	**duplicate_env(char **env)
 {
-    int		i;
-    char	**copy;
+	int		i;
+	char	**copy;
 
 	i = 0;
     while (env[i])
@@ -243,5 +239,3 @@ char **duplicate_env(char **env)
     copy[i] = NULL;
     return (copy);
 }
-
-

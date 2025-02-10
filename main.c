@@ -51,14 +51,14 @@ void shell_loop(t_context *msh)
 	}
 }
 
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
-	t_context *msh;
-	bld_in *builtins;
-	int		ret_exit;
+	t_context	*msh;
+	bld_in		*builtins;
+	int			ret_exit;
+
 	(void)argc;
 	(void)argv;
-
 	msh = init_context(envp);
 	builtins = create_builtin_list();
 	shell_loop(msh);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built_in.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mestefan <mestefan@student.42berlin.d      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/15 11:39:52 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/15 11:40:08 by alramire         ###   ########.fr       */
+/*   Created: 2025/02/10 02:00:47 by mestefan          #+#    #+#             */
+/*   Updated: 2025/02/10 02:00:50 by mestefan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,13 @@
 
 # include "minishell.h"
 
-typedef struct bld_in
-{
-	char *name;
-	int (*func)(t_tree_node *node, t_context *msh);
-	struct bld_in *next;
-}		bld_in;
+typedef struct bld_in {
+	struct bld_in	*next;
+	char			*name;
+	int				(*func)(t_tree_node *node, t_context *msh);
+}	bld_in;
 
+// Function prototypes
 bld_in	*find_builtin(bld_in *head, t_tree_node *node);
 bld_in	*create_builtin_list(void);
 int		handle_cd(struct s_tree_node *node, t_context *msh);
