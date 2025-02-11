@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/10 20:08:33 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/11 10:20:05 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,8 @@ t_tree_node *handle_pipe(t_scanner *scanner, t_tree_node *first_redir, t_tree_no
 	if (cmd_args && cmd_args->words != NULL)
 	{
 		last_redir->data.redir_u.cmd = parse_exec(cmd_args);
+		if(first_redir != last_redir)
+			first_redir->data.redir_u.cmd = last_redir;
 	}
 	pipe_node->data.pipe_u.left = first_redir;
 	pipe_node->data.pipe_u.right = parse_tree_node(scanner);
@@ -129,7 +131,9 @@ t_tree_node *parse_redir(t_scanner *scanner, t_args *cmd_args, t_tree_node *firs
 			if (node->type == N_REDIR)
 				redir_node->data.redir_u.cmd = node;
 			else
+			{
 				return node;
+			}
 		}
 		else if (scanner->next.type == PIPE)
 		{
