@@ -573,51 +573,6 @@ static int exec_pipe(t_tree_node *node, t_context *ctx)
     return WEXITSTATUS(right_status);
 }
 
-/* static int exec_pipe(t_tree_node *node, t_context *ctx)
-{
-	t_pipecmd *pcmd = &node->data.pipe_u;
-    int pipefd[2];
-    t_context left_ctx = *ctx;
-    t_context right_ctx = *ctx;
-    int left_status;
-    int right_status;
-	pid_t left_pid;
-	pid_t right_pid;
-
-    if (pipe(pipefd) == -1)
-    {
-        perror("pipe");
-        return -1;
-    }
-
-    left_ctx.fd[1] = pipefd[1];
-    right_ctx.fd[0] = pipefd[0];
-    left_pid = fork();
-    if (left_pid == 0)
-    {
-        close(pipefd[0]);  // Close unused read end
-        left_status = exec_node(pcmd->left, &left_ctx);
-        exit(left_status);
-    }
-
-    // Fork for right side
-    right_pid = fork();
-    if (right_pid == 0)
-    {
-        close(pipefd[1]);  // Close unused write end
-        right_status = exec_node(pcmd->right, &right_ctx);
-        exit(right_status);
-    }
-
-    close(pipefd[0]);
-    close(pipefd[1]);
-
-    waitpid(left_pid, &left_status, 0);
-    waitpid(right_pid, &right_status, 0);
-
-    return WEXITSTATUS(right_status);
-} */
-
 void cleanup(t_tree_node *node, int exit_code)
 {
 	free_tree_node(node);
