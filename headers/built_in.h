@@ -37,5 +37,6 @@ int		execute_builtin(t_tree_node *node, t_context *msh);
 void	add_builtin(bld_in **head, const char *name,
 			int (*func)(struct s_tree_node *node, t_context *msh));
 int		ft_is_valid_env_name(const char *name);
+int		is_valid_key(const char *key);
 
 #endif
