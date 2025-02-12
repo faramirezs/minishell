@@ -142,10 +142,12 @@ static void restore_std_fds(int saved_stdin, int saved_stdout, t_tree_node *node
 	if (dup2(saved_stdin, STDIN_FILENO) == -1)
 	{
 		//ERROR HERE
+		//saved_stdin does not exist!!
 		perror("dup2");
 		fprintf(stderr, "restore_std_fds1\n");
 		close(saved_stdin);
 		close(saved_stdout);
+		//error code 1 can comes from here_?
 		cleanup(node, 1);
 	}
 	if (dup2(saved_stdout, STDOUT_FILENO) == -1)
