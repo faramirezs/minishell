@@ -53,20 +53,12 @@ int	handle_unset(t_tree_node *node, t_context *msh)
 	int		status;
 
 	av = node->data.exec_u.args;
+	if (!av[1])
+		return (fprintf(stderr,
+			"unset: not enough arguments\n"), msh->ret_exit = 1);
 	i = 1;
 	status = 0;
-	if (!av[1])
-	{
-		status = 1;
-		msh->ret_exit = status;
-		return (1);
-	}
 	while (av[i])
-	{
-		if (ms_unset_env(msh, av[i]) != 0 || ms_unset_export(msh, av[i]) != 0)
-			status = 1;
-		i++;
-	}
-	msh->ret_exit = status;
-	return (status);
+		status |= unset_variable(msh, av[i++]);
+	return (msh->ret_exit = status);
 }
