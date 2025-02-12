@@ -88,9 +88,14 @@ void shell_loop(t_context *msh)
 	t_char_itr		itr;
 	t_scanner		scanner;
 	t_tree_node		*tree_node;
+	int stdinout[2];
+	stdinout[1] = dup(1);
+	stdinout[0] = dup(0);
 
 	while (1)
 	{
+		dup2(stdinout[1],1);
+		dup2(stdinout[0], 0);
 		line = readline("minishell> ");
 		if (!line)
 		{
