@@ -68,8 +68,8 @@ CC	= clang
 
 RM	= rm -f
 
-CFLAGS	= -Wall -Wextra -Werror -g -I./include -I./libft
-#CFLAGS	= -Wall -Wextra -Werror -g -I./include -I./libft -fsanitize=address
+#CFLAGS	= -Wall -Wextra -Werror -g -I./include -I./libft
+CFLAGS	= -Wall -Wextra -Werror -g -I./include -I./libft -fsanitize=address
 PFLAGS = -lreadline
 
 all:	$(LIBFT) $(NAME)

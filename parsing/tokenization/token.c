@@ -106,6 +106,16 @@ t_token heredoc_token(t_scanner *self)
 	return (self->next);
 }
 
+bool escape_special_chars(t_scanner *self)
+{
+    if (*self->char_itr.cursor == '\\' && *(self->char_itr.cursor + 1) == '$')
+    {
+        self->char_itr.cursor++;  // ✅ Skip `\`
+        return true;  // ✅ `$` is escaped, so treat it as a normal character
+    }
+    return false;  // ✅ `$` should be processed normally
+}
+
 t_token non_delimited_token(t_scanner *self)
 {
 	char *temp;
@@ -117,7 +127,21 @@ t_token non_delimited_token(t_scanner *self)
 			temp = ft_strjoin_free_s1(temp, double_quote_token(self).lexeme.start);
 		else if (*self->char_itr.cursor == '\'')
 			temp = ft_strjoin_free_s1(temp, single_quote_token(self).lexeme.start);
-
+		else if (*self->char_itr.cursor == '\\' && *(self->char_itr.cursor + 1) == '$')
+		{
+			temp = ft_strjoin_free_s1(temp, ft_strdup("$"));
+			self->char_itr.cursor += 2;  // ✅ Skip `\` and `$`
+		}
+		// else if (*self->char_itr.cursor == '$')
+		// {
+		// 	if (ft_is_valid_env_name(self->char_itr.cursor + 1))
+		// 		temp = ft_strjoin_free_s1(temp, handle_expansions(self).lexeme.start);
+		// 	else
+		// 	{
+		// 		temp = ft_strjoin_free_s1(temp, ft_strdup("$"));
+		// 		self->char_itr.cursor++;
+		// 	}
+		// }
 		else
 		{
 			temp = ft_strjoin_free_s1(temp, ft_substr(self->char_itr.cursor, 0, 1));
@@ -127,7 +151,6 @@ t_token non_delimited_token(t_scanner *self)
 		if (*self->char_itr.cursor == '\0' || ft_strchr(" \t\n|><", *self->char_itr.cursor))
 			break ;  // ✅ Stop at delimiters like space, pipes, or redirections
 	}
-
 	self->next.type = WORD;
 	self->next.lexeme.start = temp;
 	self->next.lexeme.length = ft_strlen(temp);
@@ -236,33 +259,34 @@ t_token single_quote_token(t_scanner *self)
 
 char *expand_special_vars(char c, t_context *msh)
 {
-	if (c == '$')  // ✅ Handle `$$` (Process ID)
-		return ft_itoa(getpid());
-	if (c == '?')  // ✅ Handle `$?` (Last exit code)
-		return ft_itoa(msh->ret_exit);
-	return NULL;
+	if (c == '$')
+		return (ft_itoa(getpid()));
+	if (c == '?')
+		return (ft_itoa(msh->ret_exit));
+	return (NULL);
 }
 
 char *expand_normal_var(t_scanner *self)
 {
-	char var_name[256];
-	int i = 0;
-	char *value;
+	char	var_name[256];
+	int		i;
+	char	*value;
 
+	i = 0;
 	// ✅ Extract variable name (letters, digits, underscores)
 	while (ft_isalnum(*self->char_itr.cursor) || *self->char_itr.cursor == '_')
 	{
 		if (i < 255)
 			var_name[i++] = *self->char_itr.cursor;
+		else
+			break;
 		self->char_itr.cursor++;
 	}
-	var_name[i] = '\0';  // Null-terminate
-
-	// ✅ Get environment variable value
+	var_name[i] = '\0';
 	value = ms_get_env(self->msh->env, var_name);
 	if (!value)
-		return ft_strdup("");  // Variable not found → empty string
-	return ft_strdup(value);
+		return (ft_strdup(""));  // Variable not found → empty string
+	return (ft_strdup(value));
 }
 
 t_token handle_expansions(t_scanner *self)
@@ -278,7 +302,7 @@ t_token handle_expansions(t_scanner *self)
 		token.type = WORD;
 		token.lexeme.start = ft_strdup("$");
 		token.lexeme.length = 1;
-		return token;
+		return (token);
 	}
 	value = expand_special_vars(*self->char_itr.cursor, self->msh);
 	if (value)
