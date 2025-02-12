@@ -47,6 +47,8 @@ int handle_echo(struct s_tree_node *node, t_context *msh)
     char    *expanded_arg;
     (void)msh;
 
+	signal(SIGPIPE, SIG_IGN);
+
     i = 1;
     n = false;
     if (!node || !node->data.exec_u.args)
@@ -77,7 +79,7 @@ int handle_echo(struct s_tree_node *node, t_context *msh)
         free(expanded_arg);
         i++;
     }
-    
+
     if (!n && write(STDOUT_FILENO, "\n", 1) < 0)
         return 1;
 

@@ -55,18 +55,21 @@ static int redirect_input(t_redircmd *rcmd, int saved_stdin, int saved_stdout, t
 		perror(rcmd->target);
 		//close(saved_stdin);
 		//close(saved_stdout);
+		printf("redir_input return: %i\n", 1);
 		return 1;
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)
 	{
 		perror("dup2");
 		close(fd);
+		printf("redir_input return: %i\n", 1);
 		return 1;
 		//close(saved_stdin);
 		//close(saved_stdout);
 		//cleanup(node, 1);
 	}
 	close(fd);
+	printf("redir_input return: %i\n", 0);
 	return 0;
 }
 
@@ -82,6 +85,7 @@ static int redirect_output(t_redircmd *rcmd, int saved_stdin, int saved_stdout, 
 		//close(saved_stdin);
 		//close(saved_stdout);
 		//cleanup(node, 1);
+		printf("redir_input return: %i\n", 1);
 		return 1;
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
@@ -91,9 +95,11 @@ static int redirect_output(t_redircmd *rcmd, int saved_stdin, int saved_stdout, 
 		//close(saved_stdin);
 		//close(saved_stdout);
 		//cleanup(node, 1);
+		printf("redir_input return: %i\n", 1);
 		return 1;
 	}
 	close(fd);
+	printf("redir_input return: %i\n", 0);
 	return 0;
 }
 
@@ -145,6 +151,38 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
     t_redircmd *rcmd = &node->data.redir_u;
     int saved_stdin, saved_stdout;
     int result = 0;
+
+    if (save_std_fds(&saved_stdin, &saved_stdout, node) != 0)
+        return 1;
+
+    // Setup pipe redirections first
+    if (setup_pipe_redirection(ctx, saved_stdin, saved_stdout, node) != 0)
+    {
+        restore_std_fds(saved_stdin, saved_stdout, node);
+        return 1;
+    }
+
+    // Apply file redirections
+    if (apply_redirection(rcmd, saved_stdin, saved_stdout, node) != 0)
+    {
+        restore_std_fds(saved_stdin, saved_stdout, node);
+        return 1;
+    }
+
+    // Execute command if present
+    if (rcmd->cmd)
+        result = exec_node(rcmd->cmd, ctx);
+
+    restore_std_fds(saved_stdin, saved_stdout, node);
+	printf("exec_redir return: %i\n", result);
+    return result;
+}
+
+/* static int exec_redir(t_tree_node *node, t_context *ctx)
+{
+    t_redircmd *rcmd = &node->data.redir_u;
+    int saved_stdin, saved_stdout;
+    int result = 0;
     int redir_failed = 0;
 
     if (save_std_fds(&saved_stdin, &saved_stdout, node) != 0)
@@ -173,7 +211,7 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
 
     restore_std_fds(saved_stdin, saved_stdout, node);
     return result;
-}
+} */
 
 /* static int exec_redir(t_tree_node *node, t_context *ctx)
 {
@@ -569,7 +607,7 @@ static int exec_pipe(t_tree_node *node, t_context *ctx)
     // Wait for both processes but only use right side's status
     waitpid(left_pid, NULL, 0);  // Ignore left side's status
     waitpid(right_pid, &right_status, 0);
-
+	//return(right_ctx.ret_exit);
     return WEXITSTATUS(right_status);
 }
 
