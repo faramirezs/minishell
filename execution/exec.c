@@ -35,6 +35,7 @@ static int setup_pipe_redirection(t_context *ctx, int saved_stdin, int saved_std
 		if (dup2(ctx->fd[1], STDOUT_FILENO) == -1)
 		{
 			perror("dup2");
+			fprintf(stderr, "setup_pipe\n");
 			close(saved_stdin);
 			close(saved_stdout);
 			cleanup(node, 1);
@@ -55,21 +56,22 @@ static int redirect_input(t_redircmd *rcmd, int saved_stdin, int saved_stdout, t
 		perror(rcmd->target);
 		//close(saved_stdin);
 		//close(saved_stdout);
-		printf("redir_input return: %i\n", 1);
+		//printf("redir_input return: %i\n", 1);
 		return 1;
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)
 	{
 		perror("dup2");
+		fprintf(stderr, "redirect_input\n");
 		close(fd);
-		printf("redir_input return: %i\n", 1);
+		//printf("redir_input return: %i\n", 1);
 		return 1;
 		//close(saved_stdin);
 		//close(saved_stdout);
 		//cleanup(node, 1);
 	}
 	close(fd);
-	printf("redir_input return: %i\n", 0);
+	//printf("redir_input return: %i\n", 0);
 	return 0;
 }
 
@@ -85,21 +87,22 @@ static int redirect_output(t_redircmd *rcmd, int saved_stdin, int saved_stdout, 
 		//close(saved_stdin);
 		//close(saved_stdout);
 		//cleanup(node, 1);
-		printf("redir_input return: %i\n", 1);
+		//printf("redir_input return: %i\n", 1);
 		return 1;
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
 		perror("dup2");
+		fprintf(stderr, "redirect_output\n");
 		close(fd);
 		//close(saved_stdin);
 		//close(saved_stdout);
 		//cleanup(node, 1);
-		printf("redir_input return: %i\n", 1);
+		//printf("redir_input return: %i\n", 1);
 		return 1;
 	}
 	close(fd);
-	printf("redir_input return: %i\n", 0);
+	//printf("redir_input return: %i\n", 0);
 	return 0;
 }
 
@@ -136,9 +139,19 @@ static int save_std_fds(int *saved_stdin, int *saved_stdout, t_tree_node *node)
 
 static void restore_std_fds(int saved_stdin, int saved_stdout, t_tree_node *node)
 {
-	if (dup2(saved_stdin, STDIN_FILENO) == -1 || dup2(saved_stdout, STDOUT_FILENO) == -1)
+	if (dup2(saved_stdin, STDIN_FILENO) == -1)
+	{
+		//ERROR HERE
+		perror("dup2");
+		fprintf(stderr, "restore_std_fds1\n");
+		close(saved_stdin);
+		close(saved_stdout);
+		cleanup(node, 1);
+	}
+	if (dup2(saved_stdout, STDOUT_FILENO) == -1)
 	{
 		perror("dup2");
+		fprintf(stderr, "restore_std_fds\n");
 		close(saved_stdin);
 		close(saved_stdout);
 		cleanup(node, 1);
@@ -174,7 +187,7 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
         result = exec_node(rcmd->cmd, ctx);
 
     restore_std_fds(saved_stdin, saved_stdout, node);
-	printf("exec_redir return: %i\n", result);
+	//printf("exec_redir return: %i\n", result);
     return result;
 }
 
@@ -525,14 +538,17 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 			if (ctx->fd[0] != STDIN_FILENO)
 			{
 				dup2(ctx->fd[0], STDIN_FILENO);
+				fprintf(stderr, "exec_command1\n");
 				close(ctx->fd[0]);
 			}
 			if (ctx->fd[1] != STDOUT_FILENO)
 				{
 					dup2(ctx->fd[1], STDOUT_FILENO);
+					fprintf(stderr, "exec_command2\n");
 					close(ctx->fd[1]);
 				}
 			//printf("Executing builtin\n");
+
 			return (execute_builtin(node, ctx));
         }
 
@@ -548,11 +564,13 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 		if (ctx->fd[0] != STDIN_FILENO)
 		{
 			dup2(ctx->fd[0], STDIN_FILENO);
+			fprintf(stderr, "exec_command3\n");
 			close(ctx->fd[0]);
 		}
 		if (ctx->fd[1] != STDOUT_FILENO)
 		{
 			dup2(ctx->fd[1], STDOUT_FILENO);
+			fprintf(stderr, "exec_command4\n");
 			close(ctx->fd[1]);
 		}
 		execvp(node->data.exec_u.args[0], node->data.exec_u.args);
@@ -565,7 +583,12 @@ static int exec_command(t_tree_node *node, t_context *ctx)
     if (ctx->fd[1] != STDOUT_FILENO)
         close(ctx->fd[1]);
     waitpid(pid, &status, 0);
-    return WEXITSTATUS(status);
+	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+    {
+        return WEXITSTATUS(status);
+    }
+    return 0;
+    //return WEXITSTATUS(status);
 }
 
 static int exec_pipe(t_tree_node *node, t_context *ctx)
@@ -608,7 +631,12 @@ static int exec_pipe(t_tree_node *node, t_context *ctx)
     waitpid(left_pid, NULL, 0);  // Ignore left side's status
     waitpid(right_pid, &right_status, 0);
 	//return(right_ctx.ret_exit);
-    return WEXITSTATUS(right_status);
+	if (WIFEXITED(right_status) && WEXITSTATUS(right_status) != 0)
+    {
+        return WEXITSTATUS(right_status);
+    }
+    return 0;
+    //return WEXITSTATUS(right_status);
 }
 
 void cleanup(t_tree_node *node, int exit_code)
