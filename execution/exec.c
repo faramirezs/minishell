@@ -2,15 +2,6 @@
 
 #define FORKED_CHILD 0
 
-
-/* Exit Codes and meaning (we should remember to assign them after parsing and executing)
-	0 	- Success: Command executed successfully.
-	1 	- General error: Command failed for a generic reason.
-	2 	- Incorrect usage: Invalid arguments or syntax in the command (Jess can add this in main.c - if(!node_list) after the node is freed)
-	126	- Cannot execute: File exists but is not executable.
-	127	- Command not found: Command is missing in the system's PATH.
-	130	- Script interrupted (SIGINT): Process terminated via Ctrl+C. */
-
 static int exec_node(t_tree_node *node, t_context *ctx);
 static int exec_command(t_tree_node *node, t_context *ctx);
 static int exec_pipe(t_tree_node *node, t_context *ctx);
@@ -54,9 +45,6 @@ static int redirect_input(t_redircmd *rcmd, int saved_stdin, int saved_stdout, t
 	if (fd < 0)
 	{
 		perror(rcmd->target);
-		//close(saved_stdin);
-		//close(saved_stdout);
-		//printf("redir_input return: %i\n", 1);
 		return 1;
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)
@@ -64,14 +52,9 @@ static int redirect_input(t_redircmd *rcmd, int saved_stdin, int saved_stdout, t
 		perror("dup2");
 		fprintf(stderr, "redirect_input\n");
 		close(fd);
-		//printf("redir_input return: %i\n", 1);
 		return 1;
-		//close(saved_stdin);
-		//close(saved_stdout);
-		//cleanup(node, 1);
 	}
 	close(fd);
-	//printf("redir_input return: %i\n", 0);
 	return 0;
 }
 
@@ -84,10 +67,6 @@ static int redirect_output(t_redircmd *rcmd, int saved_stdin, int saved_stdout, 
 	if (fd < 0)
 	{
 		perror(rcmd->target);
-		//close(saved_stdin);
-		//close(saved_stdout);
-		//cleanup(node, 1);
-		//printf("redir_input return: %i\n", 1);
 		return 1;
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
@@ -95,14 +74,9 @@ static int redirect_output(t_redircmd *rcmd, int saved_stdin, int saved_stdout, 
 		perror("dup2");
 		fprintf(stderr, "redirect_output\n");
 		close(fd);
-		//close(saved_stdin);
-		//close(saved_stdout);
-		//cleanup(node, 1);
-		//printf("redir_input return: %i\n", 1);
 		return 1;
 	}
 	close(fd);
-	//printf("redir_input return: %i\n", 0);
 	return 0;
 }
 
@@ -141,13 +115,10 @@ static void restore_std_fds(int saved_stdin, int saved_stdout, t_tree_node *node
 {
 	if (dup2(saved_stdin, STDIN_FILENO) == -1)
 	{
-		//ERROR HERE
-		//saved_stdin does not exist!!
 		perror("dup2");
 		fprintf(stderr, "restore_std_fds1\n");
 		close(saved_stdin);
 		close(saved_stdout);
-		//error code 1 can comes from here_?
 		cleanup(node, 1);
 	}
 	if (dup2(saved_stdout, STDOUT_FILENO) == -1)
@@ -170,26 +141,20 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
     if (save_std_fds(&saved_stdin, &saved_stdout, node) != 0)
         return 1;
 
-    // Setup pipe redirections first
     if (setup_pipe_redirection(ctx, saved_stdin, saved_stdout, node) != 0)
     {
         restore_std_fds(saved_stdin, saved_stdout, node);
         return 1;
     }
 
-    // Apply file redirections
     if (apply_redirection(rcmd, saved_stdin, saved_stdout, node) != 0)
     {
         restore_std_fds(saved_stdin, saved_stdout, node);
         return 1;
     }
 
-    // Execute command if present
     if (rcmd->cmd)
         result = exec_node(rcmd->cmd, ctx);
-
-    //restore_std_fds(saved_stdin, saved_stdout, node);
-	//printf("exec_redir return: %i\n", result);
     return result;
 }
 
@@ -223,15 +188,10 @@ int exec(t_tree_node *node, t_context *msh)
 	msh->ret_exit = exec_node(node, msh);
 	children = msh->ret_exit;
 
-	//fprintf(stderr, "DEBUG: children before command = %d\n", children);
-
-	// Wait for all child processes to complete
 	while (children > 0) {
 		wait(&status);
 		children--;
 	}
-	//fprintf(stderr, "DEBUG: children after builtin = %d\n", children);
-	//printf ("the status is %d\n", msh->ret_exit);
 	return (msh->ret_exit);
 }
 
@@ -245,17 +205,13 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 			if (ctx->fd[0] != STDIN_FILENO)
 			{
 				dup2(ctx->fd[0], STDIN_FILENO);
-				//fprintf(stderr, "exec_command1\n");
 				close(ctx->fd[0]);
 			}
 			if (ctx->fd[1] != STDOUT_FILENO)
 				{
 					dup2(ctx->fd[1], STDOUT_FILENO);
-					//fprintf(stderr, "exec_command2\n");
 					close(ctx->fd[1]);
 				}
-			//printf("Executing builtin\n");
-
 			return (execute_builtin(node, ctx));
         }
 
@@ -282,7 +238,7 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 		}
 		execvp(node->data.exec_u.args[0], node->data.exec_u.args);
 		perror("execvp");
-		return(127);
+		exit(127);
 
     }
 	if (ctx->fd[0] != STDIN_FILENO)
