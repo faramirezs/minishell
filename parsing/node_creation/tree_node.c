@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/13 10:57:56 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/13 15:08:26 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,14 @@ t_tree_node *parse_tree_node(t_scanner *scanner)
     args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
 
     scanner->next = scanner_next(scanner);
-    *(args->count) = 1;
+    *(args->count) = 0;
 
     // Check if it starts with redirection
     if (check_redir(scanner)) {
         // Pass the args to parse_redir so it can continue parsing after redirection
         return parse_redir(scanner, args, NULL);
     }
-
+	(*(args->count))++;
     args_collector(&scanner->next, args);
 
     // Continue parsing tokens
