@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:40:19 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/10 17:44:04 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/13 17:17:17 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void						handle_heredoc_sigint(int sig);
 void						setup_heredoc_signals(void);
 int							is_heredoc_interrupted(void);
 void						reset_heredoc_interrupt(void);
-char						*collect_heredoc_input(const char *delimiter);
+char						*collect_heredoc_input(const char *delimiter, t_context *msh);
 void						restore_stdin(void);
 void						append_node(t_list **head, const char *line);
 char						*concatenate_lines(t_list *head);

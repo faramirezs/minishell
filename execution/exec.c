@@ -146,13 +146,11 @@ static int exec_redir(t_tree_node *node, t_context *ctx)
         restore_std_fds(saved_stdin, saved_stdout, node);
         return 1;
     }
-
     if (apply_redirection(rcmd, saved_stdin, saved_stdout, node) != 0)
     {
         restore_std_fds(saved_stdin, saved_stdout, node);
         return 1;
     }
-
     if (rcmd->cmd)
         result = exec_node(rcmd->cmd, ctx);
     return result;

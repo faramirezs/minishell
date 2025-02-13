@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/13 11:01:59 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/13 17:17:42 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void handle_redir_heredoc(t_redircmd *redir_node, t_scanner *scanner)
 	t_list *heredoc_list = NULL;
 	while (redir_node->redir_type == HEREDOC)
 	{
-		char *heredoc_input = collect_heredoc_input(redir_node->target);
+		char *heredoc_input = collect_heredoc_input(redir_node->target, scanner->msh);
 		if (!heredoc_input)
 		{
 			redir_node->heredoc_content = ft_strdup("");
@@ -49,7 +49,7 @@ void handle_redir_heredoc(t_redircmd *redir_node, t_scanner *scanner)
 		scanner->next = scanner_next(scanner);
 		if (scanner->next.type != HEREDOC)
 			break;
-
+		//Que hacemos si se avanza el scanner y es un pipe??
 		if (!scanner_has_next(scanner))
 		{
 			printf("Syntax error: nothing after redirection token\n");
@@ -67,19 +67,6 @@ void handle_redir_heredoc(t_redircmd *redir_node, t_scanner *scanner)
 	}
 	free_list(heredoc_list);
 }
-
-
-/* void handle_redir_heredoc(t_redircmd *redir_node)
-{
-	char *heredoc_input = collect_heredoc_input(redir_node->target);
-	if (!heredoc_input)
-	{
-		redir_node->heredoc_content = ft_strdup("");
-		redir_node->heredoc_pid = -1;
-		//cleanup(redir_node, EXIT_FAILURE);
-	}
-	redir_node->heredoc_content = heredoc_input;
-} */
 
 void parse_redir_target(t_scanner *scanner, t_tree_node *redir_node, t_args *file_args)
 {
@@ -124,6 +111,16 @@ t_tree_node *parse_redir(t_scanner *scanner, t_args *cmd_args, t_tree_node *firs
 
 	while (scanner_has_next(scanner))
 	{
+		if (scanner->next.type == PIPE)
+		{
+			if (first_redir != NULL)
+			{
+				return handle_pipe(scanner, first_redir, redir_node, cmd_args);
+			}
+			else
+				return handle_pipe(scanner, redir_node, redir_node, cmd_args);
+		}
+
 		scanner->next = scanner_next(scanner);
 
 		if (check_redir(scanner))

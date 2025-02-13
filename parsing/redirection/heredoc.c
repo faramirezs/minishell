@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:18:13 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/09 12:46:42 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/13 17:16:12 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,37 @@ void free_list(t_list *head)
 	}
 }
 
-char *collect_heredoc_input(const char *delimiter)
+char *expand_env_vars(const char *line, t_context *msh)
+{
+    char *expanded_line = NULL;
+    char *var_start = NULL;
+    char *var_end = NULL;
+    char *var_name = NULL;
+    char *var_value = NULL;
+    size_t var_len = 0;
+
+    expanded_line = ft_strdup(line);
+    var_start = ft_strchr(expanded_line, '$');
+    while (var_start)
+    {
+        var_end = var_start + 1;
+        while (ft_isalnum(*var_end) || *var_end == '_')
+            var_end++;
+        var_len = var_end - var_start - 1;
+        var_name = ft_substr(var_start + 1, 0, var_len);
+        var_value = expand_env_var_value(var_name, msh);
+        if (var_value)
+        {
+            expanded_line = ft_strjoin_free_s1(ft_strjoin_free_s1(ft_substr(expanded_line, 0, var_start - expanded_line), var_value), var_end);
+            free(var_value);
+        }
+        free(var_name);
+        var_start = ft_strchr(var_start + 1, '$');
+    }
+    return expanded_line;
+}
+
+char *collect_heredoc_input(const char *delimiter, t_context *msh)
 {
 	t_list *head = NULL;
 	char *line;
@@ -107,20 +137,21 @@ char *collect_heredoc_input(const char *delimiter)
 			free(line);
             break;
 		}
-		if (strcmp(line, delimiter) == 0)
+		if (ft_strcmp(line, delimiter) == 0)
         {
             free(line);
             break;
         }
-		append_node(&head, line);
+		char *expanded_line = expand_env_vars(line, msh);
+        append_node(&head, expanded_line);
+		//Lets collect here the expanded lines.
+		//append_node(&head, line);
 		free(line);
 	}
 	if (is_heredoc_interrupted())
 	{
 		free_list(head);
         return NULL;
-		//free(line);
-        //restore_stdin();
 	}
 	if (is_heredoc_interrupted())
     {

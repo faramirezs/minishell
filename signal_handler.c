@@ -6,12 +6,11 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 11:32:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/13 15:40:23 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/13 15:55:58 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "headers/minishell.h"
-
 
 volatile sig_atomic_t g_heredoc_interrupt = 0;
 
