@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 11:32:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/01/20 11:32:59 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/13 15:40:23 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,12 @@ void handle_sigint(int sig)
     {
         if (g_heredoc_interrupt)
         {
-            // Handle SIGINT during heredoc
             g_heredoc_interrupt = 1;
             write(STDOUT_FILENO, "\n", 1);
         }
         else
         {
-            // Handle SIGINT during normal command execution
-            write(STDOUT_FILENO, "\nMinishell> ", 12);
+			write(STDOUT_FILENO, "\n\033[0;32mMinishell> \033[0m", 23);
         }
     }
 }
