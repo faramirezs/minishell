@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/10 17:47:26 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/13 10:57:56 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,82 +55,6 @@ t_tree_node *parse_tree_node(t_scanner *scanner)
 
     return parse_exec(args);
 }
-
-/* t_tree_node *parse_tree_node (t_scanner *scanner)
-{
-	//t_tree_node	*node;
-	t_args		*args;
-	int			pipe_flag;
-	//int			redir_i;
-
-	pipe_flag = 0;
-	//redir_i = 0;
-	//node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
-	args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
-	args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
-
-	scanner->next = scanner_next(scanner);
-	*(args->count) = 1;
-
-	// Check if it's a redirection before collecting args
-	if (check_redir(scanner))
-	{
-		//node->type = N_REDIR;
-		return parse_redir(scanner, NULL);
-	}
-
-	args_collector(&scanner->next, args);
-
-	if(scanner_has_next(scanner))
-	{
-		while(scanner->next.type != PIPE && scanner_has_next(scanner))
-		{
-			scanner->next = scanner_next(scanner);
-			if(scanner->next.type == PIPE)
-			{
-				pipe_flag++;
-				break;
-			}
-
-			// Check for redirections after initial args
-			if (check_redir(scanner))
-			{
-				return parse_redir(scanner, args);
-			}
-
-			(*(args->count))++;
-			args_collector(&scanner->next, args);
-		}
-		if(pipe_flag > 0)
-		{
-			if(scanner_has_next(scanner))
-			{
-				//scanner->next = scanner_next(scanner); //skip pipe token
-				//printf("Node type PIPE\n");
-				pipe_flag = 0;
-				return(parse_pipe(scanner, args));
-			}
-			else
-			{
-				//Aqui en lugar de retornar node, deberia retornar error. Porque este node esta vacio
-				//printf("No arguments after pipe\n");
-				exit(EXIT_FAILURE);
-			}
-		}
-		else
-			{
-				//if we arrived here, we can free node
-				//printf("Node type EXEC\n");
-				//free_tree_node(node);
-				return(parse_exec(args));
-			}
-	}
-	else
-	{
-		return(parse_exec(args));
-	}
-
-} */
 
 t_tree_node *parse_exec(t_args *args)
 {

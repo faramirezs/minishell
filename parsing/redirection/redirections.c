@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/11 10:20:05 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/13 11:01:59 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,24 +116,23 @@ t_tree_node *handle_pipe(t_scanner *scanner, t_tree_node *first_redir, t_tree_no
 t_tree_node *parse_redir(t_scanner *scanner, t_args *cmd_args, t_tree_node *first_redir)
 {
 	t_tree_node *redir_node = create_redir_node(scanner);
-	t_tree_node *node;
+	t_tree_node *node = NULL;
 	t_args *file_args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
 	file_args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
-	node = NULL;
+
 	parse_redir_target(scanner, redir_node, file_args);
 
-	if (scanner_has_next(scanner))
+	while (scanner_has_next(scanner))
 	{
 		scanner->next = scanner_next(scanner);
+
 		if (check_redir(scanner))
 		{
 			node = parse_redir(scanner, cmd_args, redir_node);
 			if (node->type == N_REDIR)
 				redir_node->data.redir_u.cmd = node;
 			else
-			{
 				return node;
-			}
 		}
 		else if (scanner->next.type == PIPE)
 		{
@@ -148,30 +147,14 @@ t_tree_node *parse_redir(t_scanner *scanner, t_args *cmd_args, t_tree_node *firs
 		{
 			(*(cmd_args->count))++;
 			args_collector(&scanner->next, cmd_args);
-			while (scanner_has_next(scanner))
-			{
-				if (scanner->next.type == PIPE)
-				{
-					if (first_redir != NULL)
-						return handle_pipe(scanner, first_redir, redir_node, cmd_args);
-					else
-						return handle_pipe(scanner, redir_node, redir_node, cmd_args);
-					//return handle_pipe(scanner, redir_node, cmd_args);
-				}
-				else
-				{
-					scanner->next = scanner_next(scanner);
-					(*(cmd_args->count))++;
-					args_collector(&scanner->next, cmd_args);
-				}
-			}
-			redir_node->data.redir_u.cmd = parse_exec(cmd_args);
 		}
 	}
-	else if (cmd_args && cmd_args->words != NULL)
+
+	if (cmd_args && cmd_args->words != NULL && redir_node->data.redir_u.cmd == NULL)
 	{
 		redir_node->data.redir_u.cmd = parse_exec(cmd_args);
 	}
+
 	return redir_node;
 }
 

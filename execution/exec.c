@@ -271,13 +271,13 @@ static int exec_command(t_tree_node *node, t_context *ctx)
 		if (ctx->fd[0] != STDIN_FILENO)
 		{
 			dup2(ctx->fd[0], STDIN_FILENO);
-			fprintf(stderr, "exec_command3\n");
+			//fprintf(stderr, "exec_command3\n");
 			close(ctx->fd[0]);
 		}
 		if (ctx->fd[1] != STDOUT_FILENO)
 		{
 			dup2(ctx->fd[1], STDOUT_FILENO);
-			fprintf(stderr, "exec_command4\n");
+			//fprintf(stderr, "exec_command4\n");
 			close(ctx->fd[1]);
 		}
 		execvp(node->data.exec_u.args[0], node->data.exec_u.args);
