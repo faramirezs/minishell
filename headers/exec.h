@@ -15,11 +15,12 @@
 
 # include "minishell.h"
 
-//# include "../headers/tree_node.h"
-//# include "tree_node.h"
-//# include "../headers/minishell.h"
-
 int		exec(t_tree_node *node, t_context *msh);
 void	cleanup(t_tree_node *node, int exit_code);
+int		exec_node(t_tree_node *node, t_context *ctx);
+int		exec_command(t_tree_node *node, t_context *ctx);
+int		exec_pipe(t_tree_node *node, t_context *ctx);
+int		exec_redir(t_tree_node *node, t_context *ctx);
+int		handle_heredoc(t_redircmd *rcmd);
 
 #endif

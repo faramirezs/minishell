@@ -84,7 +84,7 @@ t_token abs_path_token(t_scanner *self)
 		if (char_itr_has_next(&self->char_itr) == 1)
 			self->char_itr.cursor++;
 		else
-			break;
+			break ;
 	}
 	return (self->next);
 }
@@ -126,20 +126,10 @@ bool escape_special_chars(t_scanner *self)
 {
     if (*self->char_itr.cursor == '\\' && *(self->char_itr.cursor + 1) == '$')
     {
-        self->char_itr.cursor++;  // ✅ Skip `\`
-        return true;  // ✅ `$` is escaped, so treat it as a normal character
+        self->char_itr.cursor++;
+        return (true);
     }
-    return false;  // ✅ `$` should be processed normally
-}
-
-bool escape_special_chars(t_scanner *self)
-{
-    if (*self->char_itr.cursor == '\\' && *(self->char_itr.cursor + 1) == '$')
-    {
-        self->char_itr.cursor++;  // ✅ Skip `\`
-        return true;  // ✅ `$` is escaped, so treat it as a normal character
-    }
-    return false;  // ✅ `$` should be processed normally
+    return (false);
 }
 
 t_token	non_delimited_token(t_scanner *self)
@@ -157,18 +147,8 @@ t_token	non_delimited_token(t_scanner *self)
 		else if (*self->char_itr.cursor == '\\' && *(self->char_itr.cursor + 1) == '$')
 		{
 			temp = ft_strjoin_free_s1(temp, ft_strdup("$"));
-			self->char_itr.cursor += 2;  // ✅ Skip `\` and `$`
+			self->char_itr.cursor += 2;
 		}
-		// else if (*self->char_itr.cursor == '$')
-		// {
-		// 	if (ft_is_valid_env_name(self->char_itr.cursor + 1))
-		// 		temp = ft_strjoin_free_s1(temp, handle_expansions(self).lexeme.start);
-		// 	else
-		// 	{
-		// 		temp = ft_strjoin_free_s1(temp, ft_strdup("$"));
-		// 		self->char_itr.cursor++;
-		// 	}
-		// }
 		else
 		{
 			temp = ft_strjoin_free_s1(temp,
@@ -184,45 +164,7 @@ t_token	non_delimited_token(t_scanner *self)
 	return self->next;
 }
 
-// t_token non_delimited_token(t_scanner *self)
-// {
-//     const char  *start;
-//     char        *temp;
-
-//     start = self->char_itr.cursor;
-//     temp = ft_strdup("");
-//     while (*self->char_itr.cursor && !ft_strchr("\"'$", *self->char_itr.cursor))
-//     {
-//         if (escape_special_chars(self))
-//         {
-//             temp = ft_strjoin_free_s1(temp, ft_strdup("$"));
-//             self->char_itr.cursor++;
-//         }
-//         else if (*self->char_itr.cursor == '"')
-//             temp = ft_strjoin_free_s1(temp, double_quote_token(self).lexeme.start);
-//         else if (*self->char_itr.cursor == '\'')
-//             temp = ft_strjoin_free_s1(temp, single_quote_token(self).lexeme.start);
-//         else if (*self->char_itr.cursor == '$')
-//         {
-//             if (ft_is_valid_env_name(self->char_itr.cursor + 1))
-//                 temp = ft_strjoin_free_s1(temp, handle_expansions(self).lexeme.start);
-//             else
-//             {
-//                 temp = ft_strjoin_free_s1(temp, "$");
-//                 self->char_itr.cursor++;
-//             }
-//         }
-//         else
-//             temp = ft_strjoin_free_s1(temp, ft_substr(self->char_itr.cursor, 0, 1));
-// 		if (*self->char_itr.cursor == '\0' || ft_strchr(" \t\n|><", *self->char_itr.cursor))
-// 			break ;  // ✅ Stop at delimiters like space, pipes, or redirections
-//         self->char_itr.cursor++;
-//     }
-//     self->next.type = WORD;
-//     self->next.lexeme.start = temp;
-//     self->next.lexeme.length = ft_strlen(temp);
-//     return self->next;
-// }t_token	double_quote_token(t_scanner *self)
+t_token	double_quote_token(t_scanner *self)
 {
 	char	*expanded;
 	t_token var;
@@ -274,7 +216,7 @@ t_token	non_delimited_token(t_scanner *self)
 	}
 	self->next.lexeme.start = expanded;
 	self->next.lexeme.length = ft_strlen(expanded);
-	return self->next;
+	return (self->next);
 }
 
 t_token single_quote_token(t_scanner *self)
@@ -330,27 +272,20 @@ char	*expand_normal_var(t_scanner *self)
 	char	var_name[256];
 	int		i;
 	char	*value;
-	char	var_name[256];
-	int		i;
-	char	*value;
 
 	i = 0;
-	// ✅ Extract variable name (letters, digits, underscores)
 	while (ft_isalnum(*self->char_itr.cursor) || *self->char_itr.cursor == '_')
 	{
 		if (i < 255)
 			var_name[i++] = *self->char_itr.cursor;
 		else
-			break;
+			break ;
 		self->char_itr.cursor++;
 	}
-	var_name[i] = '\0';
 	var_name[i] = '\0';
 	value = ms_get_env(self->msh->env, var_name);
 	if (!value)
 		return (ft_strdup(""));
-	return (ft_strdup(value));
-		return (ft_strdup(""));  // Variable not found → empty string
 	return (ft_strdup(value));
 }
 

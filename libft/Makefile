@@ -16,6 +16,9 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror
 OFILES = $(CFILES:.c=.o)
 
+BUFFER_SIZE ?= 42
+FD_SIZE ?= 1024
+
 CFILES = \
 ft_isalpha.c \
 ft_isdigit.c \
@@ -58,7 +61,9 @@ ft_atoll.c \
 ft_isllong.c \
 ft_strjoin_free_s1.c \
 ft_strtol.c \
-ft_strspn.c
+ft_strspn.c \
+get_next_line.c \
+ft_isbinary.c \
 
 
 

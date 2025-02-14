@@ -122,14 +122,11 @@ typedef struct s_backcmd
 } t_backcmd; */
 
 void						node_drop(t_tree_node *self);
-
 t_tree_node					*parse_tree_node(t_scanner *scanner);
 t_tree_node					*parse_exec(t_args *args);
-t_tree_node					*parse_redir(t_scanner *scanner, t_args *args);
 t_tree_node					*parse_pipe(t_scanner *scanner, t_args *args);
 void						indent_node(size_t spaces);
 void						visit_node(const t_tree_node *node, size_t spaces);
-
 void						free_tree_node(t_tree_node *node);
 
 #endif

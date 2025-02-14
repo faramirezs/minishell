@@ -27,7 +27,11 @@ ENV_BLD	= ./env.c \
 			./builtins/execute.c \
 			./builtins/utils_bultin.c \
 
-EXECUTION	= ./execution/exec.c
+EXECUTION	= ./execution/exec_command.c \
+			./execution/exec_redir.c \
+			./execution/exec_pipe.c \
+			./execution/exec_heredoc.c \
+			./execution/exec.c
 
 SIGNALS     = ./signal_handler.c
 
