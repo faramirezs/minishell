@@ -22,7 +22,7 @@ t_char_itr	char_itr_value(const char *star, size_t length)
 }
 void	skip_whitespaces(t_char_itr *self)
 {
-	// char whitespaces[] = WHITESPACES;
+
 	while (self->cursor && self->cursor < self->sentinel1
 		&& ft_strchr(WHITESPACES, *self->cursor))
 	{
@@ -32,7 +32,6 @@ void	skip_whitespaces(t_char_itr *self)
 
 int	is_whitespace(t_char_itr *self)
 {
-	// char whitespaces[] = WHITESPACES;
 	return (self->cursor && self->cursor < self->sentinel1
 		&& ft_strchr(WHITESPACES, *self->cursor));
 }
