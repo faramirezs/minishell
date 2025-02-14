@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/14 18:35:53 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/14 19:44:11 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ t_tree_node *create_redir_node(t_scanner *scanner)
 	else
 		redir_node->data.redir_u.source_fd = STDOUT_FILENO;
 	redir_node->data.redir_u.flags = get_redir_flags(scanner->next.type);
-	redir_node->data.redir_u.mode = 0644;  // Default file permissions
+	redir_node->data.redir_u.mode = 0644;
 	return redir_node;
 }
 
@@ -49,12 +49,10 @@ void handle_redir_heredoc(t_redircmd *redir_node, t_scanner *scanner)
 		scanner->next = scanner_next(scanner);
 		if (scanner->next.type != HEREDOC)
 			break;
-		//Que hacemos si se avanza el scanner y es un pipe??
 		if (!scanner_has_next(scanner))
 		{
 			printf("Syntax error: nothing after redirection token\n");
 			break;
-			//cleanup(redir_node, EXIT_FAILURE);
 		}
 		scanner->next = scanner_next(scanner);
 		t_args *file_args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
