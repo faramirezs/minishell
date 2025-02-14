@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:18:13 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/14 10:55:37 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/14 16:43:38 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static size_t get_total_length(t_list *head)
 	size_t total_length = 0;
 	while (head)
 	{
-		total_length += strlen(head->line) + 1; // +1 for newline
+		total_length += ft_strlen(head->line) + 1; // +1 for newline
 		head = head->next;
 	}
 	return total_length;
@@ -61,21 +61,23 @@ static size_t get_total_length(t_list *head)
 char *concatenate_lines(t_list *head)
 {
 	size_t total_length = get_total_length(head);
-	char *result = malloc(total_length + 1); // +1 for null terminator
+	char *result = malloc(total_length + 1);
 	if (!result)
 		return NULL;
 
 	char *ptr = result;
-	while (head)
-	{
-		size_t len = strlen(head->line);
-		strcpy(ptr, head->line);
-		ptr += len;
+    t_list *current = head;
+
+    while (current)
+    {
+        size_t len = ft_strlen(current->line);
+        ft_memcpy(ptr, current->line, len);
+        ptr += len;
 		*ptr++ = '\n';
-		head = head->next;
-	}
-	*ptr = '\0';
-	return result;
+        current = current->next;
+    }
+    *ptr = '\0';
+    return result;
 }
 
 void free_list(t_list *head)

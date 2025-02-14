@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:40:19 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/13 17:17:17 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/14 16:43:57 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,4 @@ void						restore_stdin(void);
 void						append_node(t_list **head, const char *line);
 char						*concatenate_lines(t_list *head);
 void						free_list(t_list *head);
-//void						save_terminal_settings(void);
-//void						restore_terminal_settings(void);
-
-//int							handle_input_redirection(t_redircmd *rcmd);
 #endif
