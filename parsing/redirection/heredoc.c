@@ -6,18 +6,12 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:18:13 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/14 16:43:38 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/14 17:15:50 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/minishell.h"
 #include "../../headers/env_var.h"
-
-/* typedef struct s_list
-{
-	char *line;
-	struct s_list *next;
-} t_list; */
 
 static t_list *create_node(const char *line)
 {

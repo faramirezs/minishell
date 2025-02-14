@@ -11,8 +11,7 @@ NODE_CREATION =	./parsing/node_creation/tree_node.c \
 				./parsing/node_creation/args.c \
 				./parsing/node_creation/args_cleanup.c \
 				./parsing/redirection/redirections.c \
-				./parsing/redirection/heredoc.c \
-				./parsing/redirection/heredoc_signals.c
+				./parsing/redirection/heredoc.c
 
 ENV_BLD	= ./env.c \
 			./builtins/builtin/ft_cd.c \
@@ -25,9 +24,13 @@ ENV_BLD	= ./env.c \
 			./builtins/init/init_builtin.c \
 			./builtins/init/init_env.c \
 			./builtins/execute.c \
-			./builtins/utils_bultin.c \
+			./builtins/utils_bultin.c
 
-EXECUTION	= ./execution/exec.c
+EXECUTION	= ./execution/exec_command.c \
+			./execution/exec_redir.c \
+			./execution/exec_pipe.c \
+			./execution/exec_heredoc.c \
+			./execution/exec.c
 
 SIGNALS     = ./signal_handler.c
 
