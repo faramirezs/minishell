@@ -13,12 +13,6 @@ t_token new_token (t_token_type type, char *start, size_t length)
 	return (token);
 }
 
-void print_token(const t_token token)
-{
-	printf("[Token Type]: %d\n", token.type);
-	printf("[Token Lexeme]: %.*s\n", (int)token.lexeme.length, token.lexeme.start);
-}
-
 t_token end_token (t_scanner *self)
 {
 	self->next.type = END;
@@ -64,43 +58,6 @@ t_token redir_in_token (t_scanner *self)
 	return (self->next);
 }
 
-// t_token word_token (t_scanner *self)
-// {
-// 	self->next.lexeme.start = self->char_itr.cursor;
-// 	//self->next.lexeme.length = 1;
-// 	//while(self->char_itr.cursor && ft_isalnum(*self->char_itr.cursor))
-// 	while(self->char_itr.cursor && *self->char_itr.cursor != '\0' && (ft_isalnum(*self->char_itr.cursor) || ft_strchr(NOBRKSYMS, *self->char_itr.cursor)))
-// 	{
-// 		/* printf("Char: %c, isalnum: %d, strchr: %p, Token lexeme length: %zu in file %s at line %d\n",
-// 			*self->char_itr.cursor,
-// 			ft_isalnum(*self->char_itr.cursor),
-// 			ft_strchr(NOBRKSYMS, *self->char_itr.cursor),
-// 			self->next.lexeme.length,
-// 			__FILE__,
-// 			__LINE__); */
-// 		self->next.lexeme.length++;
-// 		if(char_itr_has_next(&self->char_itr))
-// 			self->char_itr.cursor++;
-// 		else
-// 			break;
-// 	}
-// 	check_cmd(self);
-// 	return (self->next);
-// }
-
-t_token tmp_unknown_token (t_scanner *self)
-{
-	self->next.type = UNKNOWN;
-	t_token token;
-	token = scanner_peek(self);
-	self->next = token;
-	return (token);
-	self->next.lexeme.length = 1;
-	self->next.lexeme.start = self->char_itr.cursor;
-	self->char_itr.cursor++;
-	return (self->next);
-}
-
 t_token abs_path_token(t_scanner *self)
 {
 	self->next.type = ABS_PATH;
@@ -130,16 +87,7 @@ t_token rel_path_token(t_scanner *self)
 	}
 	return (self->next);
 }
-/*
-t_token option_token(t_scanner *self)
-{
-	self->next.type = OPTION;
-	self->next.lexeme.start = self->char_itr.cursor++;
-	self->next.lexeme.length = 2;
-	self->char_itr.cursor++;
-	return (self->next);
-}
- */
+
 t_token append_out_token(t_scanner *self)
 {
 	self->next.type = APPEND_OUT;

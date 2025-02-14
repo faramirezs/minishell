@@ -1,21 +1,32 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   scanner.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/14 19:46:40 by alramire          #+#    #+#             */
+/*   Updated: 2025/02/14 19:50:04 by alramire         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../headers/minishell.h"
 
-
-t_scanner scanner_value(t_char_itr char_itr)
+t_scanner	scanner_value(t_char_itr char_itr)
 {
-	t_scanner scanner;
-	t_token token;
+	t_scanner	scanner;
+	t_token		token;
 
 	ft_memset(&token, 0, sizeof(t_token));
 	scanner.char_itr = char_itr;
 	scanner.next = token;
-	return(scanner);
+	return (scanner);
 }
 
-int scanner_has_next(const t_scanner *self)
+int	scanner_has_next(const t_scanner *self)
 {
-	char c;
+	char	c;
+
 	c = char_itr_peek(&self->char_itr);
 	if (!(c == EOF || c == '\n' || c == '\0'))
 	{
@@ -28,32 +39,20 @@ int scanner_has_next(const t_scanner *self)
 	}
 }
 
-t_token scanner_next(t_scanner *self)
+t_token	scanner_next(t_scanner *self)
 {
 	skip_whitespaces(&self->char_itr);
-	//For the case of all the input being spaces, we could include a if check with char, to see if after removing whitespaces, we still have a valid char.
-	//If we execute this function when
 	self->next.lexeme.length = 0;
 	self->next = scanner_peek(self);
-/* 	if (scanner_has_next(self))
-	{
-		self->next.lexeme.length = 0;
-		self->next = scanner_peek(self);
-	}
-	else
-	{
-		self->next = end_token(self);
-	} */
 	return (self->next);
 }
-// In this moment peek is also consuming the token, it is not just only peeking.. it also advance the iterator along the string.
-// We need to check if this can be problematic for the use of the parser.
-t_token scanner_peek(t_scanner *self)
+
+t_token	scanner_peek(t_scanner *self)
 {
 	char	c;
 
 	c = *self->char_itr.cursor;
-	while(1)
+	while (1)
 	{
 		if (c == EOF || c == '\n' || c == '\0')
 			return (end_token(self));
@@ -64,23 +63,25 @@ t_token scanner_peek(t_scanner *self)
 		else if (c == '<')
 			return (redir_in_token(self));
 		else if (c == '$' && self->next.type != HEREDOC)
-    		return (handle_expansions(self));
-		 else if (c == '/')
+			return (handle_expansions(self));
+		else if (c == '/')
 			return (abs_path_token(self));
-		else if (c == '.' && ((*(self->char_itr.cursor + 1) == '/') || (*(self->char_itr.cursor + 1) == '.' && *(self->char_itr.cursor + 2) == '/')))
+		else if (c == '.' && ((*(self->char_itr.cursor + 1) == '/')
+				|| (*(self->char_itr.cursor + 1) == '.'
+					&& *(self->char_itr.cursor + 2) == '/')))
 			return (rel_path_token(self));
-		else if (ft_isalnum(c) || ft_strchr(NOBRKSYMS, *self->char_itr.cursor) || ft_strchr(QUOTEETC, *self->char_itr.cursor))
+		else if (ft_isalnum(c) || ft_strchr(NOBRKSYMS, *self->char_itr.cursor)
+			|| ft_strchr(QUOTEETC, *self->char_itr.cursor))
 			return (non_delimited_token(self));
-		else
-			return (tmp_unknown_token(self));
 	}
 }
- int check_start_uknown(const char *input)
- {
+
+int	check_start_uknown(const char *input)
+{
 	if (ft_strchr(SYMBOLS, input[0]))
 	{
-		return(1);
+		return (1);
 	}
 	else
-		return(0);
- }
+		return (0);
+}

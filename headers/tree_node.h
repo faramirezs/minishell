@@ -61,29 +61,6 @@ struct s_redircmd
 	pid_t heredoc_pid;		// Process ID for heredoc handling
 };
 
-
-
-/*
-struct						s_redircmd
-{
-	struct s_redir			*prev;
-	int						redir_type;
-	int						redir_i;
-	char					*target;
-	int						target_type;
-	int						target_token_type;
-	char					**args;
-	char					*exec_file;
-	char					*file_input;
-	char					**split_input;
-	int						flags;
-	int						fd;
-	int						close_fd;
-	int						error_code;
-
-	struct s_redir			*next;
-};
- */
 struct						s_execcmd
 {
 	char					**args;
@@ -108,28 +85,12 @@ struct						s_tree_node
 	t_node_value			data;
 };
 
-/* typedef struct s_listcmd
-{
-	t_node_type type;
-	t_cmd *left;
-	t_cmd *right;
-}							t_listcmd;
-
-typedef struct s_backcmd
-{
-	t_node_type				type;
-	t_cmd					*cmd;
-} t_backcmd; */
-
 void						node_drop(t_tree_node *self);
-
 t_tree_node					*parse_tree_node(t_scanner *scanner);
 t_tree_node					*parse_exec(t_args *args);
-//t_tree_node					*parse_redir(t_scanner *scanner, t_args *args);
 t_tree_node					*parse_pipe(t_scanner *scanner, t_args *args);
 void						indent_node(size_t spaces);
 void						visit_node(const t_tree_node *node, size_t spaces);
-
 void						free_tree_node(t_tree_node *node);
 
 #endif
