@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/13 17:17:42 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/14 18:35:53 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,34 +186,3 @@ int	check_redir(t_scanner *scanner)
 			|| scanner->next.type == APPEND_OUT
 			|| scanner->next.type == HEREDOC));
 }
-
-/* int handle_input_redirection(t_redircmd *rcmd) {
-	int fd;
-
-	fd = -1;
-	// Handle different target types
-	if (rcmd->target_type == TARGET_FILENAME) {
-		fd = open(rcmd->target, rcmd->flags, rcmd->mode);
-	} else if (rcmd->target_type == TARGET_ENV_PATHNAME) {
-		printf("TARGET_ENV_PATHNAME\n");
-		// Handle environment variable expansion
-		//char *expanded_path = expand_env_var(rcmd->target);
-		//fd = open(expanded_path, rcmd->flags, rcmd->mode);
-		//free(expanded_path);
-	}
-
-	if (fd < 0) {
-		rcmd->error_code = errno;
-		return -1;
-	}
-
-	// Redirect input
-	if (dup2(fd, rcmd->source_fd) < 0) {
-		rcmd->error_code = errno;
-		close(fd);
-		return -1;
-	}
-
-	close(fd);
-	return 0;
-} */
