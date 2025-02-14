@@ -33,3 +33,14 @@ $
 
 << echo oi
 echo
+
+
+cat <uno <<HERE <missing | ls
+HERE
+
+cat <uno <<HERE | cat
+HERE
+
+cat <uno <<HERE <missing <<DOC | echo oi
+HERE
+DOC
