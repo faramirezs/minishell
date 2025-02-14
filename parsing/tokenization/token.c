@@ -77,7 +77,7 @@ t_token abs_path_token(t_scanner *self)
 		if (char_itr_has_next(&self->char_itr) == 1)
 			self->char_itr.cursor++;
 		else
-			break;
+			break ;
 	}
 	return (self->next);
 }
@@ -119,10 +119,10 @@ bool escape_special_chars(t_scanner *self)
 {
     if (*self->char_itr.cursor == '\\' && *(self->char_itr.cursor + 1) == '$')
     {
-        self->char_itr.cursor++;  // ✅ Skip `\`
-        return true;  // ✅ `$` is escaped, so treat it as a normal character
+        self->char_itr.cursor++;
+        return (true);
     }
-    return false;  // ✅ `$` should be processed normally
+    return (false);
 }
 
 t_token	non_delimited_token(t_scanner *self)
@@ -136,8 +136,12 @@ t_token	non_delimited_token(t_scanner *self)
 			temp = ft_strjoin_free_s1(temp,
 				double_quote_token(self).lexeme.start);
 		else if (*self->char_itr.cursor == '\'')
-			temp = ft_strjoin_free_s1(temp,
-				single_quote_token(self).lexeme.start);
+			temp = ft_strjoin_free_s1(temp, single_quote_token(self).lexeme.start);
+		else if (*self->char_itr.cursor == '\\' && *(self->char_itr.cursor + 1) == '$')
+		{
+			temp = ft_strjoin_free_s1(temp, ft_strdup("$"));
+			self->char_itr.cursor += 2;
+		}
 		else
 		{
 			temp = ft_strjoin_free_s1(temp,
@@ -205,7 +209,7 @@ t_token	double_quote_token(t_scanner *self)
 	}
 	self->next.lexeme.start = expanded;
 	self->next.lexeme.length = ft_strlen(expanded);
-	return self->next;
+	return (self->next);
 }
 
 t_token single_quote_token(t_scanner *self)
@@ -268,7 +272,7 @@ char	*expand_normal_var(t_scanner *self)
 		if (i < 255)
 			var_name[i++] = *self->char_itr.cursor;
 		else
-			break;
+			break ;
 		self->char_itr.cursor++;
 	}
 	var_name[i] = '\0';
