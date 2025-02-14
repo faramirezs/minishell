@@ -11,7 +11,10 @@ NODE_CREATION =	./parsing/node_creation/tree_node.c \
 				./parsing/node_creation/args.c \
 				./parsing/node_creation/args_cleanup.c \
 				./parsing/redirection/redirections.c \
-				./parsing/redirection/heredoc.c
+				./parsing/redirection/heredoc.c \
+				./parsing/redirection/heredoc_helper.c \
+				./parsing/redirection/heredoc_collector.c
+
 
 ENV_BLD	= ./env.c \
 			./builtins/builtin/ft_cd.c \
