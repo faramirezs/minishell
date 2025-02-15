@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 16:59:59 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/14 17:52:05 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/15 17:36:04 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,6 @@ if (setup_pipe_redirection(ctx, saved_stdin, saved_stdout, node) != 0)
 }
 if (apply_redirection(rcmd, saved_stdin, saved_stdout, node) != 0)
 {
-	restore_std_fds(saved_stdin, saved_stdout, node);
 	return (1);
 }
 if (rcmd->cmd)
