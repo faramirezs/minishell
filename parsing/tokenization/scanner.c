@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 19:46:40 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/15 12:20:15 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/15 16:50:53 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,6 @@ t_token	scanner_peek(t_scanner *self)
 			return (non_delimited_token(self));
 		else
 			return (end_token(self));
-		/* else (c == EOF || c == '\n' || c == '\0')
-			return (end_token(self)); */
 	}
 }
 

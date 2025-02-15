@@ -4,6 +4,7 @@ LIBFT = libft/libft.a
 TOKENIZATION =	./parsing/tokenization/char_itr.c \
 				./parsing/tokenization/scanner.c \
 				./parsing/tokenization/token.c \
+				./parsing/tokenization/token_helper.c \
 				./parsing/tokenization/cmd.c \
 				./parsing/tokenization/guards.c
 

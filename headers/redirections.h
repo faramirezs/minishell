@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:40:19 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/15 12:58:22 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/15 16:56:57 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ void				append_node(t_list **head, const char *line);
 char				*concatenate_lines(t_list *head);
 void				free_list(t_list *head);
 char				*expand_env_vars(const char *line, t_context *msh);
-void				parse_redir_target(t_scanner *scanner, t_tree_node *redir_node, t_args *file_args);
-t_tree_node			*handle_pipe(t_scanner *scanner, t_tree_node *first_redir, t_tree_node *last_redir, t_args *cmd_args);
+void				parse_redir_target(t_scanner *scanner,
+						t_tree_node *redir_node, t_args *file_args);
+t_tree_node			*handle_pipe(t_scanner *scanner, t_tree_node *first_redir,
+						t_tree_node *last_redir, t_args *cmd_args);
 #endif

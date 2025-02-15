@@ -20,26 +20,12 @@ t_char_itr	char_itr_value(const char *star, size_t length)
 	itr.sentinel1 = star + length;
 	return (itr);
 }
-void	skip_whitespaces(t_char_itr *self)
-{
-
-	while (self->cursor && self->cursor < self->sentinel1
-		&& ft_strchr(WHITESPACES, *self->cursor))
-	{
-		char_itr_next(self);
-	}
-}
-
-int	is_whitespace(t_char_itr *self)
-{
-	return (self->cursor && self->cursor < self->sentinel1
-		&& ft_strchr(WHITESPACES, *self->cursor));
-}
 
 int	char_itr_has_next(const t_char_itr *self)
 {
 	return (self->cursor < self->sentinel1);
 }
+
 char	char_itr_peek(const t_char_itr *self)
 {
 	if (char_itr_has_next(self))

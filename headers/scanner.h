@@ -1,22 +1,22 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::		::::::::   */
-/*   scanner.h											:+:	  :+:	:+:   */
-/*													+:+ +:+			+:+	 */
-/*   By: alramire <alramire@student.42.fr>			+#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+			*/
-/*   Created: 2025/01/10 17:18:38 by alramire			#+#	#+#			 */
-/*   Updated: 2025/01/10 17:20:12 by alramire			###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   scanner.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/15 16:59:00 by alramire          #+#    #+#             */
+/*   Updated: 2025/02/15 16:59:02 by alramire         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SCANNER_H
 # define SCANNER_H
 
+# include "args.h"
 # include "char_itr.h"
 # include "env_var.h"
 # include "token.h"
-# include "args.h"
 
 typedef struct s_scanner
 {
