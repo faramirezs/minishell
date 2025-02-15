@@ -23,4 +23,5 @@ int		exec_pipe(t_tree_node *node, t_context *ctx);
 int		exec_redir(t_tree_node *node, t_context *ctx);
 int		handle_heredoc(t_redircmd *rcmd);
 
+
 #endif

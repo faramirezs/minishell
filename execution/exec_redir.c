@@ -147,29 +147,28 @@ if (dup2(saved_stdout, STDOUT_FILENO) == -1)
 close(saved_stdin);
 close(saved_stdout);
 }
-
 int	exec_redir(t_tree_node *node, t_context *ctx)
 {
-	t_redircmd	*rcmd;
-	int			saved_stdin;
-	int			saved_stdout;
-	int			result;
+t_redircmd	*rcmd;
+int			saved_stdin;
+int			saved_stdout;
+int			result;
 
-	rcmd = &node->data.redir_u;
-	result = 0;
-	if (save_std_fds(&saved_stdin, &saved_stdout, node) != 0)
-		return (1);
-	if (setup_pipe_redirection(ctx, saved_stdin, saved_stdout, node) != 0)
-	{
-		restore_std_fds(saved_stdin, saved_stdout, node);
-		return (1);
-	}
-	if (apply_redirection(rcmd, saved_stdin, saved_stdout, node) != 0)
-	{
-		restore_std_fds(saved_stdin, saved_stdout, node);
-		return (1);
-	}
-	if (rcmd->cmd)
-		result = exec_node(rcmd->cmd, ctx);
-	return (result);
+rcmd = &node->data.redir_u;
+result = 0;
+if (save_std_fds(&saved_stdin, &saved_stdout, node) != 0)
+	return (1);
+if (setup_pipe_redirection(ctx, saved_stdin, saved_stdout, node) != 0)
+{
+	restore_std_fds(saved_stdin, saved_stdout, node);
+	return (1);
+}
+if (apply_redirection(rcmd, saved_stdin, saved_stdout, node) != 0)
+{
+	restore_std_fds(saved_stdin, saved_stdout, node);
+	return (1);
+}
+if (rcmd->cmd)
+	result = exec_node(rcmd->cmd, ctx);
+return (result);
 }

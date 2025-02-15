@@ -3,7 +3,7 @@
 		"guards.h": "c",
 		"tree_node.h": "c",
 		"env_var.h": "c",
-		"__node_handle": "c"
+		"minishell.h": "c"
 	},
 	"[c]": {
 		"editor.defaultFormatter": "keyhr.42-c-format"

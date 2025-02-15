@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:40:19 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/09 12:46:55 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/14 18:20:09 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@
 
 typedef struct s_list
 {
-	char *line;
-	struct s_list *next;
-} t_list;
+	char			*line;
+	struct s_list	*next;
+}					t_list;
 
 t_tree_node			*parse_redir(t_scanner *scanner, t_args *cmd_args,
 						t_tree_node *first_redir);
@@ -42,5 +42,4 @@ void				append_node(t_list **head, const char *line);
 char				*concatenate_lines(t_list *head);
 void				free_list(t_list *head);
 char				*expand_env_vars(const char *line, t_context *msh);
-
 #endif
