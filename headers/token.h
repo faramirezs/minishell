@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 16:59:18 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/15 16:59:20 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/15 17:10:52 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include <stddef.h>
 
-typedef enum e_token_type // good to have an order like below
+typedef enum e_token_type
 {
 	COMMAND,
 	ENV_VAR,

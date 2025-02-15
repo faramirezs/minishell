@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   minishell.h										:+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: alramire <alramire@student.42.fr>		  +#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/10/19 15:17:33 by alramire		  #+#	#+#			 */
-/*   Updated: 2025/01/17 11:34:24 by alramire		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/15 17:10:32 by alramire          #+#    #+#             */
+/*   Updated: 2025/02/15 17:10:35 by alramire         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
@@ -26,9 +26,18 @@
 # include <sys/types.h>
 # include <errno.h>
 # include <signal.h>
-//# include <termios.h>
-// CALL VALGRIND SUPPRESSION:
-// valgrind --suppressions=readline.supp --leak-check=full --show-leak-kinds=all ./minishell
+# include "token.h"
+# include "char_itr.h"
+# include "scanner.h"
+# include "args.h"
+# include "tree_node.h"
+# include "env_var.h"
+# include "built_in.h"
+# include "exec.h"
+# include "redirections.h"
+# include "cmd.h"
+# include "guards.h"
+# include "signals.h"
 
 # define COLOR_RESET "\001\033[0m\002"
 # define COLOR_RED "\001\033[31m\002"
@@ -45,18 +54,5 @@
 # define QUOTEETC "\"'"
 
 extern volatile sig_atomic_t g_heredoc_interrupt;
-
-# include "token.h"
-# include "char_itr.h"
-# include "scanner.h"
-# include "args.h"
-# include "tree_node.h"
-# include "env_var.h"
-# include "built_in.h"
-# include "exec.h"
-# include "redirections.h"
-# include "cmd.h"
-# include "guards.h"
-# include "signals.h"
 
 #endif
