@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 11:40:37 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/15 11:41:05 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/15 17:13:01 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@
 
 typedef struct s_context
 {
-	int fd[2];
-	int fd_close;
-	char **env;
-	char **env_export;
-	int ret_exit;
-	char *user;
+	int		fd[2];
+	int		fd_close;
+	char	**env;
+	char	**env_export;
+	int		ret_exit;
+	char	*user;
 }			t_context;
 
 char		**ms_matrix_add_line(char **matrix, const char *new_line);

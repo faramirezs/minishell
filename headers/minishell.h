@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 17:10:32 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/15 17:10:35 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/15 17:15:20 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,6 @@
 # define NOBRKSYMS "_.?:-+=^"
 # define QUOTEETC "\"'"
 
-extern volatile sig_atomic_t g_heredoc_interrupt;
+extern volatile sig_atomic_t	g_heredoc_interrupt;
 
 #endif
