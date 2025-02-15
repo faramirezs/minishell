@@ -39,34 +39,24 @@
 # define COLOR_CYAN "\001\033[36m\002"
 # define COLOR_WHITE "\001\033[37m\002"
 # define COLOR_BOLD "\001\033[1m\002"
+# define WHITESPACES " \t\r\n\a"
+# define SYMBOLS "\\;()#&`*~|"
+# define NOBRKSYMS "_.?:-+=^"
+# define QUOTEETC "\"'"
 
 extern volatile sig_atomic_t g_heredoc_interrupt;
 
-// Parsing headers
 # include "token.h"
 # include "char_itr.h"
 # include "scanner.h"
 # include "args.h"
 # include "tree_node.h"
 # include "env_var.h"
-	// this already should include all the env_var headers inside
-
-// Execution headers
 # include "built_in.h"
-	// this already should include all the builtins headers inside
-
 # include "exec.h"
-	// this already should include all the pipes headers inside
 # include "redirections.h"
-	// this already should include all the redirections headers inside
-
-// Tokenizer headers
-
 # include "cmd.h"
 # include "guards.h"
-
-
-//Signals
 # include "signals.h"
 
 #endif

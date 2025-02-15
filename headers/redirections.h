@@ -6,14 +6,13 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:40:19 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/14 18:20:09 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/15 12:23:01 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REDIRECTIONS_H
 # define REDIRECTIONS_H
 
-//# include "tree_node.h"
 # include "minishell.h"
 
 typedef struct s_list

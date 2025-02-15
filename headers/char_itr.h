@@ -15,13 +15,6 @@
 
 # include "minishell.h"
 
-//# include <stddef.h>
-
-# define WHITESPACES " \t\r\n\a"
-# define SYMBOLS "\\;()#&`*~|"
-# define NOBRKSYMS "_.?:-+="
-# define QUOTEETC "\"'"
-
 typedef struct s_chart_itr
 {
 	const char	*cursor;

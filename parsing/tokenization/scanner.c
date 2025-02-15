@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 19:46:40 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/14 19:50:04 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/15 12:20:15 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,7 @@ t_token	scanner_peek(t_scanner *self)
 	c = *self->char_itr.cursor;
 	while (1)
 	{
-		if (c == EOF || c == '\n' || c == '\0')
-			return (end_token(self));
-		else if (c == '|')
+		if (c == '|')
 			return (pipe_token(self));
 		else if (c == '>')
 			return (redir_out_token(self));
@@ -73,6 +71,10 @@ t_token	scanner_peek(t_scanner *self)
 		else if (ft_isalnum(c) || ft_strchr(NOBRKSYMS, *self->char_itr.cursor)
 			|| ft_strchr(QUOTEETC, *self->char_itr.cursor))
 			return (non_delimited_token(self));
+		else
+			return (end_token(self));
+		/* else (c == EOF || c == '\n' || c == '\0')
+			return (end_token(self)); */
 	}
 }
 
