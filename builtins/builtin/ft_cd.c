@@ -43,12 +43,12 @@ int	handle_cd(struct s_tree_node *node, t_context *msh)
 			return (1);
 		}
 	}
-	else if (node->data.exec_u.args[2])
-	{
-		fprintf(stderr, "minishell: cd: too many arguments\n");
-		msh->ret_exit = 1;
-		return (1);
-	}
+//	else if (node->data.exec_u.args[2])
+//	{
+//		fprintf(stderr, "minishell: cd: too many arguments\n");
+//		msh->ret_exit = 1;
+//		return (1);
+//	}
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
 		perror("getcwd");

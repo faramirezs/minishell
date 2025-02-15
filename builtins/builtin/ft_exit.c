@@ -40,7 +40,6 @@ int	handle_exit(struct s_tree_node *node, t_context *msh)
 {
 	int	exit_code;
 
-	printf("enterint exit\n");
 	if (!node || !node->data.exec_u.args[1])
 	{
 		msh->ret_exit = 0;
