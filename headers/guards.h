@@ -18,6 +18,6 @@
 //# include <stdio.h>
 //# include <stdlib.h>
 
-void	*OOM_GUARD(void *ptr, char *file, int number);
+void	*oom_guard(void *ptr, char *file, int number);
 
 #endif

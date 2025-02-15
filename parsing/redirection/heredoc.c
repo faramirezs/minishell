@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/15 15:46:26 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/15 16:47:56 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ void	update_redir_node_target(t_redircmd *redir_node, t_token *next_token)
 {
 	t_args	*file_args;
 
-	file_args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
-	file_args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
+	file_args = oom_guard(malloc(sizeof(t_args)), __FILE__, __LINE__);
+	file_args->count = oom_guard(malloc(sizeof(int)), __FILE__, __LINE__);
 	*(file_args->count) = 1;
 	args_collector(next_token, file_args);
 	redir_node->target = ft_strdup(file_args->words[0]);
@@ -95,9 +95,9 @@ void	handle_redir_heredoc(t_redircmd *redir_node, t_scanner *scanner)
 			break ;
 		}
 		scanner->next = scanner_next(scanner);
-		t_args *file_args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__,
+		t_args *file_args = oom_guard(malloc(sizeof(t_args)), __FILE__,
 				__LINE__);
-		file_args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
+		file_args->count = oom_guard(malloc(sizeof(int)), __FILE__, __LINE__);
 		*(file_args->count) = 1;
 		args_collector(&scanner->next, file_args);
 		redir_node->target = ft_strdup(file_args->words[0]);

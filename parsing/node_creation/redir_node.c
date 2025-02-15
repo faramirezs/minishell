@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/15 13:57:20 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/15 16:47:56 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ t_tree_node	*create_redir_node(t_scanner *scanner)
 {
 	t_tree_node	*redir_node;
 
-	redir_node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
+	redir_node = oom_guard(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
 	redir_node->type = N_REDIR;
 	redir_node->data.redir_u.cmd = NULL;
 	redir_node->data.redir_u.redir_type = scanner->next.type;

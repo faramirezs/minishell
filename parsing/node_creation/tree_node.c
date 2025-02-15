@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/15 12:47:09 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/15 16:47:56 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ t_tree_node	*parse_exec(t_args *args)
 {
 	t_tree_node	*node;
 
-	node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
+	node = oom_guard(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
 	node->type = N_EXEC;
 	node->data.exec_u.args = copy_string_array(args);
 	return (node);
@@ -53,7 +53,7 @@ t_tree_node	*parse_pipe(t_scanner *scanner, t_args *args)
 {
 	t_tree_node	*pipe_node;
 
-	pipe_node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
+	pipe_node = oom_guard(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
 	pipe_node->type = N_PIPE;
 	pipe_node->data.pipe_u.left = parse_exec(args);
 	pipe_node->data.pipe_u.right = parse_tree_node(scanner);

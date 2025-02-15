@@ -5,7 +5,7 @@ t_context *init_context(char **envp)
 {
 	t_context *msh;
 
-	msh = OOM_GUARD(malloc(sizeof(t_context)), __FILE__, __LINE__);
+	msh = oom_guard(malloc(sizeof(t_context)), __FILE__, __LINE__);
 	msh->fd[0] = STDIN_FILENO;
 	msh->fd[1] = STDOUT_FILENO;
 	msh->fd_close = -1;
@@ -232,7 +232,7 @@ char **duplicate_env(char **env)
 	i = 0;
     while (env[i])
         i++;
-    copy = OOM_GUARD(malloc(sizeof(char *) * (i + 1)), __FILE__, __LINE__);
+    copy = oom_guard(malloc(sizeof(char *) * (i + 1)), __FILE__, __LINE__);
 
     i = 0;
     while (env[i])

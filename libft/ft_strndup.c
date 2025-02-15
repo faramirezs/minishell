@@ -16,6 +16,6 @@ char *ft_strndup(const char *s, size_t n)
 
 
 //size_t len = ft_strnlen(s, n); // Find the minimum of n and strlen(s)
-//copy = OOM_GUARDS(malloc(sizeof(char) * (n + 1)), __FILE__, __LINE__); 	// Allocate memory for the copy
+//copy = oom_guardS(malloc(sizeof(char) * (n + 1)), __FILE__, __LINE__); 	// Allocate memory for the copy
 // Null-terminate the string
 // Copy up to `len` characters

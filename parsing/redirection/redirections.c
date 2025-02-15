@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/15 16:11:32 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/15 16:49:42 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ t_tree_node	*handle_pipe(t_scanner *scanner, t_tree_node *first_redir,
 {
 	t_tree_node	*pipe_node;
 
-	pipe_node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
+	pipe_node = oom_guard(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
 	pipe_node->type = N_PIPE;
 	if (cmd_args && cmd_args->words != NULL)
 	{

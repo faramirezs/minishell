@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:32:06 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/15 12:46:29 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/15 16:47:56 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,16 +22,16 @@ t_args	*initialize_args_count(void)
 {
 	t_args	*args;
 
-	args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
-	args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
+	args = oom_guard(malloc(sizeof(t_args)), __FILE__, __LINE__);
+	args->count = oom_guard(malloc(sizeof(int)), __FILE__, __LINE__);
 	*(args->count) = 0;
 	return (args);
 }
 
 void	initialize_args(t_token *token, t_args *args)
 {
-	args->words = OOM_GUARD(malloc(2 * sizeof(char *)), __FILE__, __LINE__);
-	args->words[0] = OOM_GUARD(malloc((token->lexeme.length + 1)
+	args->words = oom_guard(malloc(2 * sizeof(char *)), __FILE__, __LINE__);
+	args->words[0] = oom_guard(malloc((token->lexeme.length + 1)
 				* sizeof(char)), __FILE__, __LINE__);
 	ft_strlcpy(args->words[0], token->lexeme.start, token->lexeme.length + 1);
 	args->words[1] = NULL;
@@ -45,14 +45,14 @@ void	args_collector(t_token *token, t_args *args)
 	i = 0;
 	if (*(args->count) > 1)
 	{
-		temp = OOM_GUARD(malloc(((*(args->count)) + 1) * sizeof(char *)),
+		temp = oom_guard(malloc(((*(args->count)) + 1) * sizeof(char *)),
 				__FILE__, __LINE__);
 		while (i < *(args->count) - 1)
 		{
-			temp[i] = OOM_GUARD(ft_strdup(args->words[i]), __FILE__, __LINE__);
+			temp[i] = oom_guard(ft_strdup(args->words[i]), __FILE__, __LINE__);
 			i++;
 		}
-		temp[i] = OOM_GUARD(malloc((token->lexeme.length + 1) * sizeof(char)),
+		temp[i] = oom_guard(malloc((token->lexeme.length + 1) * sizeof(char)),
 				__FILE__, __LINE__);
 		ft_strlcpy(temp[i], token->lexeme.start, token->lexeme.length + 1);
 		temp[i + 1] = NULL;
@@ -70,12 +70,12 @@ char	**copy_string_array(t_args *args)
 	int		i;
 	char	**new_array;
 
-	new_array = OOM_GUARD(malloc(((*args->count) + 1) * sizeof(char *)),
+	new_array = oom_guard(malloc(((*args->count) + 1) * sizeof(char *)),
 			__FILE__, __LINE__);
 	i = 0;
 	while (args->words[i] != NULL)
 	{
-		new_array[i] = OOM_GUARD(ft_strdup(args->words[i]), __FILE__, __LINE__);
+		new_array[i] = oom_guard(ft_strdup(args->words[i]), __FILE__, __LINE__);
 		i++;
 	}
 	if (args->words[i] == NULL)
