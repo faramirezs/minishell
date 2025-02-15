@@ -6,12 +6,27 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:32:06 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/14 19:52:16 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/15 12:46:29 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../headers/args.h"
 #include "../../headers/minishell.h"
+
+void	process_args(t_scanner *scanner, t_args *args)
+{
+	(*(args->count))++;
+	args_collector(&scanner->next, args);
+}
+
+t_args	*initialize_args_count(void)
+{
+	t_args	*args;
+
+	args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
+	args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
+	*(args->count) = 0;
+	return (args);
+}
 
 void	initialize_args(t_token *token, t_args *args)
 {

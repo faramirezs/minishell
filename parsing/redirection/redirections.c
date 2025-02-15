@@ -6,68 +6,18 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/14 19:44:11 by alramire         ###   ########.fr       */
+/*   Updated: 2025/02/15 16:11:32 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/minishell.h"
 
-t_tree_node *create_redir_node(t_scanner *scanner)
+void	parse_redir_target(t_scanner *scanner, t_tree_node *redir_node,
+		t_args *file_args)
 {
-	t_tree_node *redir_node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
-	redir_node->type = N_REDIR;
-	redir_node->data.redir_u.cmd = NULL;
-	redir_node->data.redir_u.redir_type = scanner->next.type;
-	if (scanner->next.type == REDIR_IN || scanner->next.type == HEREDOC)
-		redir_node->data.redir_u.source_fd = STDIN_FILENO;
-	else
-		redir_node->data.redir_u.source_fd = STDOUT_FILENO;
-	redir_node->data.redir_u.flags = get_redir_flags(scanner->next.type);
-	redir_node->data.redir_u.mode = 0644;
-	return redir_node;
-}
+	t_redircmd	*rcmd;
 
-void handle_redir_heredoc(t_redircmd *redir_node, t_scanner *scanner)
-{
-	t_list *heredoc_list = NULL;
-	while (redir_node->redir_type == HEREDOC)
-	{
-		char *heredoc_input = collect_heredoc_input(redir_node->target, scanner->msh);
-		if (!heredoc_input)
-		{
-			redir_node->heredoc_content = ft_strdup("");
-			redir_node->heredoc_pid = -1;
-			//free_args(&cmd_args);
-			//cleanup(redir_node, EXIT_FAILURE);
-			printf("In handle_redir_heredoc: !heredoc_input\n");
-		}
-		append_node(&heredoc_list, heredoc_input);
-		free(heredoc_input);
-		redir_node->heredoc_content = concatenate_lines(heredoc_list);
-		if (!scanner_has_next(scanner))
-			break;
-		scanner->next = scanner_next(scanner);
-		if (scanner->next.type != HEREDOC)
-			break;
-		if (!scanner_has_next(scanner))
-		{
-			printf("Syntax error: nothing after redirection token\n");
-			break;
-		}
-		scanner->next = scanner_next(scanner);
-		t_args *file_args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
-		file_args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
-		*(file_args->count) = 1;
-		args_collector(&scanner->next, file_args);
-		redir_node->target = ft_strdup(file_args->words[0]);
-		free_args(&file_args);
-		redir_node->target_type = determine_target_type(redir_node->target);
-	}
-	free_list(heredoc_list);
-}
-
-void parse_redir_target(t_scanner *scanner, t_tree_node *redir_node, t_args *file_args)
-{
+	rcmd = &redir_node->data.redir_u;
 	if (!scanner_has_next(scanner))
 	{
 		printf("Syntax error: nothing after redirection token\n");
@@ -76,81 +26,29 @@ void parse_redir_target(t_scanner *scanner, t_tree_node *redir_node, t_args *fil
 	scanner->next = scanner_next(scanner);
 	*(file_args->count) = 1;
 	args_collector(&scanner->next, file_args);
-	redir_node->data.redir_u.target = ft_strdup(file_args->words[0]);
+	rcmd->target = ft_strdup(file_args->words[0]);
 	free_args(&file_args);
-	redir_node->data.redir_u.target_type = determine_target_type(redir_node->data.redir_u.target);
-	if (redir_node->data.redir_u.redir_type == HEREDOC)
-		handle_redir_heredoc(&redir_node->data.redir_u, scanner);
+	rcmd->target_type = determine_target_type(rcmd->target);
+	if (rcmd->redir_type == HEREDOC)
+		handle_redir_heredoc(rcmd, scanner);
 }
 
-t_tree_node *handle_pipe(t_scanner *scanner, t_tree_node *first_redir, t_tree_node *last_redir, t_args *cmd_args)
+t_tree_node	*handle_pipe(t_scanner *scanner, t_tree_node *first_redir,
+		t_tree_node *last_redir, t_args *cmd_args)
 {
-	t_tree_node *pipe_node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
+	t_tree_node	*pipe_node;
+
+	pipe_node = OOM_GUARD(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
 	pipe_node->type = N_PIPE;
 	if (cmd_args && cmd_args->words != NULL)
 	{
 		last_redir->data.redir_u.cmd = parse_exec(cmd_args);
-		if(first_redir != last_redir)
+		if (first_redir != last_redir)
 			first_redir->data.redir_u.cmd = last_redir;
 	}
 	pipe_node->data.pipe_u.left = first_redir;
 	pipe_node->data.pipe_u.right = parse_tree_node(scanner);
-	return pipe_node;
-}
-
-t_tree_node *parse_redir(t_scanner *scanner, t_args *cmd_args, t_tree_node *first_redir)
-{
-	t_tree_node *redir_node = create_redir_node(scanner);
-	t_tree_node *node = NULL;
-	t_args *file_args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
-	file_args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
-
-	parse_redir_target(scanner, redir_node, file_args);
-
-	while (scanner_has_next(scanner))
-	{
-		if (scanner->next.type == PIPE)
-		{
-			if (first_redir != NULL)
-			{
-				return handle_pipe(scanner, first_redir, redir_node, cmd_args);
-			}
-			else
-				return handle_pipe(scanner, redir_node, redir_node, cmd_args);
-		}
-
-		scanner->next = scanner_next(scanner);
-
-		if (check_redir(scanner))
-		{
-			node = parse_redir(scanner, cmd_args, redir_node);
-			if (node->type == N_REDIR)
-				redir_node->data.redir_u.cmd = node;
-			else
-				return node;
-		}
-		else if (scanner->next.type == PIPE)
-		{
-			if (first_redir != NULL)
-			{
-				return handle_pipe(scanner, first_redir, redir_node, cmd_args);
-			}
-			else
-				return handle_pipe(scanner, redir_node, redir_node, cmd_args);
-		}
-		else
-		{
-			(*(cmd_args->count))++;
-			args_collector(&scanner->next, cmd_args);
-		}
-	}
-
-	if (cmd_args && cmd_args->words != NULL && redir_node->data.redir_u.cmd == NULL)
-	{
-		redir_node->data.redir_u.cmd = parse_exec(cmd_args);
-	}
-
-	return redir_node;
+	return (pipe_node);
 }
 
 int	determine_target_type(const char *target)

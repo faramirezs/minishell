@@ -16,6 +16,7 @@
 # include "char_itr.h"
 # include "env_var.h"
 # include "token.h"
+# include "args.h"
 
 typedef struct s_scanner
 {
@@ -49,5 +50,6 @@ t_token			double_quote_token(t_scanner *self);
 char			*get_env_vvalue(t_scanner *self);
 t_token			handle_expansions(t_scanner *self);
 t_token			non_delimited_token(t_scanner *self);
+void			process_args(t_scanner *scanner, t_args *args);
 
 #endif

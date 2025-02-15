@@ -29,12 +29,9 @@ typedef struct s_tree_node	t_tree_node;
 // node selector, like pick one and put it on the node struct (saves memory).
 typedef enum e_node_type
 {
-	// N_ERR = -1, just an idea for now
 	N_EXEC,
 	N_REDIR,
 	N_PIPE
-	// N_LIST, //for `;` `&&` and `||`
-	// N_BACK
 }							t_node_type;
 
 typedef enum e_target_type
@@ -47,18 +44,18 @@ typedef enum e_target_type
 
 struct s_redircmd
 {
-	t_token_type redir_type;	 // Current redirection type (REDIR_IN, REDIR_OUT, etc.)
-	char *target;				// Target file/delimiter
-	t_target_type target_type;   // Type of target (filename, pathname, env var, delimiter)
-	int source_fd;			   // Source file descriptor (usually 0 for input, 1 for output)
-	int target_fd;			   // Target file descriptor
-	int flags;				   // Open flags for the file
-	mode_t mode;				 // File permissions when creating new files
-	t_tree_node *cmd;		   // Command to be redirected
-	int error_code;			 // Error tracking
-	char *heredoc_content;	// Store the collected heredoc content
-	int heredoc_pipe[2];	  // Pipe for heredoc data transfer
-	pid_t heredoc_pid;		// Process ID for heredoc handling
+	t_token_type redir_type;
+	char *target;
+	t_target_type target_type;
+	int source_fd;
+	int target_fd;
+	int flags;
+	mode_t mode;
+	t_tree_node *cmd;
+	int error_code;
+	char *heredoc_content;
+	int heredoc_pipe[2];
+	pid_t heredoc_pid;
 };
 
 struct						s_execcmd
@@ -85,12 +82,9 @@ struct						s_tree_node
 	t_node_value			data;
 };
 
-void						node_drop(t_tree_node *self);
 t_tree_node					*parse_tree_node(t_scanner *scanner);
 t_tree_node					*parse_exec(t_args *args);
 t_tree_node					*parse_pipe(t_scanner *scanner, t_args *args);
-void						indent_node(size_t spaces);
-void						visit_node(const t_tree_node *node, size_t spaces);
 void						free_tree_node(t_tree_node *node);
 
 #endif

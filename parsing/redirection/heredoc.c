@@ -5,82 +5,104 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/10 18:18:13 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/14 18:23:35 by alramire         ###   ########.fr       */
+/*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
+/*   Updated: 2025/02/15 15:46:26 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/minishell.h"
-#include "../../headers/env_var.h"
 
-static t_list *create_node(const char *line)
+void	process_heredoc_input(t_redircmd *redir_node, t_scanner *scanner,
+		t_list **heredoc_list)
 {
-	t_list *node = malloc(sizeof(t_list));
-	if (!node)
-		return NULL;
-	node->line = strdup(line);
-	node->next = NULL;
-	return node;
-}
+	char	*heredoc_input;
 
-void append_node(t_list **head, const char *line)
-{
-	t_list *new_node = create_node(line);
-	if (!new_node)
-		return;
-	if (!*head)
+	heredoc_input = collect_heredoc_input(redir_node->target, scanner->msh);
+	if (!heredoc_input)
 	{
-		*head = new_node;
+		redir_node->heredoc_content = ft_strdup("");
+		redir_node->heredoc_pid = -1;
+		fprintf(stderr, "In handle_redir_heredoc: !heredoc_input\n");
 	}
-	else
-	{
-		t_list *temp = *head;
-		while (temp->next)
-			temp = temp->next;
-		temp->next = new_node;
-	}
+	append_node(heredoc_list, heredoc_input);
+	free(heredoc_input);
+	redir_node->heredoc_content = concatenate_lines(*heredoc_list);
 }
 
-static size_t get_total_length(t_list *head)
+void	update_redir_node_target(t_redircmd *redir_node, t_token *next_token)
 {
-	size_t total_length = 0;
-	while (head)
-	{
-		total_length += ft_strlen(head->line) + 1; // +1 for newline
-		head = head->next;
-	}
-	return total_length;
+	t_args	*file_args;
+
+	file_args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__, __LINE__);
+	file_args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
+	*(file_args->count) = 1;
+	args_collector(next_token, file_args);
+	redir_node->target = ft_strdup(file_args->words[0]);
+	free_args(&file_args);
+	redir_node->target_type = determine_target_type(redir_node->target);
 }
 
-char *concatenate_lines(t_list *head)
+void	handle_redir_heredoc(t_redircmd *redir_node, t_scanner *scanner)
 {
-	size_t total_length = get_total_length(head);
-	char *result = malloc(total_length + 1);
-	if (!result)
-		return NULL;
+	t_list	*heredoc_list;
 
-	char *ptr = result;
-    t_list *current = head;
-
-    while (current)
-    {
-        size_t len = ft_strlen(current->line);
-        ft_memcpy(ptr, current->line, len);
-        ptr += len;
-		*ptr++ = '\n';
-        current = current->next;
-    }
-    *ptr = '\0';
-    return result;
-}
-
-void free_list(t_list *head)
-{
-	while (head)
+	heredoc_list = NULL;
+	while (redir_node->redir_type == HEREDOC)
 	{
-		t_list *temp = head;
-		head = head->next;
-		free(temp->line);
-		free(temp);
+		process_heredoc_input(redir_node, scanner, &heredoc_list);
+		if (!scanner_has_next(scanner))
+			break ;
+		scanner->next = scanner_next(scanner);
+		if (scanner->next.type != HEREDOC)
+			break ;
+		if (!scanner_has_next(scanner))
+		{
+			fprintf(stderr, "Syntax error: nothing after redirection token\n");
+			break ;
+		}
+		scanner->next = scanner_next(scanner);
+		update_redir_node_target(redir_node, &scanner->next);
 	}
+	free_list(heredoc_list);
 }
+
+/* void handle_redir_heredoc(t_redircmd *redir_node, t_scanner *scanner)
+{
+	t_list *heredoc_list = NULL;
+	while (redir_node->redir_type == HEREDOC)
+	{
+		char *heredoc_input = collect_heredoc_input(redir_node->target,
+				scanner->msh);
+		if (!heredoc_input)
+		{
+			redir_node->heredoc_content = ft_strdup("");
+			redir_node->heredoc_pid = -1;
+			//free_args(&cmd_args);
+			//cleanup(redir_node, EXIT_FAILURE);
+			fprintf(stderr, "In handle_redir_heredoc: !heredoc_input\n");
+		}
+		append_node(&heredoc_list, heredoc_input);
+		free(heredoc_input);
+		redir_node->heredoc_content = concatenate_lines(heredoc_list);
+		if (!scanner_has_next(scanner))
+			break ;
+		scanner->next = scanner_next(scanner);
+		if (scanner->next.type != HEREDOC)
+			break ;
+		if (!scanner_has_next(scanner))
+		{
+			fprintf(stderr, "Syntax error: nothing after redirection token\n");
+			break ;
+		}
+		scanner->next = scanner_next(scanner);
+		t_args *file_args = OOM_GUARD(malloc(sizeof(t_args)), __FILE__,
+				__LINE__);
+		file_args->count = OOM_GUARD(malloc(sizeof(int)), __FILE__, __LINE__);
+		*(file_args->count) = 1;
+		args_collector(&scanner->next, file_args);
+		redir_node->target = ft_strdup(file_args->words[0]);
+		free_args(&file_args);
+		redir_node->target_type = determine_target_type(redir_node->target);
+	}
+	free_list(heredoc_list);
+} */
