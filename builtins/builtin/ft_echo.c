@@ -58,7 +58,6 @@ int	handle_echo(struct s_tree_node *node, t_context *msh)
 	char	*expanded_arg;
 
 	signal(SIGPIPE, SIG_IGN);
-
 	(void)msh;
 	i = 1;
 	n = false;

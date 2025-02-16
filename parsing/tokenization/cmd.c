@@ -27,11 +27,11 @@ void	check_cmd(t_scanner *self)
 		i++;
 	}
 	if (compare_token(&self->next, "echo") == 0
-			|| compare_token(&self->next, "unset") == 0
-            || compare_token(&self->next, "cd") == 0
-            || compare_token(&self->next, "pwd") == 0
-            || compare_token(&self->next, "export") == 0
-            || compare_token(&self->next, "env") == 0)
+		|| compare_token(&self->next, "unset") == 0
+		|| compare_token(&self->next, "cd") == 0
+		|| compare_token(&self->next, "pwd") == 0
+		|| compare_token(&self->next, "export") == 0
+		|| compare_token(&self->next, "env") == 0)
 	{
 		self->next.type = COMMAND;
 	}

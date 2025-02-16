@@ -1,36 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin_free_s1.c                               :+:      :+:    :+:   */
+/*   sig_02.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mestefan <mestefan@student.42berlin.d      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/16 01:11:25 by mestefan          #+#    #+#             */
-/*   Updated: 2025/02/16 01:11:31 by mestefan         ###   ########.fr       */
+/*   Created: 2025/02/15 20:49:40 by mestefan          #+#    #+#             */
+/*   Updated: 2025/02/15 20:50:22 by mestefan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "headers/minishell.h"
 
-char	*ft_strjoin_free_s1(char *s1, const char *s2)
+//volatile sig_atomic_t	g_heredoc_interrupt = 0;
+
+int	is_heredoc_interrupted(void)
 {
-	char	*new_str;
-	size_t	len1;
-	size_t	len2;
+	return (g_heredoc_interrupt);
+}
 
-	len1 = 0;
-	len2 = 0;
-	if (s1)
-		len1 = ft_strlen(s1);
-	if (s2)
-		len2 = ft_strlen(s2);
-	new_str = malloc(len1 + len2 + 1);
-	if (!new_str)
-		return (NULL);
-	if (s1)
-		strcpy(new_str, s1);
-	if (s2)
-		strcpy(new_str + len1, s2);
-	free(s1);
-	return (new_str);
+void	reset_heredoc_interrupt(void)
+{
+	g_heredoc_interrupt = 0;
 }

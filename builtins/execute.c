@@ -31,8 +31,8 @@ int	is_builtin(t_tree_node *node)
 
 int	execute_builtin(t_tree_node *node, t_context *msh)
 {
-	bld_in	*builtins;
-	bld_in	*builtin;
+	t_bld_in	*builtins;
+	t_bld_in	*builtin;
 
 	builtins = create_builtin_list();
 	builtin = find_builtin(builtins, node);

@@ -48,5 +48,6 @@ typedef struct s_token
 t_token				new_token(t_token_type type, char *start, size_t length);
 void				print_token(const t_token token);
 int					compare_token(const t_token *token, const char *str);
+//t_token				handle_expansions(t_scanner *self);
 
 #endif

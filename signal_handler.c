@@ -48,13 +48,3 @@ void	restore_global_signals(void)
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, SIG_IGN);
 }
-
-int	is_heredoc_interrupted(void)
-{
-	return (g_heredoc_interrupt);
-}
-
-void	reset_heredoc_interrupt(void)
-{
-	g_heredoc_interrupt = 0;
-}

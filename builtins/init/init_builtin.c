@@ -13,12 +13,12 @@
 //#include "../../headers/built_in.h"
 #include "../../headers/minishell.h"
 
-void	add_builtin(bld_in **head, const char *name,
+void	add_builtin(t_bld_in **head, const char *name,
 			int (*func)(struct s_tree_node *node, t_context *msh))
 {
-	bld_in	*new_node;
+	t_bld_in	*new_node;
 
-	new_node = malloc(sizeof(bld_in));
+	new_node = malloc(sizeof(t_bld_in));
 	if (!new_node)
 	{
 		perror ("malloc");
@@ -36,9 +36,9 @@ void	add_builtin(bld_in **head, const char *name,
 	*head = new_node;
 }
 
-bld_in	*create_builtin_list(void)
+t_bld_in	*create_builtin_list(void)
 {
-	bld_in	*head;
+	t_bld_in	*head;
 
 	head = NULL;
 	add_builtin(&head, "echo", handle_echo);
@@ -51,9 +51,9 @@ bld_in	*create_builtin_list(void)
 	return (head);
 }
 
-void	free_builtin_list(bld_in *head)
+void	free_builtin_list(t_bld_in *head)
 {
-	bld_in	*tmp;
+	t_bld_in	*tmp;
 
 	while (head != NULL)
 	{

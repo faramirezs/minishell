@@ -4,6 +4,10 @@ LIBFT = libft/libft.a
 TOKENIZATION =	./parsing/tokenization/char_itr.c \
 				./parsing/tokenization/scanner.c \
 				./parsing/tokenization/token.c \
+				./parsing/tokenization/token1.c \
+				./parsing/tokenization/token2.c \
+				./parsing/tokenization/token_3.c \
+				./parsing/tokenization/token_qu.c \
 				./parsing/tokenization/token_helper.c \
 				./parsing/tokenization/cmd.c \
 				./parsing/tokenization/guards.c
@@ -21,6 +25,9 @@ NODE_CREATION =	./parsing/node_creation/tree_node.c \
 
 
 ENV_BLD	= ./env.c \
+			./env_1.c \
+			./env_2.c \
+			./env_3.c \
 			./builtins/builtin/ft_cd.c \
 			./builtins/builtin/ft_echo.c \
 			./builtins/builtin/ft_env.c \
@@ -39,7 +46,8 @@ EXECUTION	= ./execution/exec_command.c \
 			./execution/exec_heredoc.c \
 			./execution/exec.c
 
-SIGNALS     = ./signal_handler.c
+SIGNALS     = ./signal_handler.c \
+			./sig_02.c
 
 SRC	= main.c \
 	$(TOKENIZATION) \

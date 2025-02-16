@@ -36,7 +36,7 @@ t_token			end_token(t_scanner *self);
 t_token			pipe_token(t_scanner *self);
 t_token			redir_out_token(t_scanner *self);
 t_token			redir_in_token(t_scanner *self);
-t_token			word_token(t_scanner *self);
+//t_token			word_token(t_scanner *self);
 t_token			tmp_unknown_token(t_scanner *self);
 t_token			env_var_token(t_scanner *self);
 t_token			abs_path_token(t_scanner *self);

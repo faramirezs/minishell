@@ -65,7 +65,8 @@ t_token	scanner_peek(t_scanner *self)
 		else if (c == '/')
 			return (abs_path_token(self));
 		else if (c == '.' && ((*(self->char_itr.cursor + 1) == '/')
-			|| (*(self->char_itr.cursor + 1) == '.' && *(self->char_itr.cursor + 2) == '/')))
+				|| (*(self->char_itr.cursor + 1) == '.'
+					&& *(self->char_itr.cursor + 2) == '/')))
 			return (rel_path_token(self));
 		else if (ft_isalnum(c) || ft_strchr(NOBRKSYMS, *self->char_itr.cursor)
 			|| ft_strchr(QUOTEETC, *self->char_itr.cursor))
@@ -76,9 +77,9 @@ t_token	scanner_peek(t_scanner *self)
 }
 
 int	check_start_uknown(const char *input)
- {
+{
 	if (ft_strchr(SYMBOLS, input[0]))
 		return (1);
 	else
 		return (0);
- }
+}

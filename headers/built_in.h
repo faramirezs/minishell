@@ -15,28 +15,27 @@
 
 # include "minishell.h"
 
-typedef struct bld_in {
-	struct bld_in	*next;
+typedef struct s_bld_in {
+	struct s_bld_in	*next;
 	char			*name;
 	int				(*func)(t_tree_node *node, t_context *msh);
-}	bld_in;
+}	t_bld_in;
 
-// Function prototypes
-bld_in	*find_builtin(bld_in *head, t_tree_node *node);
-bld_in	*create_builtin_list(void);
-int		handle_cd(struct s_tree_node *node, t_context *msh);
-int		handle_echo(struct s_tree_node *node, t_context *msh);
-int		handle_exit(struct s_tree_node *node, t_context *msh);
-int		handle_export(struct s_tree_node *node, t_context *msh);
-int		handle_pwd(struct s_tree_node *node, t_context *msh);
-int		handle_unset(struct s_tree_node *node, t_context *msh);
-int		handle_env(struct s_tree_node *node, t_context *msh);
-void	free_builtin_list(bld_in *head);
-int		is_builtin(t_tree_node *node);
-int		execute_builtin(t_tree_node *node, t_context *msh);
-void	add_builtin(bld_in **head, const char *name,
-			int (*func)(struct s_tree_node *node, t_context *msh));
-int		ft_is_valid_env_name(const char *name);
-int		is_valid_key(const char *key);
+t_bld_in	*find_builtin(t_bld_in *head, t_tree_node *node);
+t_bld_in	*create_builtin_list(void);
+int			handle_cd(struct s_tree_node *node, t_context *msh);
+int			handle_echo(struct s_tree_node *node, t_context *msh);
+int			handle_exit(struct s_tree_node *node, t_context *msh);
+int			handle_export(struct s_tree_node *node, t_context *msh);
+int			handle_pwd(struct s_tree_node *node, t_context *msh);
+int			handle_unset(struct s_tree_node *node, t_context *msh);
+int			handle_env(struct s_tree_node *node, t_context *msh);
+void		free_builtin_list(t_bld_in *head);
+int			is_builtin(t_tree_node *node);
+int			execute_builtin(t_tree_node *node, t_context *msh);
+void		add_builtin(t_bld_in **head, const char *name,
+				int (*func)(struct s_tree_node *node, t_context *msh));
+int			ft_is_valid_env_name(const char *name);
+int			is_valid_key(const char *key);
 
 #endif

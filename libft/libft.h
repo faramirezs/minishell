@@ -17,6 +17,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <ctype.h>
+# include <stddef.h>
 
 int		ft_atoi(const char *nptr);
 void	ft_bzero(void *s, size_t n);
@@ -54,14 +55,11 @@ char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 char	**ft_split(char const *s, char c);
 char	*ft_strndup(const char *s, size_t n); //Newly introduced function
 void	ft_free_tab(char **tab);
-long long ft_atoll(const char *str);
-int 	ft_isllong(const char *str);
-char 	*ft_strjoin_free_s1(char *s1, const char *s2);
+char	*ft_strjoin_free_s1(char *s1, const char *s2);
 
 //jess added functions
-int     ft_strcmp(const char *s1, const char *s2);
-long    ft_strtol(const char *str, char **endptr, int base);
-size_t  ft_strspn(const char *str, const char *accept);
+int		ft_strcmp(const char *s1, const char *s2);
+size_t	ft_strspn(const char *str, const char *accept);
 char	*get_next_line(int fd);
 int		ft_isbinary(char *stash);
 
