@@ -14,9 +14,9 @@
 
 char	*ft_strjoin_free_s1(char *s1, const char *s2)
 {
-	char    *new_str;
-	size_t  len1;
-	size_t  len2;
+	char	*new_str;
+	size_t	len1;
+	size_t	len2;
 
 	if (!s1)
 		len1 = 0;
