@@ -1,46 +1,33 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   ft_substr.c										:+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: jslusark <jslusark@student.42.fr>		  +#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/04/29 11:18:26 by jslusark		  #+#	#+#			 */
-/*   Updated: 2024/05/07 14:30:30 by jslusark		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/29 12:41:39 by alramire          #+#    #+#             */
+/*   Updated: 2024/05/06 13:58:35 by alramire         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	size_t	s_len;
-	size_t	i;
-	char	*sub;
-	size_t	max_len;
+	char	*tmp;
+	size_t	slen;
 
 	if (!s)
 		return (NULL);
-	s_len = ft_strlen(s);
-	if (start >= s_len)
+	slen = ft_strlen(s);
+	if (start >= slen)
 		return (ft_strdup(""));
-	max_len = s_len - start;
-	if (len > max_len)
-		len = max_len;
-	sub = (char *)malloc(sizeof(char) * (len + 1));
-	if (!sub)
+	if (len > slen - start)
+		len = slen - start;
+	tmp = malloc(sizeof(char) * (len + 1));
+	if (!tmp)
 		return (NULL);
-	i = 0;
-	while (i < len && s[start + i])
-	{
-		sub[i] = s[start + i];
-		i++;
-	}
-	sub[i] = '\0';
-	return (sub);
+	ft_memcpy(tmp, &s[start], len);
+	tmp[len] = '\0';
+	return (tmp);
 }
-/* #include <stdio.h>
-int	main(void)
-{
-	printf("%s", ft_substr("I am going home", 6, 7));
-} */

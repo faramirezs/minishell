@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   ft_memset.c										:+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: jslusark <jslusark@student.42.fr>		  +#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/04/19 15:49:15 by jslusark		  #+#	#+#			 */
-/*   Updated: 2024/05/07 12:13:49 by jslusark		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_memset.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/17 14:31:42 by alramire          #+#    #+#             */
+/*   Updated: 2024/05/08 09:59:50 by alramire         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
@@ -15,42 +15,11 @@
 void	*ft_memset(void *s, int c, size_t n)
 {
 	size_t			i;
-	unsigned char	*new_s;
+	unsigned char	*ptr;
 
-	new_s = s;
 	i = 0;
+	ptr = (unsigned char *)s;
 	while (i < n)
-	{
-		new_s[i] = (unsigned char)c;
-		i++;
-	}
-	return (new_s);
+		ptr[i++] = (unsigned char)c;
+	return (s);
 }
-
-// fills the  first n bytes of the memory area
-// pointed to by s with byte c.
-// returns a pointer to the memory area s.
-/* #include <stdio.h>
-int main(void)
-{
-	char	string[10] = "aaaaaaaaaa";
-	printf("%s\n", (char*)ft_memset(string, 38, 7));
-	printf("%s\n", (char*)memset(string, 38, 7));
-
-	printf("%s\n", (char*)ft_memset(string, -38, 7));;
-	printf("%s\n", (char*)memset(string, -38, 7));
-
-//decided to use unsigned* instead of *char
-// to handle memory operations safely
-// with values for the than 255 or -n
-// and not be misinterpreted and overflow
-	int c = 511; // Example value
-	printf("Original: %d, Cast to unsigned char: %u\n", c, (unsigned char)c);
-	printf("Original: %d, Cast to char: %u\n", c, (char)c);
-	printf("Original: %d, Cast without: %u\n", c, c);
-
-	c = -38; // Example value
-	printf("Original: %d, Cast to unsigned char: %u\n", c, (unsigned char)c);
-	printf("Original: %d, Cast to char: %u\n", c, (char)c);
-	printf("Original: %d, Cast without: %u\n", c, c);
-} */

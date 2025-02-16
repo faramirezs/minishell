@@ -1,38 +1,31 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   ft_strdup.c										:+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: jslusark <jslusark@student.42.fr>		  +#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/04/18 17:59:20 by jslusark		  #+#	#+#			 */
-/*   Updated: 2024/05/07 14:05:34 by jslusark		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/29 11:40:10 by alramire          #+#    #+#             */
+/*   Updated: 2024/05/06 11:56:24 by alramire         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strdup(const char *s)
+char	*ft_strdup(const char *s1)
 {
-	char	*duplicate;
+	char	*tmp;
+	int		i;
 
-	duplicate = (char *)malloc(ft_strlen(s) + 1);
-	if (!duplicate)
-		return (0);
-	ft_memcpy(duplicate, s, ft_strlen(s) + 1);
-	return (duplicate);
+	i = 0;
+	tmp = malloc(ft_strlen(s1) + 1);
+	if (!tmp)
+		return (NULL);
+	while (s1[i])
+	{
+		tmp[i] = s1[i];
+		i++;
+	}
+	tmp[i] = '\0';
+	return (tmp);
 }
-/* #include <stdio.h>
-int main(void)
-{
-// we have to copy each byte
-// from src to dst, does not handle
-// overlaps
-	char	string1[12] = "Hello world";
-	printf("%s\n", (char*)ft_strdup(string1));
-	// printf("%s\n", (char*)strdup(string1, string2, 5));
-
-	char	string2[0];
-	printf("%s\n", (char*)ft_strdup(string2));
-	// printf("%s\n", (char*)strdup(string3, string4, ft_strlen(string4)));
-} */

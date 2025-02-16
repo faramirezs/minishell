@@ -1,33 +1,31 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   ft_strchr.c										:+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: jslusark <jslusark@student.42.fr>		  +#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/04/19 15:49:18 by jslusark		  #+#	#+#			 */
-/*   Updated: 2024/05/07 14:06:57 by jslusark		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_strchr.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/24 16:59:21 by alramire          #+#    #+#             */
+/*   Updated: 2025/02/16 16:21:53 by alramire         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
 char	*ft_strchr(const char *s, int c)
 {
-	c = (unsigned char)c;
-	while (*s != c)
+	char			char_c;
+	unsigned int	i;
+
+	char_c = (char)c;
+	i = 0;
+	while (s[i])
 	{
-		if (*s == '\0')
-			return (NULL);
-		s++;
+		if (s[i] == char_c)
+			return ((char *)&s[i]);
+		i++;
 	}
-	return ((char *)s);
+	if (s[i] == char_c)
+		return ((char *)&s[i]);
+	return (NULL);
 }
-/* #include<stdio.h>
-int	main(void)
-{
-	// returns a pointer to the first occurence of c
-	printf("%s\n", ft_strchr("teste",'e'));
-	printf("%s\n", ft_strchr("teste", '\0'));
-	printf("%s\n", ft_strchr("pepe y cparlos",'c'));
-} */
