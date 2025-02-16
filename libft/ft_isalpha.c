@@ -1,32 +1,18 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   ft_isalpha.c									   :+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: jslusark <jslusark@student.42.fr>		  +#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/04/19 15:25:48 by jslusark		  #+#	#+#			 */
-/*   Updated: 2024/05/07 10:22:29 by jslusark		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_isalpha.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/17 11:38:33 by alramire          #+#    #+#             */
+/*   Updated: 2024/05/08 10:01:42 by alramire         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
 int	ft_isalpha(int c)
 {
-	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
-	{
-		return (1);
-	}
-	return (0);
+	return ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'));
 }
-/* #include <stdio.h>
-int	main(void)
-{
-	printf("y %i\n", ft_isalpha('a'));
-	printf("n %i\n", ft_isalpha('/'));
-	printf("n %i\n", ft_isalpha('{'));
-	printf("n %i\n", ft_isalpha('1'));
-	printf("y %i\n", ft_isalpha('W'));
-	printf("y %i\n", ft_isalpha('x'));
-} //ok */
