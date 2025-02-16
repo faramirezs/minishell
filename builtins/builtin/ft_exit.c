@@ -57,6 +57,7 @@ int	handle_exit(struct s_tree_node *node, t_context *msh)
 	{
 		fprintf(stderr, "minishell: exit: too many arguments\n");
 		msh->ret_exit = 1;
+		return (1);
 	}
 	msh->ret_exit = exit_code;
 	printf("exit\n");

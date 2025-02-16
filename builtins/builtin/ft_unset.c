@@ -16,19 +16,26 @@
 int	ms_unset_export(t_context *msh, const char *key)
 {
 	int		i;
-	int		index;
 	size_t	key_len;
+	char	*to_free;
 
 	i = 0;
 	key_len = ft_strlen(key);
-	index = find_env_index(msh->env_export, key);
-	if (index == -1)
-		return (-1);
-	free(msh->env_export[index]);
-	i = index;
-	while (msh->env_export[i + 1])
+	while (msh->env_export[i])
 	{
-		msh->env_export[i] = msh->env_export[i + 1];
+		if (ft_strncmp(msh->env_export[i], key, key_len) == 0
+			&& msh->env[i][key_len] == '=')
+		{
+			to_free = msh->env_export[i];
+			while (msh->env_export[i + 1])
+			{
+				msh->env_export[i] = msh->env_export[i + 1];
+				i++;
+			}
+			msh->env_export[i] = NULL;
+			free(to_free);
+			return (0);
+		}
 		i++;
 	}
 	return (-1);

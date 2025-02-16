@@ -32,6 +32,12 @@ int	handle_cd(struct s_tree_node *node, t_context *msh)
 
 	if (!node || !node->data.exec_u.args)
 		return (1);
+	if (node->data.exec_u.args[1] && node->data.exec_u.args[2])
+	{
+		fprintf(stderr, "minishell: cd: too many arguments\n");
+		msh->ret_exit = 1;
+		return (1);
+	}
 	dir = node->data.exec_u.args[1];
 	if (dir == NULL)
 	{
