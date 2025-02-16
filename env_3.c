@@ -84,7 +84,7 @@ int	ms_set_env(char **env, t_context *msh, const char *value)
 		return (0);
 	msh->env = ms_matrix_add_line(env, value);
 	if (msh->env != NULL)
-    	return (0);
+		return (0);
 	else
-    	return (-1);
+		return (-1);
 }
