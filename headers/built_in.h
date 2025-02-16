@@ -30,7 +30,7 @@ int			handle_export(struct s_tree_node *node, t_context *msh);
 int			handle_pwd(struct s_tree_node *node, t_context *msh);
 int			handle_unset(struct s_tree_node *node, t_context *msh);
 int			handle_env(struct s_tree_node *node, t_context *msh);
-void		free_builtin_list(t_bld_in *head);
+void		free_builtin_list(t_bld_in **head);
 int			is_builtin(t_tree_node *node);
 int			execute_builtin(t_tree_node *node, t_context *msh);
 void		add_builtin(t_bld_in **head, const char *name,

@@ -41,18 +41,45 @@ static void	handle_quotes_and_escape(t_scanner *self, char **temp)
 static void	append_normal_char(t_scanner *self, char **temp)
 {
 	char	*new_char;
+	char	*joined;
 
 	if (self->char_itr.cursor && *self->char_itr.cursor)
 	{
 		new_char = ft_substr(self->char_itr.cursor, 0, 1);
-		if (new_char)
+		if (!new_char)
+			return ;
+		if (*temp == NULL) // Ensure *temp is initialized
+			*temp = ft_strdup("");
+		if (!*temp)
 		{
-			*temp = ft_strjoin_free_s1(*temp, new_char);
-			self->char_itr.cursor++;
 			free(new_char);
+			return ;
 		}
+		joined = ft_strjoin(*temp, new_char);
+		free(new_char);
+		if (!joined)
+			return ;
+		free(*temp);
+		*temp = joined;
+		self->char_itr.cursor++;
 	}
 }
+
+//static void	append_normal_char(t_scanner *self, char **temp)
+//{
+//	char	*new_char;
+//
+//	if (self->char_itr.cursor && *self->char_itr.cursor)
+//	{
+//		new_char = ft_substr(self->char_itr.cursor, 0, 1);
+//		if (new_char)
+//		{
+//			*temp = ft_strjoin_free_s1(*temp, new_char);
+//			self->char_itr.cursor++;
+//			free(new_char);
+//		}
+//	}
+//}
 //static void	append_normal_char(t_scanner *self, char **temp)
 //{
 //	*temp = ft_strjoin_free_s1(*temp, ft_substr(self->char_itr.cursor, 0, 1));

@@ -74,6 +74,7 @@ void	cleanup_context(t_context *msh)
 		free(msh);
 		msh = NULL;
 	}
+	ft_free_tab(msh->env);
 }
 
 char	**duplicate_env(char **env)
@@ -89,6 +90,11 @@ char	**duplicate_env(char **env)
 	while (env[i])
 	{
 		copy[i] = ft_strdup(env[i]);
+		if (!copy[i])
+		{
+			ft_free_tab(copy);
+			return (NULL);
+		}
 		i++;
 	}
 	copy[i] = NULL;

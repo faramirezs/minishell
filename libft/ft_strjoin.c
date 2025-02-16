@@ -19,6 +19,10 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	unsigned int	i;
 	unsigned int	j;
 
+	if (!s1)
+		s1 = "";
+	if (!s2)
+		s2 = "";
 	i = 0;
 	j = 0;
 	total_size = ft_strlen(s1) + ft_strlen(s2);

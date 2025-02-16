@@ -24,7 +24,7 @@ void	add_builtin(t_bld_in **head, const char *name,
 		perror ("malloc");
 		return ;
 	}
-	new_node->name = strdup(name);
+	new_node->name = ft_strdup(name);
 	if (!new_node->name)
 	{
 		free (new_node);
@@ -51,15 +51,34 @@ t_bld_in	*create_builtin_list(void)
 	return (head);
 }
 
-void	free_builtin_list(t_bld_in *head)
+//void	free_builtin_list(t_bld_in *head)
+//{
+//	t_bld_in	*tmp;
+//
+//	while (head != NULL)
+//	{
+//		tmp = head;
+//		head = head->next;
+//		free (tmp->name);
+//		free (tmp);
+//	}
+//	*head = NULL;
+//}
+
+void	free_builtin_list(t_bld_in **head)
 {
 	t_bld_in	*tmp;
+	t_bld_in	*current;
 
-	while (head != NULL)
+	if (!head || !*head)
+		return ;
+	current = *head;
+	while (current)
 	{
-		tmp = head;
-		head = head->next;
-		free (tmp->name);
-		free (tmp);
+		tmp = current->next;
+		free(current->name);
+		free(current);
+		current = tmp;
 	}
+	*head = NULL;
 }
