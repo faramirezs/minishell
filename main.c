@@ -60,7 +60,7 @@ int	main(int argc, char **argv, char **envp)
 	builtins = create_builtin_list();
 	shell_loop(msh);
 	ret_exit = msh->ret_exit;
-	free_builtin_list(builtins);
+	free_builtin_list(&builtins);
 	cleanup_context(msh);
 	return (ret_exit);
 }

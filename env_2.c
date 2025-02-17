@@ -32,21 +32,23 @@ int	find_env_index(char **env, const char *key)
 	return (-1);
 }
 
-char	**ms_remove_line(char **matrix, int index)
+char	**allocate_new_matrix(int size)
 {
-	int		i;
-	int		j;
-	int		size;
 	char	**new_matrix;
 
-	i = 0;
-	j = 0;
-	size = 0;
-	while (matrix[size])
-		size++;
 	new_matrix = malloc(sizeof(char *) * size);
 	if (!new_matrix)
 		return (NULL);
+	return (new_matrix);
+}
+
+int	copy_matrix_except_index(char **matrix, char **new_matrix, int index)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
 	while (matrix[i])
 	{
 		if (i != index)
@@ -54,14 +56,63 @@ char	**ms_remove_line(char **matrix, int index)
 			new_matrix[j] = ft_strdup(matrix[i]);
 			if (!new_matrix[j])
 			{
-				ft_free_tab (new_matrix);
-				return (NULL);
+				ft_free_tab(new_matrix);
+				return (0);
 			}
 			j++;
 		}
 		i++;
 	}
 	new_matrix[j] = NULL;
+	return (1);
+}
+
+char	**ms_remove_line(char **matrix, int index)
+{
+	int		size;
+	char	**new_matrix;
+
+	size = 0;
+	while (matrix[size])
+		size++;
+	new_matrix = allocate_new_matrix(size);
+	if (!new_matrix)
+		return (NULL);
+	if (!copy_matrix_except_index(matrix, new_matrix, index))
+		return (NULL);
 	ft_free_tab(matrix);
 	return (new_matrix);
 }
+// char	**ms_remove_line(char **matrix, int index)
+// {
+// 	int		i;
+// 	int		j;
+// 	int		size;
+// 	char	**new_matrix;
+
+// 	i = 0;
+// 	j = 0;
+// 	size = 0;
+// 	while (matrix[size])
+// 		size++;
+// 	new_matrix = malloc(sizeof(char *) * size);
+// 	if (!new_matrix)
+// 		return (NULL);
+// 	while (matrix[i])
+// 	{
+// 		if (i != index)
+// 		{
+// 			new_matrix[j] = ft_strdup(matrix[i]);
+// 			if (!new_matrix[j])
+// 			{
+// 				ft_free_tab (new_matrix);
+// 				return (NULL);
+// 			}
+// 			j++;
+// 		}
+// 		i++;
+// 	}
+// 	new_matrix[j] = NULL;
+// 	ft_free_tab(matrix);
+// 	return (new_matrix);
+// }

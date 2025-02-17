@@ -48,7 +48,7 @@ static void	append_normal_char(t_scanner *self, char **temp)
 		new_char = ft_substr(self->char_itr.cursor, 0, 1);
 		if (!new_char)
 			return ;
-		if (*temp == NULL) // Ensure *temp is initialized
+		if (*temp == NULL)
 			*temp = ft_strdup("");
 		if (!*temp)
 		{
