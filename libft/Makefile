@@ -57,7 +57,6 @@ ft_free_tab.c \
 ft_strjoin_free_s1.c
 
 
-
 all : $(NAME)
 	@echo "--> Created file"
 
