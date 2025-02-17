@@ -50,9 +50,6 @@ void free_token_lexeme(t_token *token)
 
 t_token	scanner_next(t_scanner *self)
 {
-	if (self->next.type == END)
-		return (self->next);
-	free_token_lexeme(&self->next);
 	skip_whitespaces(&self->char_itr);
 	self->next.lexeme.length = 0;
 	self->next = scanner_peek(self);
