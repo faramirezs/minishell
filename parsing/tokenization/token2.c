@@ -103,6 +103,7 @@ t_token	non_delimited_token(t_scanner *self)
 	}
 	self->next.type = WORD;
 	self->next.lexeme.start = temp;
+	self->next.lexeme.ptr = temp;
 	self->next.lexeme.length = ft_strlen(temp);
 	return (self->next);
 }

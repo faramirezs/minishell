@@ -43,6 +43,8 @@ void	shell_loop(t_context *msh)
 			tree_node = parse_tree_node(&scanner);
 			msh->ret_exit = exec(tree_node, msh);
 			free_tree_node(tree_node);
+			if (scanner.next.lexeme.ptr)
+				free(scanner.next.lexeme.ptr);
 			free(line);
 		}
 	}

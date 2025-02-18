@@ -37,6 +37,7 @@ typedef struct s_slice
 {
 	const char		*start;
 	size_t			length;
+	char			*ptr;
 }					t_slice;
 
 typedef struct s_token
