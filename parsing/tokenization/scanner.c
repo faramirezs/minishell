@@ -39,15 +39,14 @@ int	scanner_has_next(const t_scanner *self)
 	}
 }
 
-void free_token_lexeme(t_token *token)
-{
-	if (token->lexeme.start)
-	{
-		free((void *)token->lexeme.start);
-		token->lexeme.start = NULL;
-	}
-}
-
+// void free_token_lexeme(t_token *token)
+// {
+// 	if (token->lexeme.start)
+// 	{
+// 		free((void *)token->lexeme.start);
+// 		token->lexeme.start = NULL;
+// 	}
+// }
 t_token	scanner_next(t_scanner *self)
 {
 	skip_whitespaces(&self->char_itr);
