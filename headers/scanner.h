@@ -51,5 +51,7 @@ t_token			double_quote_token(t_scanner *self);
 t_token			handle_expansions(t_scanner *self);
 t_token			non_delimited_token(t_scanner *self);
 void			process_args(t_scanner *scanner, t_args *args);
+t_token			cmd_token(t_scanner *self);
+bool			is_cmd(t_scanner *self);
 
 #endif

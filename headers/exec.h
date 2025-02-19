@@ -16,7 +16,6 @@
 # include "minishell.h"
 
 int		exec(t_tree_node *node, t_context *msh);
-void	cleanup(t_tree_node *node, int exit_code);
 int		exec_node(t_tree_node *node, t_context *ctx);
 int		exec_command(t_tree_node *node, t_context *ctx);
 int		exec_pipe(t_tree_node *node, t_context *ctx);
@@ -26,4 +25,7 @@ int		setup_pipe_redirection(t_context *ctx, int saved_stdin,
 			int saved_stdout, t_tree_node *node);
 int		save_std_fds(int *saved_stdin, int *saved_stdout, t_tree_node *node);
 void	restore_std_fds(int saved_stdin, int saved_stdout, t_tree_node *node);
+
+void	cleanup(t_tree_node *node, int exit_code);
+
 #endif

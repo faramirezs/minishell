@@ -89,7 +89,8 @@ struct						s_tree_node
 t_tree_node					*parse_tree_node(t_scanner *scanner);
 t_tree_node					*parse_exec(t_args *args);
 t_tree_node					*parse_pipe(t_scanner *scanner, t_args *args);
-void						free_tree_node(t_tree_node *node);
 void						initialize_args(t_token *token, t_args *args);
+
+void						free_tree_node(t_tree_node *node);
 
 #endif

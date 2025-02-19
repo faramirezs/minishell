@@ -25,6 +25,7 @@ void	free_redir_node(t_redircmd *redir_u)
 		free_tree_node(redir_u->cmd);
 		redir_u->cmd = NULL;
 	}
+	//SHOULD THIS FREE THE REDIRECT NODE ITSELF?
 }
 
 void	free_pipe_node(t_pipecmd *pipe_u)
@@ -36,6 +37,11 @@ void	free_pipe_node(t_pipecmd *pipe_u)
 void	free_exec_node(t_execcmd *exec_u)
 {
 	free_string_array(&exec_u->args);
+}
+
+void	free_wordy_node(t_wordy *word_u)
+{
+	free_string_array(&word_u->wordy);
 }
 
 void	free_tree_node(t_tree_node *node)
@@ -56,11 +62,7 @@ void	free_tree_node(t_tree_node *node)
 	}
 	else if (node->type == N_WORD)  
     {
-        if (!is_builtin(&node->data.word_u) && !is_executable(node->data.word_u))
-        {
-            free(node->data.word_u.wordy);
-			node->data.word_u.wordy = NULL;
-        }
+        free_wordy_node(&node->data.word_u);
     }
 	free(node);
 	node = NULL;

@@ -58,15 +58,14 @@ static char	*get_expansion_value(t_scanner *self)
 static char	*append_suffix(t_scanner *self, char *value)
 {
 	char	*suffix;
-	char	*temp;
 
 	suffix = ft_substr(self->char_itr.cursor, 0,
 			ft_strlen(self->char_itr.cursor));
-	temp = ft_strjoin(value, suffix);
+	self->next.lexeme.start = ft_strjoin(value, suffix);
 	free(value);
 	free(suffix);
 	self->char_itr.cursor += ft_strlen(self->char_itr.cursor);
-	return (temp);
+	return ((char *)self->next.lexeme.start);
 }
 
 t_token	handle_expansions(t_scanner *self)

@@ -22,88 +22,51 @@ bool	escape_special_chars(t_scanner *self)
 	return (false);
 }
 
-static void	handle_quotes_and_escape(t_scanner *self, char **temp)
+static void	handle_quotes_and_escape(t_scanner *self)
 {
 	if (*self->char_itr.cursor == '"')
-		*temp = ft_strjoin_free_s1(*temp,
+		self->next.lexeme.start = ft_strjoin_free_s1((char *)self->next.lexeme.start,
 				double_quote_token(self).lexeme.start);
 	else if (*self->char_itr.cursor == '\'')
-		*temp = ft_strjoin_free_s1(*temp,
+		self->next.lexeme.start = ft_strjoin_free_s1((char *)self->next.lexeme.start,
 				single_quote_token(self).lexeme.start);
 	else if (*self->char_itr.cursor == '\\'
 		&& *(self->char_itr.cursor + 1) == '$')
 	{
-		*temp = ft_strjoin_free_s1(*temp, ft_strdup("$"));
+		self->next.lexeme.start = ft_strjoin_free_s1((char *)self->next.lexeme.start, ft_strdup("$"));
 		self->char_itr.cursor += 2;
 	}
 }
 
-static void	append_normal_char(t_scanner *self, char **temp)
+static void	append_normal_char(t_scanner *self)
 {
 	char	*new_char;
-	char	*joined;
 
 	if (self->char_itr.cursor && *self->char_itr.cursor)
 	{
 		new_char = ft_substr(self->char_itr.cursor, 0, 1);
 		if (!new_char)
 			return ;
-		if (*temp == NULL)
-			*temp = ft_strdup("");
-		if (!*temp)
-		{
-			free(new_char);
-			return ;
-		}
-		joined = ft_strjoin(*temp, new_char);
-		free(new_char);
-		free(*temp);
-		if (!joined)
-			return ;
-		*temp = joined;
+		self->next.lexeme.start = ft_strjoin_free_s1((char *)self->next.lexeme.start, new_char);
 		self->char_itr.cursor++;
+		free(new_char);
 	}
 }
-
-//static void	append_normal_char(t_scanner *self, char **temp)
-//{
-//	char	*new_char;
-//
-//	if (self->char_itr.cursor && *self->char_itr.cursor)
-//	{
-//		new_char = ft_substr(self->char_itr.cursor, 0, 1);
-//		if (new_char)
-//		{
-//			*temp = ft_strjoin_free_s1(*temp, new_char);
-//			self->char_itr.cursor++;
-//			free(new_char);
-//		}
-//	}
-//}
-//static void	append_normal_char(t_scanner *self, char **temp)
-//{
-//	*temp = ft_strjoin_free_s1(*temp, ft_substr(self->char_itr.cursor, 0, 1));
-//	self->char_itr.cursor++;
-//}
-
+/**/
 t_token	non_delimited_token(t_scanner *self)
 {
-	char	*temp;
-
-	temp = ft_strdup("");
+	self->next.lexeme.start = ft_strdup("");
 	while (*self->char_itr.cursor
 		&& !ft_strchr(" \t\n|><", *self->char_itr.cursor))
 	{
 		if (*self->char_itr.cursor == '"' || *self->char_itr.cursor == '\''
 			|| (*self->char_itr.cursor == '\\'
 				&& *(self->char_itr.cursor + 1) == '$'))
-			handle_quotes_and_escape(self, &temp);
+			handle_quotes_and_escape(self);
 		else
-			append_normal_char(self, &temp);
+			append_normal_char(self);
 	}
 	self->next.type = WORD;
-	self->next.lexeme.start = temp;
-	self->next.lexeme.ptr = temp;
-	self->next.lexeme.length = ft_strlen(temp);
+	self->next.lexeme.length = ft_strlen(self->next.lexeme.start);
 	return (self->next);
 }

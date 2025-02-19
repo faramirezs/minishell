@@ -37,10 +37,11 @@ int			ms_set_env(char **env, t_context *msh, const char *value);
 char		**ms_remove_line(char **matrix, int index);
 int			ms_unset_env(t_context *msh, const char *key);
 int			find_env_index(char **env, const char *key);
-void		free_env(char **env);
-void		cleanup_context(t_context *msh);
 t_context	*init_context(char **envp);
 char		**duplicate_env(char **env);
 void		check_shlvl(t_context *msh);
+
+void		free_env(char **env);
+void		cleanup_context(t_context *msh);
 
 #endif

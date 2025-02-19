@@ -12,6 +12,7 @@
 
 #include "../../headers/minishell.h"
 
+
 void	free_string_array(char ***array)
 {
 	int	i;

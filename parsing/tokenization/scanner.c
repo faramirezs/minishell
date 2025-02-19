@@ -41,13 +41,11 @@ int	scanner_has_next(const t_scanner *self)
 
 t_token	scanner_next(t_scanner *self)
 {
-	if (self->next.lexeme.ptr && 
-        !is_builtin(self->next.lexeme.ptr) && 
-        !is_executable(self->next.lexeme.ptr))
-    {
-        free(self->next.lexeme.ptr);
-        self->next.lexeme.ptr = NULL;
-    }
+	// if (self->next.type == N_WORD)
+	// {
+	// 	free((char *)self->next.lexeme.start);
+	// 	self->next.lexeme.start = NULL;
+	// }
 	skip_whitespaces(&self->char_itr);
 	self->next.lexeme.length = 0;
 	self->next = scanner_peek(self);
@@ -75,9 +73,11 @@ t_token	scanner_peek(t_scanner *self)
 				|| (*(self->char_itr.cursor + 1) == '.'
 					&& *(self->char_itr.cursor + 2) == '/')))
 			return (rel_path_token(self));
-		else if (ft_isalnum(c) || ft_strchr(NOBRKSYMS, *self->char_itr.cursor)
-			|| ft_strchr(QUOTEETC, *self->char_itr.cursor))
+		else if (ft_isalnum(*(self->char_itr.cursor + 1)) || ft_strchr(NOBRKSYMS, *self->char_itr.cursor) 
+				|| ft_strchr(QUOTEETC, *self->char_itr.cursor))
 			return (non_delimited_token(self));
+		else if (ft_isalpha(*(self->char_itr.cursor + 1)) || is_cmd(self) == true)
+			return (cmd_token(self));
 		else
 			return (end_token(self));
 	}

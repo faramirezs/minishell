@@ -38,13 +38,13 @@ void	shell_loop(t_context *msh)
 		{
 			add_history(line);
 			itr = char_itr_value(line, ft_strlen(line));
-			scanner = scanner_value(itr);
+			scanner = scanner_value(itr); //what does this do? gives unallocated scanner and token
 			scanner.msh = msh;
 			tree_node = parse_tree_node(&scanner);
 			msh->ret_exit = exec(tree_node, msh);
 			free_tree_node(tree_node);
-			if (scanner.next.lexeme.ptr)
-				free(scanner.next.lexeme.ptr);
+			// if (scanner.next.lexeme.ptr)
+			// 	free(scanner.next.lexeme.ptr);
 			free(line);
 		}
 	}
