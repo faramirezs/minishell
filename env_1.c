@@ -74,7 +74,7 @@ void	cleanup_context(t_context *msh)
 		free(msh);
 		msh = NULL;
 	}
-	ft_free_tab(msh->env);
+	ft_free_tab(msh->env); //TODO SEG FAULT when nothing ever was entered into any line
 }
 
 char	**duplicate_env(char **env)
