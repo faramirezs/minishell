@@ -41,8 +41,13 @@ int	scanner_has_next(const t_scanner *self)
 
 t_token	scanner_next(t_scanner *self)
 {
-	// if (self->next.lexeme.ptr)
-	// 	free(self->next.lexeme.ptr);
+	if (self->next.lexeme.ptr && 
+        !is_builtin(self->next.lexeme.ptr) && 
+        !is_executable(self->next.lexeme.ptr))
+    {
+        free(self->next.lexeme.ptr);
+        self->next.lexeme.ptr = NULL;
+    }
 	skip_whitespaces(&self->char_itr);
 	self->next.lexeme.length = 0;
 	self->next = scanner_peek(self);

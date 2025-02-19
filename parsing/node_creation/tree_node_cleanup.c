@@ -54,6 +54,14 @@ void	free_tree_node(t_tree_node *node)
 	{
 		free_exec_node(&node->data.exec_u);
 	}
+	else if (node->type == N_WORD)  
+    {
+        if (!is_builtin(&node->data.word_u) && !is_executable(node->data.word_u))
+        {
+            free(node->data.word_u.wordy);
+			node->data.word_u.wordy = NULL;
+        }
+    }
 	free(node);
 	node = NULL;
 }
