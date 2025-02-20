@@ -34,20 +34,54 @@ void	free_pipe_node(t_pipecmd *pipe_u)
 	free_tree_node(pipe_u->right);
 }
 
-void	free_exec_node(t_execcmd *exec_u)
-{
-	free_string_array(&exec_u->args);
-}
+// void	free_exec_node(t_execcmd *exec_u)
+// {
+// 	printf("DEBUG: Freeing exec node with args: ");
+// 	free_string_array(&exec_u->args);
+// }
 
-void	free_wordy_node(t_wordy *word_u)
+void free_exec_node(t_execcmd *exec_u)
 {
-	free_string_array(&word_u->wordy);
+    printf("DEBUG: Starting to free exec node\n");
+    if (!exec_u)
+    {
+        printf("DEBUG: exec_u is NULL\n");
+        return;
+    }
+    
+    printf("DEBUG: Freeing exec node with args: ");
+    if (exec_u->args)
+    {
+        for (int i = 0; exec_u->args[i]; i++)
+            printf("[%s] ", exec_u->args[i]);
+        printf("\n");
+        
+        // Free each string in the array
+        for (int i = 0; exec_u->args[i]; i++)
+        {
+            printf("DEBUG: Freeing arg[%d]: [%s]\n", i, exec_u->args[i]);
+            free(exec_u->args[i]);
+        }
+        // Free the array itself
+        printf("DEBUG: Freeing args array\n");
+        free(exec_u->args);
+        exec_u->args = NULL;
+    }
+    else
+        printf("DEBUG: args array is NULL\n");
 }
 
 void	free_tree_node(t_tree_node *node)
 {
 	if (!node)
+	{
+		printf("DEBUG: exec_u is NULL\n");
 		return ;
+	}
+	printf("DEBUG: Freeing node of type: %d\n", node->type);
+    verify_node_type(node);  // Add this to verify node type before freeing
+
+	printf("DEBUG: Freeing node of type: %d\n", node->type);
 	if (node->type == N_REDIR)
 	{
 		free_redir_node(&node->data.redir_u);
@@ -60,10 +94,9 @@ void	free_tree_node(t_tree_node *node)
 	{
 		free_exec_node(&node->data.exec_u);
 	}
-	else if (node->type == N_WORD)  
-    {
-        free_wordy_node(&node->data.word_u);
-    }
+
+    printf("DEBUG: Freeing node structure\n");
+
 	free(node);
 	node = NULL;
 }

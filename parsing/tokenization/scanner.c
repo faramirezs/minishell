@@ -76,8 +76,8 @@ t_token	scanner_peek(t_scanner *self)
 		else if (ft_isalnum(*(self->char_itr.cursor + 1)) || ft_strchr(NOBRKSYMS, *self->char_itr.cursor) 
 				|| ft_strchr(QUOTEETC, *self->char_itr.cursor))
 			return (non_delimited_token(self));
-		else if (ft_isalpha(*(self->char_itr.cursor + 1)) || is_cmd(self) == true)
-			return (cmd_token(self));
+		// else if (ft_isalpha(*(self->char_itr.cursor + 1)) || is_cmd(self) == true)
+		// 	return (cmd_token(self));
 		else
 			return (end_token(self));
 	}

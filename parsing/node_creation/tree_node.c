@@ -12,30 +12,92 @@
 
 #include "../../headers/minishell.h"
 
+// t_tree_node	*parse_tree_node(t_scanner *scanner)
+// {
+// 	t_args	*args;
+
+// 	args = initialize_args_count();
+// 	scanner->next = scanner_next(scanner);
+
+// 	printf("DEBUG: Token type: %d, value: %s\n", scanner->next.type, 
+// 		scanner->next.lexeme.start);
+
+// 	if (check_redir(scanner))
+// 	{
+// 		return (parse_redir(scanner, args, NULL));
+// 	}
+// 	process_args(scanner, args);
+// 	while (scanner_has_next(scanner))
+// 	{
+// 		scanner->next = scanner_next(scanner);
+// 		if (check_redir(scanner))
+// 		{
+// 			return (parse_redir(scanner, args, NULL));
+// 		}
+// 		else if (scanner->next.type == PIPE)
+// 		{
+// 			return (parse_pipe(scanner, args));
+// 		}
+// 		process_args(scanner, args);
+// 	}
+// 	return (parse_exec(args));
+// }
+void free_token(t_token *token)
+{
+    if (!token)
+        return;
+    if (token->lexeme.start)
+    {
+        free((void *)token->lexeme.start);
+        token->lexeme.start = NULL;
+    }
+    token->type = 0;
+    token->lexeme.start = NULL;
+    token->lexeme.length = 0;
+}
+
+void cleanup_scanner(t_scanner *scanner)
+{
+    if (!scanner)
+        return;
+        
+    printf("DEBUG: Cleaning up scanner\n");
+    if (scanner->next.lexeme.start)
+    {
+        printf("DEBUG: Freeing token: [%s]\n", scanner->next.lexeme.start);
+        free_token(&scanner->next);
+    }
+}
+
 t_tree_node	*parse_tree_node(t_scanner *scanner)
 {
 	t_args	*args;
 
 	args = initialize_args_count();
 	scanner->next = scanner_next(scanner);
-	if (check_redir(scanner))
-	{
-		return (parse_redir(scanner, args, NULL));
-	}
-	process_args(scanner, args);
-	while (scanner_has_next(scanner))
-	{
-		scanner->next = scanner_next(scanner);
-		if (check_redir(scanner))
+		if (scanner->next.type == COMMAND || scanner->next.type == WORD)
+		{
+			process_args(scanner, args);
+			while (scanner_has_next(scanner))
+			{
+				scanner->next = scanner_next(scanner);
+				if (check_redir(scanner))
+				{
+					return (parse_redir(scanner, args, NULL));
+				}
+				else if (scanner->next.type == PIPE)
+				{
+					return (parse_pipe(scanner, args));
+				}
+				process_args(scanner, args);
+			}
+			return (parse_exec(args));
+		}
+		else if (check_redir(scanner))
 		{
 			return (parse_redir(scanner, args, NULL));
 		}
-		else if (scanner->next.type == PIPE)
-		{
-			return (parse_pipe(scanner, args));
-		}
-		process_args(scanner, args);
-	}
+		cleanup_scanner(scanner);
 	return (parse_exec(args));
 }
 

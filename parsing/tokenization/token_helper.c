@@ -27,33 +27,33 @@ int	is_whitespace(t_char_itr *self)
 		&& ft_strchr(WHITESPACES, *self->cursor));
 }
 
-bool	is_cmd(t_scanner *self)
-{
-	if ((self->next.lexeme.length == 4 && ft_strncmp(self->next.lexeme.start, "echo", 4) == 0)
-		|| (self->next.lexeme.length == 2 && ft_strncmp(self->next.lexeme.start, "cd", 2) == 0)
-		|| (self->next.lexeme.length == 3 && ft_strncmp(self->next.lexeme.start, "pwd", 3) == 0)
-		|| (self->next.lexeme.length == 6 && ft_strncmp(self->next.lexeme.start, "export", 6) == 0)
-		|| (self->next.lexeme.length == 5 && ft_strncmp(self->next.lexeme.start, "unset", 5) == 0)
-		|| (self->next.lexeme.length == 3 && ft_strncmp(self->next.lexeme.start, "env", 3) == 0)
-		|| (self->next.lexeme.length == 4 && ft_strncmp(self->next.lexeme.start, "exit", 4) == 0)
-		|| (self->next.lexeme.length == 2 && ft_strncmp(self->next.lexeme.start, "ls", 2) == 0)
-		|| (self->next.lexeme.length == 4 && ft_strncmp(self->next.lexeme.start, "grep", 4) == 0)
-		|| (self->next.lexeme.length == 3 && ft_strncmp(self->next.lexeme.start, "cat", 3) == 0))
-	{
-		return (true);
-	}
-	return (false);
-}
+// bool	is_cmd(t_scanner *self)
+// {
+// 	if ((self->next.lexeme.length == 4 && ft_strncmp(self->next.lexeme.start, "echo", 4) == 0)
+// 		|| (self->next.lexeme.length == 2 && ft_strncmp(self->next.lexeme.start, "cd", 2) == 0)
+// 		|| (self->next.lexeme.length == 3 && ft_strncmp(self->next.lexeme.start, "pwd", 3) == 0)
+// 		|| (self->next.lexeme.length == 6 && ft_strncmp(self->next.lexeme.start, "export", 6) == 0)
+// 		|| (self->next.lexeme.length == 5 && ft_strncmp(self->next.lexeme.start, "unset", 5) == 0)
+// 		|| (self->next.lexeme.length == 3 && ft_strncmp(self->next.lexeme.start, "env", 3) == 0)
+// 		|| (self->next.lexeme.length == 4 && ft_strncmp(self->next.lexeme.start, "exit", 4) == 0)
+// 		|| (self->next.lexeme.length == 2 && ft_strncmp(self->next.lexeme.start, "ls", 2) == 0)
+// 		|| (self->next.lexeme.length == 4 && ft_strncmp(self->next.lexeme.start, "grep", 4) == 0)
+// 		|| (self->next.lexeme.length == 3 && ft_strncmp(self->next.lexeme.start, "cat", 3) == 0))
+// 	{
+// 		return (true);
+// 	}
+// 	return (false);
+// }
 
-t_token	cmd_token(t_scanner *self)
-{
-	self->next.lexeme.start = self->char_itr.cursor;
-	while (*self->char_itr.cursor && !ft_strchr(" \t\n|><", *self->char_itr.cursor))
-		self->char_itr.cursor++;
-	self->next.lexeme.length = self->char_itr.cursor - self->next.lexeme.start;
-	if (is_cmd(self))
-		self->next.type = COMMAND;
-	else
-		self->next.type = WORD;
-	return (self->next);
-}
+// t_token	cmd_token(t_scanner *self)
+// {
+// 	self->next.lexeme.start = self->char_itr.cursor;
+// 	while (*self->char_itr.cursor && !ft_strchr(" \t\n|><", *self->char_itr.cursor))
+// 		self->char_itr.cursor++;
+// 	self->next.lexeme.length = self->char_itr.cursor - self->next.lexeme.start;
+// 	if (is_cmd(self))
+// 		self->next.type = COMMAND;
+// 	else
+// 		self->next.type = WORD;
+// 	return (self->next);
+// }
