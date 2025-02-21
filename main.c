@@ -13,12 +13,28 @@
 #include "headers/minishell.h"
 #include "headers/tree_node.h"
 
-void	shell_loop(t_context *msh)
+void	process_line(char *line, t_context *msh)
 {
-	char		*line;
 	t_char_itr	itr;
 	t_scanner	scanner;
 	t_tree_node	*tree_node;
+
+	if (ft_strlen(line) > 0)
+	{
+		add_history(line);
+		itr = char_itr_value(line, ft_strlen(line));
+		scanner = scanner_value(itr);
+		scanner.msh = msh;
+		tree_node = parse_tree_node(&scanner);
+		msh->ret_exit = exec(tree_node, msh);
+		free_tree_node(tree_node);
+	}
+	free(line);
+}
+
+void	shell_loop(t_context *msh)
+{
+	char		*line;
 	int			stdinout[2];
 
 	stdinout[1] = dup(1);
@@ -26,25 +42,15 @@ void	shell_loop(t_context *msh)
 	setup_global_signals();
 	while (1)
 	{
-		dup2 (stdinout[1], 1);
-		dup2 (stdinout[0], 0);
+		dup2(stdinout[1], 1);
+		dup2(stdinout[0], 0);
 		line = readline(COLOR_GREEN "Minishell> " COLOR_RESET);
 		if (line == NULL)
 		{
 			write(STDOUT_FILENO, "exit\n", 5);
 			break ;
 		}
-		if (ft_strlen(line) > 0)
-		{
-			add_history(line);
-			itr = char_itr_value(line, ft_strlen(line));
-			scanner = scanner_value(itr);
-			scanner.msh = msh;
-			tree_node = parse_tree_node(&scanner);
-			msh->ret_exit = exec(tree_node, msh);
-			free_tree_node(tree_node);
-			free(line);
-		}
+		process_line(line, msh);
 	}
 }
 
