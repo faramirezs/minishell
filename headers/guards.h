@@ -15,6 +15,8 @@
 
 # include "minishell.h"
 
-void	*oom_guard(void *ptr, char *file, int number);
+// void	*oom_guard(void *ptr, char *file, int number);
+
+void *oom_guard(void *ptr, const char *file, int line);
 
 #endif

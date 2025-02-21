@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "headers/minishell.h"
-#include "headers/tree_node.h"
+#include "headers/debug.h"
 
 void	shell_loop(t_context *msh)
 {
@@ -32,6 +32,7 @@ void	shell_loop(t_context *msh)
 		if (line == NULL)
 		{
 			write(STDOUT_FILENO, "exit\n", 5);
+			print_memory_stats();
 			break ;
 		}
 		if (ft_strlen(line) > 0)
@@ -42,9 +43,8 @@ void	shell_loop(t_context *msh)
 			scanner.msh = msh;
 			tree_node = parse_tree_node(&scanner);
 			msh->ret_exit = exec(tree_node, msh);
+			cleanup_scanner(&scanner);
 			free_tree_node(tree_node);
-			// if (scanner.next.lexeme.ptr)
-			// 	free(scanner.next.lexeme.ptr);
 			free(line);
 		}
 	}

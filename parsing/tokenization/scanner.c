@@ -22,6 +22,19 @@ t_scanner	scanner_value(t_char_itr char_itr)
 	scanner.next = token;
 	return (scanner);
 }
+// t_scanner scanner_value(t_char_itr itr)
+// {
+//     t_scanner scanner;
+
+//     printf("\033[33mDEBUG: Creating scanner with itr: [%s]\033[0m\n", itr.start);
+//     scanner.char_itr = itr;
+//     scanner.next.type = 0;
+// //    scanner.next.lexeme.ptr = NULL;  // Initialize to NULL
+//     scanner.next.lexeme.start = NULL;
+//     scanner.next.lexeme.length = 0;
+//     scanner.msh = NULL;
+//     return scanner;
+// }
 
 int	scanner_has_next(const t_scanner *self)
 {
@@ -39,17 +52,46 @@ int	scanner_has_next(const t_scanner *self)
 	}
 }
 
-t_token	scanner_next(t_scanner *self)
+// t_token	scanner_next(t_scanner *self)
+// {
+// 	// if (self->next.type == N_WORD)
+// 	// {
+// 	// 	free((char *)self->next.lexeme.start);
+// 	// 	self->next.lexeme.start = NULL;
+// 	// }
+// 	skip_whitespaces(&self->char_itr);
+// 	self->next.lexeme.length = 0;
+// 	self->next = scanner_peek(self);
+// 	return (self->next);
+// }
+
+t_token scanner_next(t_scanner *self)
 {
-	// if (self->next.type == N_WORD)
-	// {
-	// 	free((char *)self->next.lexeme.start);
-	// 	self->next.lexeme.start = NULL;
-	// }
-	skip_whitespaces(&self->char_itr);
-	self->next.lexeme.length = 0;
-	self->next = scanner_peek(self);
-	return (self->next);
+    t_token previous_token;
+    
+    previous_token = self->next;
+    
+    skip_whitespaces(&self->char_itr);
+    self->next.lexeme.length = 0;
+    self->next = scanner_peek(self);
+    
+    // Free previous token if it's a word or command and different from current
+    if (previous_token.lexeme.start != self->next.lexeme.start &&
+        (previous_token.type == WORD || 
+         previous_token.type == COMMAND ||
+         previous_token.type == STRING_D_QUOTES ||
+         previous_token.type == STRING_S_QUOTES ||
+         previous_token.type == ABS_PATH ||
+         previous_token.type == REL_PATH))
+    {
+        printf("\033[33mDEBUG: Freeing token: [%.*s] (type: %d)\033[0m\n", 
+               (int)previous_token.lexeme.length, 
+               previous_token.lexeme.start,
+               previous_token.type);
+        free((char *)previous_token.lexeme.start);
+    }
+    
+    return (self->next);
 }
 
 t_token	scanner_peek(t_scanner *self)

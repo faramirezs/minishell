@@ -22,20 +22,29 @@ bool	escape_special_chars(t_scanner *self)
 	return (false);
 }
 
-static void	handle_quotes_and_escape(t_scanner *self)
+static void handle_quotes_and_escape(t_scanner *self)
 {
-	if (*self->char_itr.cursor == '"')
-		self->next.lexeme.start = ft_strjoin_free_s1((char *)self->next.lexeme.start,
-				double_quote_token(self).lexeme.start);
-	else if (*self->char_itr.cursor == '\'')
-		self->next.lexeme.start = ft_strjoin_free_s1((char *)self->next.lexeme.start,
-				single_quote_token(self).lexeme.start);
-	else if (*self->char_itr.cursor == '\\'
-		&& *(self->char_itr.cursor + 1) == '$')
-	{
-		self->next.lexeme.start = ft_strjoin_free_s1((char *)self->next.lexeme.start, ft_strdup("$"));
-		self->char_itr.cursor += 2;
-	}
+    char *tmp;
+
+    if (*self->char_itr.cursor == '"')
+    {
+        tmp = double_quote_token(self).lexeme.start;
+        self->next.lexeme.start = ft_strjoin_free_s1((char *)self->next.lexeme.start, tmp);
+        free(tmp);
+    }
+    else if (*self->char_itr.cursor == '\'')
+    {
+        tmp = single_quote_token(self).lexeme.start;
+        self->next.lexeme.start = ft_strjoin_free_s1((char *)self->next.lexeme.start, tmp);
+        free(tmp);
+    }
+    else if (*self->char_itr.cursor == '\\' && *(self->char_itr.cursor + 1) == '$')
+    {
+        tmp = ft_strdup("$");
+        self->next.lexeme.start = ft_strjoin_free_s1((char *)self->next.lexeme.start, tmp);
+        free(tmp);
+        self->char_itr.cursor += 2;
+    }
 }
 
 static void	append_normal_char(t_scanner *self)

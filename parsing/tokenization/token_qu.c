@@ -20,11 +20,11 @@ static void	handle_dquote_expansions(t_scanner *self, char **expanded)
 		&& find_env_index(self->msh->env, self->char_itr.cursor + 1))
 	{
 		var = handle_expansions(self);
-		*expanded = ft_strjoin_free_s1(*expanded, var.lexeme.start);
+		*expanded = (*expanded, var.lexeme.start);
 	}
 	else
 	{
-		*expanded = ft_strjoin_free_s1(*expanded,
+		*expanded = (*expanded,
 				ft_substr(self->char_itr.cursor, 0, 1));
 		self->char_itr.cursor++;
 	}
@@ -64,8 +64,11 @@ t_token	double_quote_token(t_scanner *self)
 static void	handle_squote_readline(t_scanner *self, char **expanded)
 {
 	char	*continuation;
+	char	*tmp;
 
 	continuation = readline("quote> ");
+	self->next.lexeme.start = ++self->char_itr.cursor;
+    expanded = ft_strdup("");
 	if (!continuation)
 	{
 		free(*expanded);
@@ -74,7 +77,7 @@ static void	handle_squote_readline(t_scanner *self, char **expanded)
 		fprintf(stderr, "unexpected EOF while looking for matching `'\n");
 		return ;
 	}
-	*expanded = ft_strjoin_free_s1(*expanded, continuation);
+	*expanded = (*expanded, continuation);
 	free(continuation);
 }
 

@@ -50,6 +50,7 @@ SIGNALS     = ./signal_handler.c \
 			./sig_02.c
 
 SRC	= main.c \
+	debug.c \
 	$(TOKENIZATION) \
 	$(NODE_CREATION) \
 	$(EXECUTION) \
@@ -80,16 +81,24 @@ CFLAGS	= -Wall -Wextra -Werror -g -I./include -I./libft
 #CFLAGS	= -Wall -Wextra -Werror -g -I./include -I./libft -fsanitize=address
 PFLAGS = -lreadline
 
+# Add debug compilation flag
+CPPFLAGS = -DNO_DEBUG
+
+# For debug builds with memory tracking
+debug: CPPFLAGS =
+debug: CFLAGS += -DDEBUG_MALLOC
+debug: $(NAME)
+
 all:	$(LIBFT) $(NAME)
 
 $(LIBFT):
-		@make -C libft
+		@make -C   CFLAGS="$(CFLAGS) $(CPPFLAGS)"
 
 $(NAME):	$(OBJS) $(HEADERS) $(LIBFT)
 		$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) $(PFLAGS)
 
 .c.o:
-		$(CC) $(CFLAGS) -c $< -o $@
+		$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 clean:
 		$(RM) $(OBJS)
@@ -101,4 +110,4 @@ fclean:		clean
 
 re:			fclean all
 
-.PHONY:		all clean fclean re
+.PHONY:		all clean fclean re debug

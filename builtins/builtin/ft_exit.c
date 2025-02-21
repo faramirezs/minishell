@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../headers/built_in.h"
+#include "../../headers/debug.h"
 #include "../../headers/minishell.h"
 
 static int	ms_check_exit_arg(const char *arg, int *exit_code)
@@ -61,5 +61,6 @@ int	handle_exit(struct s_tree_node *node, t_context *msh)
 	}
 	msh->ret_exit = exit_code;
 	printf("exit\n");
+	print_memory_stats();
 	exit(exit_code);
 }

@@ -12,12 +12,28 @@
 
 #include "../../headers/minishell.h"
 
-void	*oom_guard(void *ptr, char *file, int number)
+void *oom_guard(void *ptr, const char *file, int line)
 {
-	if (ptr == NULL)
-	{
-		fprintf(stderr, "%s:%d Out of Memory", file, number);
-		exit(EXIT_FAILURE);
-	}
-	return (ptr);
+    void *tracked_ptr;
+
+    if (!ptr)
+    {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+    
+    // Track the allocation with debug_malloc
+    tracked_ptr = debug_malloc(sizeof(ptr), file, line);
+    if (!tracked_ptr)
+    {
+        perror("debug_malloc");
+        exit(EXIT_FAILURE);
+    }
+    memcpy(tracked_ptr, ptr, sizeof(ptr));
+    free(ptr);  // Free the original untracked allocation
+    
+    printf("\033[33mDEBUG: oom_guard tracking allocation at %p from %s:%d\033[0m\n", 
+           tracked_ptr, file, line);
+    
+    return tracked_ptr;
 }

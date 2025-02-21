@@ -88,4 +88,9 @@ void						free_tree_node(t_tree_node *node);
 void free_token(t_token *token);
 void cleanup_scanner(t_scanner *scanner);
 
+void *debug_malloc(size_t size, const char *file, int line);
+char *debug_strdup(const char *s, const char *file, int line);
+extern int g_malloc_count;
+
+
 #endif

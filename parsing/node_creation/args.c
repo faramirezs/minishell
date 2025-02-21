@@ -66,21 +66,46 @@ void	args_collector(t_token *token, t_args *args)
 	}
 }
 
-char	**copy_string_array(t_args *args)
-{
-	int		i;
-	char	**new_array;
+// char	**copy_string_array(t_args *args)
+// {
+// 	int		i;
+// 	char	**new_array;
 
-	new_array = oom_guard(malloc(((*args->count) + 1) * sizeof(char *)),
-			__FILE__, __LINE__);
-	i = 0;
-	while (args->words[i] != NULL)
-	{
-		new_array[i] = oom_guard(ft_strdup(args->words[i]), __FILE__, __LINE__);
-		i++;
-	}
-	if (args->words[i] == NULL)
-		new_array[i] = NULL;
-	free_args(&args);
-	return (new_array);
+// 	new_array = oom_guard(malloc(((*args->count) + 1) * sizeof(char *)),
+// 			__FILE__, __LINE__);
+// 	i = 0;
+// 	while (args->words[i] != NULL)
+// 	{
+// 		new_array[i] = oom_guard(ft_strdup(args->words[i]), __FILE__, __LINE__);
+// 		i++;
+// 	}
+// 	if (args->words[i] == NULL)
+// 		new_array[i] = NULL;
+// 	free_args(&args);
+// 	return (new_array);
+// }
+char **copy_string_array(t_args *args)
+{
+    char **new_array;
+    int i;
+
+    if (!args || !args->words)
+        return NULL;
+
+    // Count strings
+    for (i = 0; args->words[i]; i++)
+        ;
+
+    printf("\033[33mDEBUG: Copying %d strings for exec node\033[0m\n", i);
+    new_array = debug_malloc(sizeof(char *) * (i + 1), __FILE__, __LINE__);
+    
+    for (i = 0; args->words[i]; i++)
+    {
+        new_array[i] = debug_strdup(args->words[i], __FILE__, __LINE__);
+        printf("\033[33mDEBUG: Copied arg[%d]: [%s] at %p\033[0m\n", 
+               i, new_array[i], (void *)new_array[i]);
+    }
+    new_array[i] = NULL;
+
+    return new_array;
 }

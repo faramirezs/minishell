@@ -74,14 +74,7 @@ void free_exec_node(t_execcmd *exec_u)
 void	free_tree_node(t_tree_node *node)
 {
 	if (!node)
-	{
-		printf("DEBUG: exec_u is NULL\n");
 		return ;
-	}
-	printf("DEBUG: Freeing node of type: %d\n", node->type);
-    verify_node_type(node);  // Add this to verify node type before freeing
-
-	printf("DEBUG: Freeing node of type: %d\n", node->type);
 	if (node->type == N_REDIR)
 	{
 		free_redir_node(&node->data.redir_u);
@@ -94,9 +87,6 @@ void	free_tree_node(t_tree_node *node)
 	{
 		free_exec_node(&node->data.exec_u);
 	}
-
-    printf("DEBUG: Freeing node structure\n");
-
 	free(node);
 	node = NULL;
 }

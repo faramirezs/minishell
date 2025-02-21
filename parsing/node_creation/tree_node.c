@@ -60,12 +60,22 @@ void cleanup_scanner(t_scanner *scanner)
 {
     if (!scanner)
         return;
-        
-    printf("DEBUG: Cleaning up scanner\n");
-    if (scanner->next.lexeme.start)
+
+    // Clean up final token if it's a word or command
+    if (scanner->next.lexeme.start && 
+        (scanner->next.type == WORD || 
+         scanner->next.type == COMMAND ||
+         scanner->next.type == STRING_D_QUOTES ||
+         scanner->next.type == STRING_S_QUOTES ||
+         scanner->next.type == ABS_PATH ||
+         scanner->next.type == REL_PATH))
     {
-        printf("DEBUG: Freeing token: [%s]\n", scanner->next.lexeme.start);
-        free_token(&scanner->next);
+        printf("\033[33mDEBUG: Final cleanup - Freeing token: [%.*s] (type: %d)\033[0m\n", 
+               (int)scanner->next.lexeme.length, 
+               scanner->next.lexeme.start,
+               scanner->next.type);
+        free((char *)scanner->next.lexeme.start);
+        scanner->next.lexeme.start = NULL;
     }
 }
 
@@ -101,16 +111,31 @@ t_tree_node	*parse_tree_node(t_scanner *scanner)
 	return (parse_exec(args));
 }
 
-t_tree_node	*parse_exec(t_args *args)
+t_tree_node *parse_exec(t_args *args)
 {
-	t_tree_node	*node;
+    t_tree_node *node;
 
-	node = oom_guard(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
-	node->type = N_EXEC;
-	node->data.exec_u.args = copy_string_array(args);
-	return (node);
+    printf("\033[33mDEBUG: Creating exec node with args:\033[0m\n");
+    if (args && args->words)
+    {
+        for (int i = 0; args->words[i]; i++)
+            printf("\033[33m[%s] \033[0m", args->words[i]);
+        printf("\n");
+    }
+
+    // Use debug_malloc directly instead of oom_guard
+    node = debug_malloc(sizeof(t_tree_node), __FILE__, __LINE__);
+    if (!node)
+    {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+    
+    printf("\033[33mDEBUG: Allocated exec node at %p\033[0m\n", (void *)node);
+    node->type = N_EXEC;
+    node->data.exec_u.args = copy_string_array(args);
+    return node;
 }
-
 t_tree_node	*parse_pipe(t_scanner *scanner, t_args *args)
 {
 	t_tree_node	*pipe_node;
