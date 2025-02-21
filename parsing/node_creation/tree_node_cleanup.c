@@ -79,7 +79,6 @@ void	free_tree_node(t_tree_node *node)
 		return ;
 	}
 	printf("DEBUG: Freeing node of type: %d\n", node->type);
-    verify_node_type(node);  // Add this to verify node type before freeing
 
 	printf("DEBUG: Freeing node of type: %d\n", node->type);
 	if (node->type == N_REDIR)
