@@ -90,3 +90,20 @@ void	free_tree_node(t_tree_node *node)
 	free(node);
 	node = NULL;
 }
+
+void cleanup_scanner(t_scanner *scanner)
+{
+    if (!scanner)
+        return;
+
+    // Clean up final token if it exists, regardless of type
+    if (scanner->next.lexeme.start)
+    {
+        printf("\033[33mDEBUG: Final cleanup - Freeing token: [%.*s] (was type: %d)\033[0m\n",
+               (int)scanner->next.lexeme.length,
+               scanner->next.lexeme.start,
+               scanner->next.type);
+        free((char *)scanner->next.lexeme.start);
+        scanner->next.lexeme.start = NULL;
+    }
+}

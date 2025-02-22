@@ -1,5 +1,4 @@
 #include "headers/debug.h"
-#include <stdio.h>
 
 #undef malloc
 #undef strdup
@@ -9,21 +8,41 @@ int g_malloc_count = 0;
 t_alloc_info g_allocs[MAX_ALLOCS] = {0};
 
 static void record_allocation(void *ptr, int id, const char *file, int line, 
-                            size_t size, const char *content)
+	size_t size, const char *content)
 {
-    for (int i = 0; i < MAX_ALLOCS; i++)
+	int i;
+	for (i = 0; i < MAX_ALLOCS; i++)
+	{
+		if (g_allocs[i].ptr == NULL)
+		{
+			g_allocs[i].ptr = ptr;
+			g_allocs[i].id = id;
+			g_allocs[i].file = file;
+			g_allocs[i].line = line;
+			g_allocs[i].size = size;
+			g_allocs[i].content = content;
+			printf("\033[33mMALLOC #%d: %p (%zu bytes) at %s:%d\033[0m\n", 
+				id, ptr, size, file, line);
+			break;
+		}
+	}
+	if (i == MAX_ALLOCS)
+	{
+		fprintf(stderr, "\033[31mERROR: Reached MAX_ALLOCS limit (%d). "
+			"Increase MAX_ALLOCS in debug.h\033[0m\n", MAX_ALLOCS);
+		exit(1);
+	}
+}
+
+void *debug_malloc(size_t size, const char *file, int line)
+{
+    void *ptr = malloc(size);
+    if (ptr)
     {
-        if (g_allocs[i].ptr == NULL)
-        {
-            g_allocs[i].ptr = ptr;
-            g_allocs[i].id = id;
-            g_allocs[i].file = file;
-            g_allocs[i].line = line;
-            g_allocs[i].size = size;
-            g_allocs[i].content = content;
-            break;
-        }
+        g_malloc_count++;
+        record_allocation(ptr, g_malloc_count, file, line, size, NULL);
     }
+    return ptr;
 }
 
 static void remove_allocation(void *ptr)
@@ -52,16 +71,6 @@ const char *get_allocation_info(void *ptr)
         }
     }
     return "Unknown allocation";
-}
-
-void *debug_malloc(size_t size, const char *file, int line)
-{
-    void *ptr = malloc(size);
-    g_malloc_count++;
-    printf("\033[33mMALLOC #%d: %p (%zu bytes) at %s:%d\033[0m\n", 
-           g_malloc_count, ptr, size, file, line);
-    record_allocation(ptr, g_malloc_count, file, line, size, NULL);
-    return ptr;
 }
 
 char *debug_strdup(const char *s, const char *file, int line)

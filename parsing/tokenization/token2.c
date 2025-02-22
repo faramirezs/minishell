@@ -28,13 +28,13 @@ static void handle_quotes_and_escape(t_scanner *self)
 
     if (*self->char_itr.cursor == '"')
     {
-        tmp = double_quote_token(self).lexeme.start;
+        tmp = (void *)double_quote_token(self).lexeme.start;
         self->next.lexeme.start = ft_strjoin_free_s1((char *)self->next.lexeme.start, tmp);
         free(tmp);
     }
     else if (*self->char_itr.cursor == '\'')
     {
-        tmp = single_quote_token(self).lexeme.start;
+        tmp = (void *)single_quote_token(self).lexeme.start;
         self->next.lexeme.start = ft_strjoin_free_s1((char *)self->next.lexeme.start, tmp);
         free(tmp);
     }

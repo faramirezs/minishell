@@ -25,8 +25,9 @@ t_token	new_token(t_token_type type, char *start, size_t length)
 t_token	end_token(t_scanner *self)
 {
 	self->next.type = END;
-	self->next.lexeme.length = 1;
-	self->next.lexeme.start = self->char_itr.cursor;
+	self->next.lexeme.length = 0;
+	self->next.lexeme.start = NULL;
+	printf("\033[33mDEBUG: Created END token\033[0m\n");
 	return (self->next);
 }
 

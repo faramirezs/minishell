@@ -14,21 +14,24 @@
 
 static void	handle_dquote_expansions(t_scanner *self, char **expanded)
 {
-	t_token	var;
+    t_token	var;
+    char	*tmp;
 
-	if (*self->char_itr.cursor == '$' && *(self->char_itr.cursor + 1)
-		&& find_env_index(self->msh->env, self->char_itr.cursor + 1))
-	{
-		var = handle_expansions(self);
-		*expanded = (*expanded, var.lexeme.start);
+    if (*self->char_itr.cursor == '$' && *(self->char_itr.cursor + 1)
+        && find_env_index(self->msh->env, self->char_itr.cursor + 1))
+    {
+        var = handle_expansions(self);
+        *expanded = ft_strjoin_free_s1(*expanded, var.lexeme.start);
 	}
-	else
-	{
-		*expanded = (*expanded,
-				ft_substr(self->char_itr.cursor, 0, 1));
-		self->char_itr.cursor++;
-	}
+    else
+    {
+        tmp = ft_substr(self->char_itr.cursor, 0, 1);
+        *expanded = ft_strjoin_free_s1(*expanded, tmp);
+        free(tmp);
+        self->char_itr.cursor++;
+    }
 }
+
 
 void	handle_unexpected_eof(t_scanner *self, const char *expected)
 {
@@ -48,27 +51,24 @@ t_token	double_quote_token(t_scanner *self)
 	{
 		if (*self->char_itr.cursor == '\0')
 		{
-			{
-				free(expanded);
-				handle_unexpected_eof(self, "\"");
-				return (self->next);
-			}
+			free(expanded);  // Free expanded before returning
+			handle_unexpected_eof(self, "\"");
+			return (self->next);
 		}
 		handle_dquote_expansions(self, &expanded);
 	}
 	self->char_itr.cursor++;
-	return ((self->next.lexeme.start = expanded,
-			self->next.lexeme.length = ft_strlen(expanded), self->next));
+	self->next.lexeme.start = expanded;
+    self->next.lexeme.length = ft_strlen(expanded);
+	return (self->next);
 }
 
 static void	handle_squote_readline(t_scanner *self, char **expanded)
 {
 	char	*continuation;
-	char	*tmp;
 
 	continuation = readline("quote> ");
 	self->next.lexeme.start = ++self->char_itr.cursor;
-    expanded = ft_strdup("");
 	if (!continuation)
 	{
 		free(*expanded);
@@ -77,31 +77,38 @@ static void	handle_squote_readline(t_scanner *self, char **expanded)
 		fprintf(stderr, "unexpected EOF while looking for matching `'\n");
 		return ;
 	}
-	*expanded = (*expanded, continuation);
+	*expanded = ft_strjoin_free_s1(*expanded, continuation);
 	free(continuation);
 }
 
-t_token	single_quote_token(t_scanner *self)
+t_token single_quote_token(t_scanner *self)
 {
-	char	*expanded;
+    char *expanded;
+    char *tmp;  // Add temporary variable for substring
 
-	self->next.type = STRING_S_QUOTES;
-	self->next.lexeme.start = ++self->char_itr.cursor;
-	expanded = ft_strdup("");
-	while (*self->char_itr.cursor && *self->char_itr.cursor != '\'')
-	{
-		if (*self->char_itr.cursor == '\0')
-		{
-			handle_squote_readline(self, &expanded);
-			if (self->next.type == UNKNOWN)
-				return (self->next);
-			continue ;
-		}
-		expanded = ft_strjoin_free_s1(expanded,
-				ft_substr(self->char_itr.cursor, 0, 1));
-		self->char_itr.cursor++;
-	}
-	self->char_itr.cursor++;
-	return ((self->next.lexeme.start = expanded,
-			self->next.lexeme.length = ft_strlen(expanded), self->next));
+    self->next.type = STRING_S_QUOTES;
+    self->next.lexeme.start = ++self->char_itr.cursor;
+    expanded = ft_strdup("");
+    while (*self->char_itr.cursor && *self->char_itr.cursor != '\'')
+    {
+        if (*self->char_itr.cursor == '\0')
+        {
+            handle_squote_readline(self, &expanded);
+            if (self->next.type == UNKNOWN)
+            {
+                free(expanded);  // Free expanded before returning
+                return (self->next);
+            }
+            continue;
+        }
+        // Fix memory leak by properly managing substring
+        tmp = ft_substr(self->char_itr.cursor, 0, 1);
+        expanded = ft_strjoin_free_s1(expanded, tmp);
+        free(tmp);  // Free temporary substring
+        self->char_itr.cursor++;
+    }
+    self->char_itr.cursor++;
+    self->next.lexeme.start = expanded;
+    self->next.lexeme.length = ft_strlen(expanded);
+    return (self->next);
 }

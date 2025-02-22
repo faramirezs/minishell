@@ -12,14 +12,35 @@
 
 #include "../../headers/minishell.h"
 
-t_token	tmp_unknown_token(t_scanner *self)
+// t_token	tmp_unknown_token(t_scanner *self)
+// {
+// 	self->next.type = UNKNOWN;
+// 	self->next.lexeme.length = 1;
+// 	self->next.lexeme.start = self->char_itr.cursor;
+// 	self->char_itr.cursor++;
+// 	self->next = scanner_peek(self);
+// 	return (self->next);
+// }
+t_token tmp_unknown_token(t_scanner *self)
 {
-	self->next.type = UNKNOWN;
-	self->next.lexeme.length = 1;
-	self->next.lexeme.start = self->char_itr.cursor;
-	self->char_itr.cursor++;
-	self->next = scanner_peek(self);
-	return (self->next);
+    self->next.type = UNKNOWN;
+    self->next.lexeme.start = self->char_itr.cursor;
+    self->next.lexeme.length = 0;  // Start with 0 and count up
+
+    // Continue until we hit a delimiter or end
+    while (self->char_itr.cursor && 
+           *self->char_itr.cursor != ' ' && 
+           *self->char_itr.cursor != '\t' && 
+           *self->char_itr.cursor != '\n')
+    {
+        self->next.lexeme.length++;
+        if (char_itr_has_next(&self->char_itr))
+            self->char_itr.cursor++;
+        else
+            break;
+    }
+
+    return (self->next);
 }
 
 t_token	abs_path_token(t_scanner *self)

@@ -52,30 +52,23 @@ int	scanner_has_next(const t_scanner *self)
 	}
 }
 
-// t_token	scanner_next(t_scanner *self)
-// {
-// 	// if (self->next.type == N_WORD)
-// 	// {
-// 	// 	free((char *)self->next.lexeme.start);
-// 	// 	self->next.lexeme.start = NULL;
-// 	// }
-// 	skip_whitespaces(&self->char_itr);
-// 	self->next.lexeme.length = 0;
-// 	self->next = scanner_peek(self);
-// 	return (self->next);
-// }
-
 t_token scanner_next(t_scanner *self)
 {
     t_token previous_token;
+	static int first_word;
     
     previous_token = self->next;
-    
+    first_word = 1;
     skip_whitespaces(&self->char_itr);
     self->next.lexeme.length = 0;
     self->next = scanner_peek(self);
-    
-    // Free previous token if it's a word or command and different from current
+	if (first_word && self->next.type == WORD)
+    {
+        self->next.type = COMMAND;
+        first_word = 0;
+    }
+    if (self->next.type == PIPE || self->next.type == END)
+        first_word = 1;
     if (previous_token.lexeme.start != self->next.lexeme.start &&
         (previous_token.type == WORD || 
          previous_token.type == COMMAND ||
@@ -84,13 +77,27 @@ t_token scanner_next(t_scanner *self)
          previous_token.type == ABS_PATH ||
          previous_token.type == REL_PATH))
     {
-        printf("\033[33mDEBUG: Freeing token: [%.*s] (type: %d)\033[0m\n", 
-               (int)previous_token.lexeme.length, 
-               previous_token.lexeme.start,
-               previous_token.type);
+		printf("\033[33mDEBUG: Freeing token %s\033[0m\n", previous_token.lexeme.start);
         free((char *)previous_token.lexeme.start);
     }
-    
+	if (self->next.type == END)
+    {
+        printf("\033[33mDEBUG: Processing final END token\033[0m\n");
+        if (previous_token.lexeme.start &&
+            (previous_token.type == WORD || 
+             previous_token.type == COMMAND ||
+             previous_token.type == STRING_D_QUOTES ||
+             previous_token.type == STRING_S_QUOTES ||
+             previous_token.type == ABS_PATH ||
+             previous_token.type == REL_PATH))
+        {
+            printf("\033[33mDEBUG: Freeing final token: [%.*s] (type: %d)\033[0m\n",
+                   (int)previous_token.lexeme.length,
+                   previous_token.lexeme.start,
+                   previous_token.type);
+            free((char *)previous_token.lexeme.start);
+        }
+    }
     return (self->next);
 }
 
@@ -99,6 +106,11 @@ t_token	scanner_peek(t_scanner *self)
 	char	c;
 
 	c = *self->char_itr.cursor;
+	if (c == EOF || c == '\n' || c == '\0')
+    {
+        printf("\033[33mDEBUG: Reached end of input in peek\033[0m\n");
+        return (end_token(self));
+    }
 	while (1)
 	{
 		if (c == '|')
@@ -121,7 +133,7 @@ t_token	scanner_peek(t_scanner *self)
 		// else if (ft_isalpha(*(self->char_itr.cursor + 1)) || is_cmd(self) == true)
 		// 	return (cmd_token(self));
 		else
-			return (end_token(self));
+			return (tmp_unknown_token(self));
 	}
 }
 
