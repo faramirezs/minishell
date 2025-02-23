@@ -86,13 +86,13 @@ CPPFLAGS = -DNO_DEBUG
 
 # For debug builds with memory tracking
 debug: CPPFLAGS =
-debug: CFLAGS += -DDEBUG_MALLOC
+debug: CFLAGS += -g -DDEBUG_MALLOC
 debug: $(NAME)
 
 all:	$(LIBFT) $(NAME)
 
 $(LIBFT):
-		@make -C   CFLAGS="$(CFLAGS) $(CPPFLAGS)"
+		@make -C libft CFLAGS="$(CFLAGS)"
 
 $(NAME):	$(OBJS) $(HEADERS) $(LIBFT)
 		$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) $(PFLAGS)
