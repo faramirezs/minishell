@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mestefan <mestefan@student.42berlin.d      +#+  +:+       +#+        */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 01:20:29 by mestefan          #+#    #+#             */
-/*   Updated: 2025/02/10 01:20:31 by mestefan         ###   ########.fr       */
+/*   Updated: 2025/02/25 10:49:32 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ int	handle_exit(struct s_tree_node *node, t_context *msh)
 	{
 		msh->ret_exit = 0;
 		printf("exit\n");
+		free_tree_node(node);
+		free_builtin_list(&msh->builtins);
 		exit(0);
 	}
 	if (ms_check_exit_arg(node->data.exec_u.args[1], &exit_code))
@@ -51,6 +53,8 @@ int	handle_exit(struct s_tree_node *node, t_context *msh)
 		msh->ret_exit = 2;
 		fprintf(stderr, "minishell: exit: %s: numeric argument required\n",
 			node->data.exec_u.args[1]);
+		free_tree_node(node);
+		free_builtin_list(&msh->builtins);
 		exit(2);
 	}
 	if (node->data.exec_u.args[2] != NULL)
@@ -61,5 +65,7 @@ int	handle_exit(struct s_tree_node *node, t_context *msh)
 	}
 	msh->ret_exit = exit_code;
 	printf("exit\n");
+	free_tree_node(node);
+	free_builtin_list(&msh->builtins);
 	exit(exit_code);
 }
