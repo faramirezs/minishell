@@ -14,7 +14,7 @@
 
 void	cleanup(t_tree_node *node, int exit_code)
 {
-	free_tree_node(node);
+	free_tree_node(&node);
 	clear_history();
 	exit(exit_code);
 }

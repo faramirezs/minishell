@@ -41,11 +41,22 @@ int	scanner_has_next(const t_scanner *self)
 
 t_token	scanner_next(t_scanner *self)
 {
-	if (self->next.lexeme.ptr)
-	 	free(self->next.lexeme.ptr);
+	t_token	cur;
+	t_token	next;
+	char	*next_ptr;
+
+	cur = self->next;
 	skip_whitespaces(&self->char_itr);
 	self->next.lexeme.length = 0;
-	self->next = scanner_peek(self);
+	next = scanner_peek(self);
+	next_ptr = next.lexeme.ptr;
+	if (cur.lexeme.ptr != NULL && cur.lexeme.ptr != next_ptr)
+	{
+		printf("DEBUG: Freeing token ptr: %p\n", (void*)cur.lexeme.ptr);
+		free(cur.lexeme.ptr);
+		cur.lexeme.ptr = NULL;
+	}
+	self->next = next;
 	return (self->next);
 }
 

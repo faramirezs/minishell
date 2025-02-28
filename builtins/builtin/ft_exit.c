@@ -44,7 +44,7 @@ int	handle_exit(struct s_tree_node *node, t_context *msh)
 	{
 		msh->ret_exit = 0;
 		printf("exit\n");
-		free_tree_node(node);
+		free_tree_node(&node);
 		free_builtin_list(&msh->builtins);
 		exit(0);
 	}
@@ -53,7 +53,7 @@ int	handle_exit(struct s_tree_node *node, t_context *msh)
 		msh->ret_exit = 2;
 		fprintf(stderr, "minishell: exit: %s: numeric argument required\n",
 			node->data.exec_u.args[1]);
-		free_tree_node(node);
+		free_tree_node(&node);
 		free_builtin_list(&msh->builtins);
 		exit(2);
 	}
@@ -65,7 +65,7 @@ int	handle_exit(struct s_tree_node *node, t_context *msh)
 	}
 	msh->ret_exit = exit_code;
 	printf("exit\n");
-	free_tree_node(node);
+	free_tree_node(&node);
 	free_builtin_list(&msh->builtins);
 	exit(exit_code);
 }

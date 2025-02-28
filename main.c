@@ -20,6 +20,7 @@ void	shell_loop(t_context *msh)
 	t_scanner	scanner;
 	t_tree_node	*tree_node;
 	int			stdinout[2];
+	bool ptr_freed_in_exec = false;
 
 	stdinout[1] = dup(1);
 	stdinout[0] = dup(0);
@@ -34,18 +35,57 @@ void	shell_loop(t_context *msh)
 			write(STDOUT_FILENO, "exit\n", 5);
 			break ;
 		}
+		// if (ft_strlen(line) > 0)
+		// {
+		// 	add_history(line);
+		// 	itr = char_itr_value(line, ft_strlen(line));
+		// 	scanner = scanner_value(itr);
+		// 	scanner.msh = msh;
+		// 	tree_node = parse_tree_node(&scanner);
+		// 	msh->ret_exit = exec(tree_node, msh);
+		// 	free_tree_node(&tree_node);
+		// 	if (scanner.next.lexeme.ptr != NULL)
+		// 	{
+		// 		printf("Attempting to free scanner ptr: %p\n", (void*)scanner.next.lexeme.ptr);
+		// 		free(scanner.next.lexeme.ptr);
+		// 		scanner.next.lexeme.ptr = NULL;
+		// 	}
+		// 	free(line);
 		if (ft_strlen(line) > 0)
-		{
-			add_history(line);
-			itr = char_itr_value(line, ft_strlen(line));
-			scanner = scanner_value(itr);
-			scanner.msh = msh;
-			tree_node = parse_tree_node(&scanner);
-			msh->ret_exit = exec(tree_node, msh);
-			free_tree_node(tree_node);
-			if (scanner.next.lexeme.ptr)
-				free(scanner.next.lexeme.ptr);
-			free(line);
+        {
+            add_history(line);
+            itr = char_itr_value(line, ft_strlen(line));
+            scanner = scanner_value(itr);
+            scanner.msh = msh;
+            
+            char *initial_ptr = scanner.next.lexeme.ptr;
+            printf("DEBUG: Scanner ptr after init: %p\n", (void*)initial_ptr);
+            
+            tree_node = parse_tree_node(&scanner);
+            printf("DEBUG: Scanner ptr after parse: %p\n", (void*)scanner.next.lexeme.ptr);
+            
+            // Store return value to check if exec handled pipes
+            msh->ret_exit = exec(tree_node, msh);
+            
+            // Check if pointer changed during exec (pipe case)
+            ptr_freed_in_exec = (scanner.next.lexeme.ptr != initial_ptr);
+            printf("DEBUG: Scanner ptr after exec: %p (freed in exec: %s)\n", 
+                   (void*)scanner.next.lexeme.ptr, 
+                   ptr_freed_in_exec ? "yes" : "no");
+            
+            free_tree_node(&tree_node);
+            
+            // Only free if not already freed in exec
+            if (!ptr_freed_in_exec && scanner.next.lexeme.ptr != NULL)
+            {
+                printf("DEBUG: Freeing scanner ptr from main loop: %p\n", 
+                       (void*)scanner.next.lexeme.ptr);
+                free(scanner.next.lexeme.ptr);
+                scanner.next.lexeme.ptr = NULL;
+            }
+            
+            free(line);
+            line = NULL;
 		}
 	}
 }

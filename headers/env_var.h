@@ -19,6 +19,8 @@
 # include <stddef.h>
 # include <stdio.h>
 
+typedef struct s_bld_in 		t_bld_in;
+
 typedef struct s_context
 {
 	int			fd[2];

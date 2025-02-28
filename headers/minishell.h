@@ -54,5 +54,7 @@
 # define QUOTEETC "\"'"
 
 extern volatile sig_atomic_t	g_heredoc_interrupt;
+typedef struct s_bld_in 		t_bld_in;
+typedef struct s_context		t_context;
 
 #endif
