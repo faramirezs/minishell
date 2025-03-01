@@ -59,9 +59,13 @@ static void	append_normal_char(t_scanner *self, char **temp)
 		free(new_char);
 		free(*temp);
 		if (!joined)
-			return ;
+		{
+			return;
+		}
 		*temp = joined;
+		// free(joined);
 		self->char_itr.cursor++;
+		//free(joined);
 	}
 }
 

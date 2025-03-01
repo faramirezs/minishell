@@ -84,7 +84,14 @@ t_token	handle_expansions(t_scanner *self)
 	if (*self->char_itr.cursor && (ft_isalnum(*self->char_itr.cursor)
 			|| *self->char_itr.cursor == '_'))
 		value = append_suffix(self, value);
-	return ((token.type = WORD,
+	
+	token.lexeme.ptr = value;
+	token.type = WORD;
+	token.lexeme.start = value;
+	token.lexeme.length = ft_strlen(value);
+	return (token);
+	
+	/* return ((token.type = WORD,
 			token.lexeme.start = value,
-			token.lexeme.length = ft_strlen(value), token));
+			token.lexeme.length = ft_strlen(value), token)); */
 }
