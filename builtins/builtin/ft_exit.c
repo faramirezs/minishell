@@ -46,6 +46,7 @@ int	handle_exit(struct s_tree_node *node, t_context *msh)
 		printf("exit\n");
 		free_tree_node(&node);
 		free_builtin_list(&msh->builtins);
+		cleanup_context (msh);
 		exit(0);
 	}
 	if (ms_check_exit_arg(node->data.exec_u.args[1], &exit_code))
@@ -55,6 +56,7 @@ int	handle_exit(struct s_tree_node *node, t_context *msh)
 			node->data.exec_u.args[1]);
 		free_tree_node(&node);
 		free_builtin_list(&msh->builtins);
+		cleanup_context (msh);
 		exit(2);
 	}
 	if (node->data.exec_u.args[2] != NULL)
@@ -65,7 +67,9 @@ int	handle_exit(struct s_tree_node *node, t_context *msh)
 	}
 	msh->ret_exit = exit_code;
 	printf("exit\n");
+	//free(&node.)
 	free_tree_node(&node);
 	free_builtin_list(&msh->builtins);
+	cleanup_context (msh);
 	exit(exit_code);
 }
