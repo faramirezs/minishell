@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mestefan <mestefan@student.42berlin.d      +#+  +:+       +#+        */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 21:09:40 by mestefan          #+#    #+#             */
-/*   Updated: 2025/02/15 21:10:04 by mestefan         ###   ########.fr       */
+/*   Updated: 2025/03/02 15:33:36 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ t_token	new_token(t_token_type type, char *start, size_t length)
 t_token	end_token(t_scanner *self)
 {
 	self->next.type = END;
-	self->next.lexeme.length = 1;
+	self->next.lexeme.length = 0;
 	self->next.lexeme.start = self->char_itr.cursor;
 	return (self->next);
 }
