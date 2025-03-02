@@ -15,11 +15,15 @@
 char	*ft_strdup(const char *s)
 {
 	char	*duplicate;
+	size_t	len;
 
-	duplicate = (char *)malloc(ft_strlen(s) + 1);
+	if (!s)
+		return (NULL);
+	len = ft_strlen(s);
+	duplicate = (char *)malloc(len + 1);
 	if (!duplicate)
-		return (0);
-	ft_memcpy(duplicate, s, ft_strlen(s) + 1);
+		return (NULL);
+	ft_memcpy(duplicate, s, len + 1);
 	return (duplicate);
 }
 /* #include <stdio.h>

@@ -20,7 +20,6 @@ void	shell_loop(t_context *msh)
 	t_scanner	scanner;
 	t_tree_node	*tree_node;
 	int			stdinout[2];
-//	bool ptr_freed_in_exec = false;
 
 	stdinout[1] = dup(1);
 	stdinout[0] = dup(0);
@@ -44,12 +43,6 @@ void	shell_loop(t_context *msh)
 			tree_node = parse_tree_node(&scanner);
 			msh->ret_exit = exec(tree_node, msh);
 			free_tree_node(&tree_node);
-			// if (scanner.next.lexeme.ptr != NULL)
-			// {
-			// 	//printf("Attempting to free scanner ptr: %p\n", (void*)scanner.next.lexeme.ptr);
-			// 	free(scanner.next.lexeme.ptr);
-			// 	scanner.next.lexeme.ptr = NULL;
-			// }
 			free(line);
 		}
 	}
@@ -64,6 +57,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	msh = init_context(envp);
+	check_shlvl(msh);
 	builtins = create_builtin_list();
 	msh->builtins = builtins;
 	shell_loop(msh);
