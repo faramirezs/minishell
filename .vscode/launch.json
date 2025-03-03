@@ -9,20 +9,31 @@
 			"name": "(gdb) Attach",
 			"type": "cppdbg",
 			"request": "attach",
-			"program": "{workspaceFolder}/minishell",
+			"program": "${workspaceFolder}/minishell",
+			"processId": "${command:pickProcess}",
 			"MIMode": "gdb",
 			"setupCommands": [
-				{
-					"description": "Enable pretty-printing for gdb",
-					"text": "-enable-pretty-printing",
-					"ignoreFailures": true
-				},
-				{
-					"description": "Set Disassembly Flavor to Intel",
-					"text": "-lldb-set disassembly-flavor intel",
-					"ignoreFailures": true
-				}
-			]
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set detach-on-fork mode to on/off",
+                    "text": "-gdb-set detach-on-fork off",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set fork follow mode to child/parent",
+                    "text": "-gdb-set follow-fork-mode parent",
+                    "ignoreFailures": true
+                }
+            ]
 		},
 		{
 		"name": "(gdb) Launch",
@@ -45,14 +56,14 @@
 				"description": "Set Disassembly Flavor to Intel",
 				"text": "-gdb-set disassembly-flavor intel",
 				"ignoreFailures": true
-			}/* ,
+			},
 			{
-				"description": "Set detach-on-fork mode to off",
+				"description": "Set detach-on-fork mode to on or off",
 				"text": "-gdb-set detach-on-fork off",
 				"ignoreFailures": true
-			} */,
+			},
 			{
-				"description": "Set fork follow mode to child",
+				"description": "Set fork follow mode to child or parent",
 				"text": "-gdb-set follow-fork-mode parent",
 				"ignoreFailures": true
 			}
@@ -66,6 +77,7 @@
 
 	]
 }
+
 
 // {
 //     "version": "0.2.0",
