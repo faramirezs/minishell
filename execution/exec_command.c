@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 16:59:59 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/02 17:11:25 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/03 10:28:48 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void	exec_child_process(t_tree_node *node, t_context *ctx)
 	perror("execvp");
 	free_tree_node(&node);
 	free_builtin_list(&ctx->builtins);
-	cleanup_context (ctx);
+	cleanup_context_fork (ctx);
 	exit(127);
 }
 

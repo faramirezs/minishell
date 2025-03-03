@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 19:46:40 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/02 15:42:05 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/03 14:47:03 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ t_token	scanner_next(t_scanner *self)
 t_token	scanner_peek(t_scanner *self)
 {
 	char	c;
+
 
 	c = *self->char_itr.cursor;
 	while (1)

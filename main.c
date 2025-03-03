@@ -51,6 +51,8 @@ void	shell_loop(t_context *msh)
 			// 	scanner.next.lexeme.ptr = NULL;
 			// }
 			free(line);
+/* 			free_builtin_list(&msh->builtins);
+			cleanup_context(msh); */
 		}
 	}
 }
@@ -58,17 +60,16 @@ void	shell_loop(t_context *msh)
 int	main(int argc, char **argv, char **envp)
 {
 	t_context	*msh;
-	t_bld_in	*builtins;
+	//t_bld_in	*builtins;
 	int			ret_exit;
 
 	(void)argc;
 	(void)argv;
 	msh = init_context(envp);
-	builtins = create_builtin_list();
-	msh->builtins = builtins;
+	msh->builtins = create_builtin_list();
 	shell_loop(msh);
 	ret_exit = msh->ret_exit;
-	free_builtin_list(&builtins);
+	free_builtin_list(&msh->builtins);
 	cleanup_context(msh);
 	return (ret_exit);
 }

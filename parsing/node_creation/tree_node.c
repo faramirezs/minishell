@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/02 16:50:01 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/03 15:12:30 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,11 @@ t_tree_node	*parse_pipe(t_scanner *scanner, t_args *args)
 	pipe_node = oom_guard(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
 	pipe_node->type = N_PIPE;
 	pipe_node->data.pipe_u.left = parse_exec(args);
-/* 	if (!(scanner_has_next(scanner)))
+	if (!(scanner_has_next(scanner)))
 	{
-		printf("Se acabo la fiesta");
 		pipe_node->data.pipe_u.right = NULL;
 		return(pipe_node);
-	} */
+	}
 	pipe_node->data.pipe_u.right = parse_tree_node(scanner);
 	return (pipe_node);
 }

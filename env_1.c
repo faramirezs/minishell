@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_1.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mestefan <mestefan@student.42berlin.d      +#+  +:+       +#+        */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 01:02:51 by mestefan          #+#    #+#             */
-/*   Updated: 2025/02/16 01:04:37 by mestefan         ###   ########.fr       */
+/*   Updated: 2025/03/03 10:12:13 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,26 @@ void	cleanup_context(t_context *msh)
 			msh->env_export = NULL;
 		}
 		free(msh);
+		msh = NULL;
+	}
+	//ft_free_tab(msh->env);
+}
+
+void	cleanup_context_fork(t_context *msh)
+{
+	if (msh)
+	{
+		if (msh->env)
+		{
+			free_env(msh->env);
+			msh->env = NULL;
+		}
+		if (msh->env_export)
+		{
+			free_env(msh->env_export);
+			msh->env_export = NULL;
+		}
+		//free(msh);
 		msh = NULL;
 	}
 	//ft_free_tab(msh->env);
