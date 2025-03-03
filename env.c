@@ -33,7 +33,6 @@ t_context	*init_context(char **envp)
 		msh->env = NULL;
 		msh->env_export = NULL;
 	}
-	// check_shlvl(msh);
 	return (msh);
 }
 

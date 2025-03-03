@@ -17,8 +17,6 @@ void	process_args(t_scanner *scanner, t_args *args)
 {
 	(*(args->count))++;
 	args_collector(&scanner->next, args);
-	/* free (scanner->next.lexeme.ptr);
-	scanner->next.lexeme.ptr = NULL; */
 }
 
 t_args	*initialize_args_count(void)
@@ -63,9 +61,7 @@ void	args_collector(t_token *token, t_args *args)
 		args->words = temp;
 	}
 	else
-	{
 		initialize_args(token, args);
-	}
 	free (token->lexeme.ptr);
 	token->lexeme.ptr = NULL;
 }

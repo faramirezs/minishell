@@ -15,19 +15,23 @@
 
 int	handle_pwd(struct s_tree_node *node, t_context *msh)
 {
-	char	cwd[1024];
+	char	*pwd;
 
 	(void)msh;
-	if (!node || !node->data.exec_u.args)
-		return (1);
-	if (getcwd(cwd, sizeof(cwd)) != NULL)
+	(void)node;
+	pwd = ms_get_varenv(msh->env, "PWD");
+	if (pwd)
 	{
-		printf("%s\n", cwd);
+		printf("%s\n", pwd);
 		return (0);
 	}
-	else
+	pwd = getcwd(NULL, 0);
+	if (!pwd)
 	{
-		perror ("pwd");
+		perror("pwd");
 		return (1);
 	}
+	printf("%s\n", pwd);
+	free(pwd);
+	return (0);
 }

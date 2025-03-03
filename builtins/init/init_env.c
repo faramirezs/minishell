@@ -42,15 +42,12 @@ void	check_shlvl(t_context *msh)
 	char	*value;
 
 	var = ms_get_env(msh->env, "SHLVL");
-	printf("DEBUG: Current SHLVL var: %s\n", var ? var : "NULL");
 	if (!var)
 	{
 		msh->env = ms_matrix_add_line(msh->env, "SHLVL=1");
-		printf("DEBUG: Added new SHLVL=1\n");
 		return ;
 	}
 	value = ms_get_varenv(msh->env, "SHLVL");
-	printf("DEBUG: Current SHLVL value: %s\n", value ? value : "NULL");
 	if (!value || ft_isdigit(value[0]) == 0)
 	{
 		handle_invalid_shlvl(msh);

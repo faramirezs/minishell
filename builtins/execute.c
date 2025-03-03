@@ -31,10 +31,8 @@ int	is_builtin(t_tree_node *node)
 
 int	execute_builtin(t_tree_node *node, t_context *msh)
 {
-	//t_bld_in	*builtins;
 	t_bld_in	*builtin;
 
-	//builtins = create_builtin_list();
 	builtin = find_builtin(msh->builtins, node);
 	if (builtin)
 		builtin->func(node, msh);
@@ -44,6 +42,5 @@ int	execute_builtin(t_tree_node *node, t_context *msh)
 			node->data.exec_u.args[0]);
 		msh->ret_exit = 127;
 	}
-	//free_builtin_list(&builtins);
 	return (msh->ret_exit);
 }

@@ -74,7 +74,6 @@ void	cleanup_context(t_context *msh)
 		free(msh);
 		msh = NULL;
 	}
-	//ft_free_tab(msh->env);
 }
 
 char	**duplicate_env(char **env)
