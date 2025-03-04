@@ -64,5 +64,6 @@ int	main(int argc, char **argv, char **envp)
 	ret_exit = msh->ret_exit;
 	free_builtin_list(&builtins);
 	cleanup_context(msh);
+	clear_history();
 	return (ret_exit);
 }

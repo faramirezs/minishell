@@ -59,12 +59,12 @@
 			},
 			{
 				"description": "Set detach-on-fork mode to on or off",
-				"text": "-gdb-set detach-on-fork on",
+				"text": "-gdb-set detach-on-fork off",
 				"ignoreFailures": true
 			},
 			{
 				"description": "Set fork follow mode to child or parent",
-				"text": "-gdb-set follow-fork-mode parent",
+				"text": "-gdb-set follow-fork-mode child",
 				"ignoreFailures": true
 			}
 		]/* ,

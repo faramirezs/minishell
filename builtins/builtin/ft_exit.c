@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 01:20:29 by mestefan          #+#    #+#             */
-/*   Updated: 2025/02/25 10:49:32 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/04 15:16:38 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ static void	cleanup_and_exit(struct s_tree_node *node, t_context *msh,
 	free_tree_node(&node);
 	free_builtin_list(&msh->builtins);
 	cleanup_context(msh);
+	clear_history();
 	exit(exit_code);
 }
 
