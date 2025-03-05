@@ -59,7 +59,7 @@ t_tree_node	*parse_pipe(t_scanner *scanner, t_args *args)
 	if (!(scanner_has_next(scanner)))
 	{
 		pipe_node->data.pipe_u.right = NULL;
-		return(pipe_node);
+		return (pipe_node);
 	}
 	pipe_node->data.pipe_u.right = parse_tree_node(scanner);
 	return (pipe_node);

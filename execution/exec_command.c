@@ -63,10 +63,21 @@ int	exec_builtin_command(t_tree_node *node, t_context *ctx)
 	return (execute_builtin(node, ctx));
 }
 
-void	exec_child_process(t_tree_node *node, t_context *ctx)
+static void	exec_minishell(t_tree_node *node, t_context *ctx)
 {
 	char	*path;
 
+	path = getcwd(NULL, 0);
+	if (path)
+	{
+		path = ft_strjoin_free_s1(path, "/minishell");
+		execve(path, node->data.exec_u.args, ctx->env);
+		free(path);
+	}
+}
+
+void	exec_child_process(t_tree_node *node, t_context *ctx)
+{
 	if (ctx->fd[0] != STDIN_FILENO)
 	{
 		dup2(ctx->fd[0], STDIN_FILENO);
@@ -78,21 +89,12 @@ void	exec_child_process(t_tree_node *node, t_context *ctx)
 		close(ctx->fd[1]);
 	}
 	if (ft_strcmp(node->data.exec_u.args[0], "./minishell") == 0)
-	{
-		path = getcwd(NULL, 0);
-		if (path)
-		{
-			path = ft_strjoin_free_s1(path, "/minishell");
-			execve(path, node->data.exec_u.args, ctx->env);
-			free(path);
-		}
-	}
-    else
+		exec_minishell(node, ctx);
+	else
 		execvp(node->data.exec_u.args[0], node->data.exec_u.args);
 	perror("execvp");
 	free_tree_node(&ctx->origin_node);
-    free_builtin_list(&ctx->builtins);
-	//cleanup_context_fork(ctx);
+	free_builtin_list(&ctx->builtins);
 	cleanup_context(ctx);
 	exit(127);
 }

@@ -90,10 +90,8 @@ void	cleanup_context_fork(t_context *msh)
 			free_env(msh->env_export);
 			msh->env_export = NULL;
 		}
-		//free(msh);
 		msh = NULL;
 	}
-	//ft_free_tab(msh->env);
 }
 
 char	**duplicate_env(char **env)
