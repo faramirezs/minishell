@@ -25,11 +25,20 @@ bool	escape_special_chars(t_scanner *self)
 static void	handle_quotes_and_escape(t_scanner *self, char **temp)
 {
 	if (*self->char_itr.cursor == '"')
+	{
 		*temp = ft_strjoin_free_s1(*temp,
-				double_quote_token(self).lexeme.start);
+			double_quote_token(self).lexeme.start);
+		free (self->next.lexeme.ptr);
+		self->next.lexeme.ptr = NULL;
+	}
 	else if (*self->char_itr.cursor == '\'')
+	{
 		*temp = ft_strjoin_free_s1(*temp,
-				single_quote_token(self).lexeme.start);
+			single_quote_token(self).lexeme.start);
+		free (self->next.lexeme.ptr);
+		self->next.lexeme.ptr = NULL;
+	}
+		
 	else if (*self->char_itr.cursor == '\\'
 		&& *(self->char_itr.cursor + 1) == '$')
 	{

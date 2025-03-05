@@ -15,6 +15,7 @@
 static void	handle_dquote_expansions(t_scanner *self, char **expanded)
 {
 	t_token	var;
+	char	*sub;
 
 	if (*self->char_itr.cursor == '$' && *(self->char_itr.cursor + 1)
 		&& find_env_index(self->msh->env, self->char_itr.cursor + 1))
@@ -24,8 +25,10 @@ static void	handle_dquote_expansions(t_scanner *self, char **expanded)
 	}
 	else
 	{
-		*expanded = ft_strjoin_free_s1(*expanded,
-				ft_substr(self->char_itr.cursor, 0, 1));
+		sub = ft_substr(self->char_itr.cursor, 0, 1);
+		*expanded = ft_strjoin_free_s1(*expanded, sub);
+		free(sub);
+		sub = NULL;
 		self->char_itr.cursor++;
 	}
 }
@@ -57,8 +60,10 @@ t_token	double_quote_token(t_scanner *self)
 		handle_dquote_expansions(self, &expanded);
 	}
 	self->char_itr.cursor++;
-	return ((self->next.lexeme.start = expanded,
-			self->next.lexeme.length = ft_strlen(expanded), self->next));
+	self->next.lexeme.start = expanded;
+	self->next.lexeme.ptr = expanded;
+	self->next.lexeme.length = ft_strlen(expanded);
+	return ((self->next));
 }
 
 static void	handle_squote_readline(t_scanner *self, char **expanded)
@@ -81,6 +86,7 @@ static void	handle_squote_readline(t_scanner *self, char **expanded)
 t_token	single_quote_token(t_scanner *self)
 {
 	char	*expanded;
+	char	*sub;
 
 	self->next.type = STRING_S_QUOTES;
 	self->next.lexeme.start = ++self->char_itr.cursor;
@@ -94,11 +100,16 @@ t_token	single_quote_token(t_scanner *self)
 				return (self->next);
 			continue ;
 		}
+		sub = ft_substr(self->char_itr.cursor, 0, 1);
 		expanded = ft_strjoin_free_s1(expanded,
-				ft_substr(self->char_itr.cursor, 0, 1));
+				sub);
+		free (sub);
+		sub = NULL;
 		self->char_itr.cursor++;
 	}
 	self->char_itr.cursor++;
-	return ((self->next.lexeme.start = expanded,
-			self->next.lexeme.length = ft_strlen(expanded), self->next));
+	self->next.lexeme.start = expanded;
+	self->next.lexeme.ptr = expanded;
+	self->next.lexeme.length = ft_strlen(expanded);
+	return (self->next);
 }
