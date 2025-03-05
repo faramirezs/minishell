@@ -27,18 +27,18 @@ int	create_pipe(int pipefd[2])
 pid_t	fork_and_exec(t_tree_node *node, t_context *ctx, int close_fd)
 {
 	pid_t	pid;
-	int exit_status;
+	int		exit_status;
 
 	pid = fork();
 	if (pid == 0)
 	{
-		close(close_fd);
-		if(node != NULL)
+		close (close_fd);
+		if (node != NULL)
 			exit_status = exec_node(node, ctx);
 		else
 			exit_status = 2;
 		free_tree_node(&ctx->origin_node);
-        free_builtin_list(&ctx->builtins);
+		free_builtin_list(&ctx->builtins);
 		cleanup_context(ctx->origin_ctx);
 		exit(exit_status);
 	}
