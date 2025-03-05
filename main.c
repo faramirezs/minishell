@@ -41,6 +41,7 @@ void	shell_loop(t_context *msh)
 			scanner = scanner_value(itr);
 			scanner.msh = msh;
 			tree_node = parse_tree_node(&scanner);
+			msh->origin_node = tree_node;
 			msh->ret_exit = exec(tree_node, msh);
 			free_tree_node(&tree_node);
 			free(line);

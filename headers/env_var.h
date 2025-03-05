@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 11:40:37 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/03 17:39:27 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/04 16:52:13 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,11 @@
 # include <stdio.h>
 
 typedef struct s_bld_in		t_bld_in;
+typedef struct s_context	t_context;
+typedef struct s_tree_node	t_tree_node;
 
-typedef struct s_context
+
+struct s_context
 {
 	int			fd[2];
 	int			fd_close;
@@ -30,7 +33,9 @@ typedef struct s_context
 	int			ret_exit;
 	char		*user;
 	t_bld_in	*builtins;
-}			t_context;
+	t_context	*origin_ctx;
+	t_tree_node	*origin_node;
+};
 
 char		**ms_matrix_add_line(char **matrix, const char *new_line);
 char		*ms_get_env(char **env, const char *key);

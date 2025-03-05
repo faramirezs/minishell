@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 16:59:59 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/03 17:42:30 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/04 16:57:18 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@ pid_t	fork_and_exec(t_tree_node *node, t_context *ctx, int close_fd)
 			exit_status = exec_node(node, ctx);
 		else
 			exit_status = 2;
-		free_tree_node(&node);
+		free_tree_node(&ctx->origin_node);
         free_builtin_list(&ctx->builtins);
-		cleanup_context_fork(ctx);
+		cleanup_context(ctx->origin_ctx);
 		exit(exit_status);
 	}
 	return (pid);
@@ -67,7 +67,9 @@ int	exec_pipe(t_tree_node *node, t_context *ctx)
 	pid_t		right_pid;
 
 	left_ctx = *ctx;
+	left_ctx.origin_ctx = ctx;
 	right_ctx = *ctx;
+	right_ctx.origin_ctx = ctx;
 	if (create_pipe(pipefd) == -1)
 	{
 		return (-1);

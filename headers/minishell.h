@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 17:10:32 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/25 10:56:02 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/04 16:50:35 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,5 +56,6 @@
 extern volatile sig_atomic_t	g_heredoc_interrupt;
 typedef struct s_bld_in			t_bld_in;
 typedef struct s_context		t_context;
+
 
 #endif
