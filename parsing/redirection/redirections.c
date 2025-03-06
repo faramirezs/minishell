@@ -6,13 +6,13 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/15 16:49:42 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/06 19:33:56 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/minishell.h"
 
-void	parse_redir_target(t_scanner *scanner, t_tree_node *redir_node,
+int	parse_redir_target(t_scanner *scanner, t_tree_node *redir_node,
 		t_args *file_args)
 {
 	t_redircmd	*rcmd;
@@ -21,7 +21,8 @@ void	parse_redir_target(t_scanner *scanner, t_tree_node *redir_node,
 	if (!scanner_has_next(scanner))
 	{
 		printf("Syntax error: nothing after redirection token\n");
-		cleanup(redir_node, EXIT_FAILURE);
+		free_args(&file_args);
+		return (1);
 	}
 	scanner->next = scanner_next(scanner);
 	*(file_args->count) = 1;
@@ -31,6 +32,7 @@ void	parse_redir_target(t_scanner *scanner, t_tree_node *redir_node,
 	rcmd->target_type = determine_target_type(rcmd->target);
 	if (rcmd->redir_type == HEREDOC)
 		handle_redir_heredoc(rcmd, scanner);
+	return (0);
 }
 
 t_tree_node	*handle_pipe(t_scanner *scanner, t_tree_node *first_redir,

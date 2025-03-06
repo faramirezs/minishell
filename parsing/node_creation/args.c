@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:32:06 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/09 13:44:33 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/06 19:32:20 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ t_args	*initialize_args_count(void)
 
 	args = oom_guard(malloc(sizeof(t_args)), __FILE__, __LINE__);
 	args->count = oom_guard(malloc(sizeof(int)), __FILE__, __LINE__);
+	args->words = NULL;
 	*(args->count) = 0;
 	return (args);
 }

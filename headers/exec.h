@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 17:12:47 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/15 18:03:37 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/06 19:11:48 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include "minishell.h"
 
 int		exec(t_tree_node *node, t_context *msh);
-void	cleanup(t_tree_node *node, int exit_code);
+void	cleanup(t_scanner *scanner, t_tree_node *node, int exit_code);
 int		exec_node(t_tree_node *node, t_context *ctx);
 int		exec_command(t_tree_node *node, t_context *ctx);
 int		exec_pipe(t_tree_node *node, t_context *ctx);

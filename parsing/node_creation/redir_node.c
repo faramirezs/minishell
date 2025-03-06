@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/05 18:14:03 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/06 19:30:34 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ t_tree_node	*create_redir_node(t_scanner *scanner)
 
 	redir_node = oom_guard(malloc(sizeof(t_tree_node)), __FILE__, __LINE__);
 	redir_node->type = N_REDIR;
+	redir_node->data.redir_u.target = NULL;
 	redir_node->data.redir_u.cmd = NULL;
 	redir_node->data.redir_u.redir_type = scanner->next.type;
 	if (scanner->next.type == REDIR_IN || scanner->next.type == HEREDOC)
@@ -86,6 +87,11 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args,
 
 	redir_node = create_redir_node(scanner);
 	node = NULL;
-	parse_redir_target(scanner, redir_node, initialize_args_count());
+	if(parse_redir_target(scanner, redir_node, initialize_args_count()))
+	{
+		free_args(&cmd_args);
+		cleanup(scanner, redir_node, EXIT_FAILURE);
+	}
+	//parse_redir_target(scanner, redir_node, initialize_args_count());
 	return (parse_redir_loop(scanner, cmd_args, redir_node, first_redir));
 }
