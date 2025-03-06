@@ -61,7 +61,7 @@ t_token	double_quote_token(t_scanner *self)
 	}
 	self->char_itr.cursor++;
 	self->next.lexeme.start = expanded;
-	self->next.lexeme.ptr = expanded;
+//	self->next.lexeme.ptr = expanded;
 	self->next.lexeme.length = ft_strlen(expanded);
 	return ((self->next));
 }
@@ -109,7 +109,7 @@ t_token	single_quote_token(t_scanner *self)
 	}
 	self->char_itr.cursor++;
 	self->next.lexeme.start = expanded;
-	self->next.lexeme.ptr = expanded;
+//	self->next.lexeme.ptr = expanded;
 	self->next.lexeme.length = ft_strlen(expanded);
 	return (self->next);
 }

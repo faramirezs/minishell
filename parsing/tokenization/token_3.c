@@ -80,12 +80,12 @@ t_token	handle_expansions(t_scanner *self)
 		return ((token.type = WORD,
 				token.lexeme.start = ft_strdup("$"),
 				token.lexeme.length = 1,
-				token.lexeme.ptr = (void *)token.lexeme.start, token));
+				token)); //token.lexeme.ptr = (void *)token.lexeme.start,
 	value = get_expansion_value(self);
 	if (*self->char_itr.cursor && (ft_isalnum(*self->char_itr.cursor)
 			|| *self->char_itr.cursor == '_'))
 		value = append_suffix(self, value);
-	token.lexeme.ptr = value;
+//	token.lexeme.ptr = value;
 	token.type = WORD;
 	token.lexeme.start = value;
 	token.lexeme.length = ft_strlen(value);

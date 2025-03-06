@@ -20,7 +20,7 @@ t_scanner	scanner_value(t_char_itr char_itr)
 	ft_memset(&token, 0, sizeof(t_token));
 	scanner.char_itr = char_itr;
 	scanner.next = token;
-	scanner.next.lexeme.ptr = NULL;
+	scanner.next.lexeme.start = NULL; //
 	return (scanner);
 }
 
@@ -40,26 +40,6 @@ int	scanner_has_next(const t_scanner *self)
 	}
 }
 
-// t_token	scanner_next(t_scanner *self)
-// {
-// // 	t_token	cur;
-//  	t_token	next;
-// // 	char	*next_ptr;
-
-// // 	cur = self->next;
-// 	skip_whitespaces(&self->char_itr);
-// 	self->next.lexeme.length = 0;
-// 	next = scanner_peek(self);
-// 	next_ptr = next.lexeme.ptr;
-// 	if (cur.lexeme.ptr != NULL && cur.lexeme.ptr != next_ptr)
-// 	{
-// 		printf("DEBUG: Freeing token ptr: %p\n", (void*)cur.lexeme.ptr);
-// 		free(cur.lexeme.ptr);
-// 		cur.lexeme.ptr = NULL;
-// 	}
-// 	self->next = next;
-// 	return (self->next);
-// }
 t_token	scanner_next(t_scanner *self)
 {
 	skip_whitespaces(&self->char_itr);

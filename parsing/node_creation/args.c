@@ -62,8 +62,8 @@ void	args_collector(t_token *token, t_args *args)
 	}
 	else
 		initialize_args(token, args);
-	free (token->lexeme.ptr);
-	token->lexeme.ptr = NULL;
+	// free ((void *)token->lexeme.start); //
+	// token->lexeme.start = NULL; //
 }
 
 char	**copy_string_array(t_args *args)

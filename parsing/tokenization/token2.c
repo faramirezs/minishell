@@ -28,15 +28,16 @@ static void	handle_quotes_and_escape(t_scanner *self, char **temp)
 	{
 		*temp = ft_strjoin_free_s1(*temp,
 				double_quote_token(self).lexeme.start);
-		free (self->next.lexeme.ptr);
-		self->next.lexeme.ptr = NULL;
+		// free ((void *)self->next.lexeme.start); //
+		// self->next.lexeme.start = NULL; //
 	}
 	else if (*self->char_itr.cursor == '\'')
 	{
 		*temp = ft_strjoin_free_s1(*temp,
 				single_quote_token(self).lexeme.start);
-		free (self->next.lexeme.ptr);
-		self->next.lexeme.ptr = NULL;
+		// free ((void *)self->next.lexeme.start); //
+		// self->next.lexeme.start = NULL; //
+//		self->next.lexeme.ptr = NULL;
 	}
 	else if (*self->char_itr.cursor == '\\'
 		&& *(self->char_itr.cursor + 1) == '$')
@@ -92,7 +93,7 @@ t_token	non_delimited_token(t_scanner *self)
 	}
 	self->next.type = WORD;
 	self->next.lexeme.start = temp;
-	self->next.lexeme.ptr = temp;
+	//self->next.lexeme.ptr = ft_strdup(temp);
 	self->next.lexeme.length = ft_strlen(temp);
 	return (self->next);
 }
