@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 16:59:59 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/06 19:16:16 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/06 19:54:53 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ int	setup_pipe_redirection(t_context *ctx, int saved_stdin, int saved_stdout,
 		if (dup2(ctx->fd[1], STDOUT_FILENO) == -1)
 		{
 			perror("dup2");
+			//remove fprintf
 			fprintf(stderr, "setup_pipe\n");
 			close(saved_stdin);
 			close(saved_stdout);

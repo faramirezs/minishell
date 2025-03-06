@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 16:59:59 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/04 16:59:44 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/06 19:45:44 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ int	exec(t_tree_node *node, t_context *msh)
 	int	children;
 	int	status;
 
+	if(node == NULL)
+		return(1);
 	msh->fd[0] = STDIN_FILENO;
 	msh->fd[1] = STDOUT_FILENO;
 	msh->fd_close = -1;
