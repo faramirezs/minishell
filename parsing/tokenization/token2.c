@@ -14,12 +14,35 @@
 
 bool	escape_special_chars(t_scanner *self)
 {
-	if (*self->char_itr.cursor == '\\' && *(self->char_itr.cursor + 1) == '$')
+	if (*self->char_itr.cursor == '\\')
 	{
 		self->char_itr.cursor++;
 		return (true);
 	}
 	return (false);
+}
+
+static void handle_escaped_char(t_scanner *self, char **temp)
+{
+    char escaped_str[2];
+    
+    self->char_itr.cursor++;  // Skip backslash
+    if (*self->char_itr.cursor == '\\'   
+        || *self->char_itr.cursor == '$'  // Keep backslash for \$
+        || *self->char_itr.cursor == '"'  // Keep backslash for \"
+        || *self->char_itr.cursor == '\'') // Keep backslash for \'
+    {
+        escaped_str[0] = *self->char_itr.cursor;
+        escaped_str[1] = '\0';
+        *temp = ft_strjoin_free_s1(*temp, escaped_str);
+    }
+    else  // Remove backslash for other characters
+    {
+        escaped_str[0] = *self->char_itr.cursor;
+        escaped_str[1] = '\0';
+        *temp = ft_strjoin_free_s1(*temp, escaped_str);
+    }
+    self->char_itr.cursor++;
 }
 
 static void	handle_quotes_and_escape(t_scanner *self, char **temp)
@@ -38,12 +61,11 @@ static void	handle_quotes_and_escape(t_scanner *self, char **temp)
 		free (self->next.lexeme.ptr);
 		self->next.lexeme.ptr = NULL;
 	}
-	else if (*self->char_itr.cursor == '\\'
-		&& *(self->char_itr.cursor + 1) == '$')
-	{
-		*temp = ft_strjoin_free_s1(*temp, ft_strdup("$"));
-		self->char_itr.cursor += 2;
-	}
+	else if (*self->char_itr.cursor == '\\' && *(self->char_itr.cursor + 1))
+		{
+			fprintf(stderr, "DEBUG: Processing input: '%s'\n", self->char_itr.cursor);
+			handle_escaped_char(self, temp);
+		}
 }
 
 static void	append_normal_char(t_scanner *self, char **temp)
@@ -84,8 +106,7 @@ t_token	non_delimited_token(t_scanner *self)
 		&& !ft_strchr(" \t\n|><", *self->char_itr.cursor))
 	{
 		if (*self->char_itr.cursor == '"' || *self->char_itr.cursor == '\''
-			|| (*self->char_itr.cursor == '\\'
-				&& *(self->char_itr.cursor + 1) == '$'))
+			|| (*self->char_itr.cursor == '\\'))
 			handle_quotes_and_escape(self, &temp);
 		else
 			append_normal_char(self, &temp);
