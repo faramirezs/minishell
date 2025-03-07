@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/15 16:47:56 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/07 12:31:13 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	process_heredoc_input(t_redircmd *redir_node, t_scanner *scanner,
 	append_node(heredoc_list, heredoc_input);
 	free(heredoc_input);
 	redir_node->heredoc_content = concatenate_lines(*heredoc_list);
+	//I think we can free heredoc_list, no we can. Check handle_redir_heredoc.
 }
 
 void	update_redir_node_target(t_redircmd *redir_node, t_token *next_token)
@@ -61,6 +62,12 @@ void	handle_redir_heredoc(t_redircmd *redir_node, t_scanner *scanner)
 			break ;
 		}
 		scanner->next = scanner_next(scanner);
+		free(redir_node->heredoc_content);
+		if(redir_node->target)
+		{
+			free(redir_node->target);
+			redir_node->target = NULL;
+		}
 		update_redir_node_target(redir_node, &scanner->next);
 	}
 	free_list(heredoc_list);

@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:18:13 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/15 15:52:47 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/07 12:18:56 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,8 @@ char	*concatenate_lines(t_list *head)
 		*ptr++ = '\n';
 		current = current->next;
 	}
+	if(result[len - 1] == '\n' && result[len - 2] == '\n')
+		result[len - 1] = '\0';
 	*ptr = '\0';
 	return (result);
 }
