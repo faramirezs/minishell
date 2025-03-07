@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 16:59:59 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/07 13:09:29 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/07 18:26:42 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,14 @@ static void	write_heredoc_content(int pipefd, const char *content)
 	}
 }
 
-static int	handle_heredoc_child(t_redircmd *rcmd)
+static int	handle_heredoc_child(t_redircmd *rcmd, t_context *ctx)
 {
 	close(rcmd->heredoc_pipe[0]);
 	write_heredoc_content(rcmd->heredoc_pipe[1], rcmd->heredoc_content);
 	close(rcmd->heredoc_pipe[1]);
-	free_builtin_list(&rcmd->ctx->builtins);
-	cleanup_context(rcmd->ctx->origin_ctx);
-	free_tree_node(&rcmd->ctx->origin_node);
+	free_tree_node(&ctx->origin_node);
+	free_builtin_list(&ctx->builtins);
+	cleanup_context(ctx->origin_ctx);
 	clear_history();
 	exit(0);
 }
@@ -84,6 +84,6 @@ int	handle_heredoc(t_redircmd *rcmd)
 	if (create_and_fork_heredoc(rcmd->heredoc_pipe, &rcmd->heredoc_pid) == -1)
 		return (-1);
 	if (rcmd->heredoc_pid == FORKED_CHILD)
-		handle_heredoc_child(rcmd);
+		handle_heredoc_child(rcmd, rcmd->ctx);
 	return (handle_heredoc_parent(rcmd));
 }

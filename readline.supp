@@ -1,13 +1,25 @@
 {
-	leak readline
-	Memcheck:Leak
-	...
-	fun:readline
+    leak readline
+    Memcheck:Leak
+    ...
+    fun:readline
 }
 {
-	leak add_history
-	Memcheck:Leak
-	...
-	fun:add_history
+    leak add_history
+    Memcheck:Leak
+    ...
+    fun:add_history
+}
+{
+    leak rl_extend_line_buffer
+    Memcheck:Leak
+    ...
+    fun:rl_extend_line_buffer
+}
+{
+    leak rl_replace_line
+    Memcheck:Leak
+    ...
+    fun:rl_replace_line
 }
 

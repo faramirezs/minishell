@@ -44,7 +44,7 @@
 		"stopAtEntry": false,
 		"cwd": "${workspaceFolder}",
 		"environment": [],
-		"externalConsole": false,
+		"externalConsole": true,
 		"MIMode": "gdb",
 		"setupCommands": [
 			{
@@ -65,6 +65,11 @@
 			{
 				"description": "Set fork follow mode to child or parent",
 				"text": "-gdb-set follow-fork-mode child",
+				"ignoreFailures": true
+			},
+			{
+				"description": "Pass SIGINT to the program",
+				"text": "handle SIGINT pass noprint nostop",
 				"ignoreFailures": true
 			}
 		]/* ,

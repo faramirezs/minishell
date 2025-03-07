@@ -28,6 +28,10 @@ void	shell_loop(t_context *msh)
 	{
 		dup2 (stdinout[1], 1);
 		dup2 (stdinout[0], 0);
+
+		rl_on_new_line();
+		rl_replace_line("", 0);
+
 		line = readline(COLOR_GREEN "Minishell> " COLOR_RESET);
 		if (line == NULL)
 		{
@@ -41,6 +45,7 @@ void	shell_loop(t_context *msh)
 			scanner = scanner_value(itr);
 			scanner.msh = msh;
 			tree_node = parse_tree_node(&scanner);
+			msh->origin_ctx = msh;
 			msh->origin_node = tree_node;
 			msh->ret_exit = exec(tree_node, msh);
 			free_tree_node(&tree_node);

@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/07 12:50:49 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/07 18:02:16 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,25 @@ void	process_heredoc_input(t_redircmd *redir_node, t_scanner *scanner,
 	char	*heredoc_input;
 
 	heredoc_input = collect_heredoc_input(redir_node->target, scanner->msh);
+	if (is_heredoc_interrupted())
+	{
+		redir_node->heredoc_content = ft_strdup("");
+		redir_node->heredoc_pid = -1;
+		restore_global_signals();
+		scanner->msh->ret_exit = 130;
+		return;
+	}
 	if (!heredoc_input)
 	{
 		redir_node->heredoc_content = ft_strdup("");
 		redir_node->heredoc_pid = -1;
-		fprintf(stderr, "In handle_redir_heredoc: !heredoc_input\n");
 	}
-	append_node(heredoc_list, heredoc_input);
-	free(heredoc_input);
-	redir_node->heredoc_content = concatenate_lines(*heredoc_list);
-	//I think we can free heredoc_list, no we can. Check handle_redir_heredoc.
+	else
+	{
+		append_node(heredoc_list, heredoc_input);
+		free(heredoc_input);
+		redir_node->heredoc_content = concatenate_lines(*heredoc_list);
+	}
 }
 
 void	update_redir_node_target(t_redircmd *redir_node, t_token *next_token)
@@ -51,7 +60,6 @@ void	handle_redir_heredoc(t_redircmd *redir_node, t_scanner *scanner)
 	while (redir_node->redir_type == HEREDOC)
 	{
 		process_heredoc_input(redir_node, scanner, &heredoc_list);
-
 		if (!scanner_has_next(scanner))
 			break ;
 		scanner->next = scanner_next(scanner);
@@ -63,12 +71,6 @@ void	handle_redir_heredoc(t_redircmd *redir_node, t_scanner *scanner)
 			break ;
 		}
 		scanner->next = scanner_next(scanner);
-		free(redir_node->heredoc_content);
-		if(redir_node->target)
-		{
-			free(redir_node->target);
-			redir_node->target = NULL;
-		}
 		update_redir_node_target(redir_node, &scanner->next);
 	}
 	free_list(heredoc_list);
