@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 01:02:51 by mestefan          #+#    #+#             */
-/*   Updated: 2025/03/03 17:39:07 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/07 13:09:14 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,21 +76,22 @@ void	cleanup_context(t_context *msh)
 	}
 }
 
-void	cleanup_context_fork(t_context *msh)
+void	cleanup_context_fork(t_context **msh)
 {
-	if (msh)
+	if (*msh)
 	{
-		if (msh->env)
+		if ((*msh)->env)
 		{
-			free_env(msh->env);
-			msh->env = NULL;
+			free_env((*msh)->env);
+			(*msh)->env = NULL;
 		}
-		if (msh->env_export)
+		if ((*msh)->env_export)
 		{
-			free_env(msh->env_export);
-			msh->env_export = NULL;
+			free_env((*msh)->env_export);
+			(*msh)->env_export = NULL;
 		}
-		msh = NULL;
+		free(*msh);
+		*msh = NULL;
 	}
 }
 

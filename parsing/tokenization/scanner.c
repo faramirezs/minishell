@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 19:46:40 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/25 10:17:33 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/07 12:47:30 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,11 @@ t_scanner	scanner_value(t_char_itr char_itr)
 	return (scanner);
 }
 
-int	scanner_has_next(const t_scanner *self)
+int	scanner_has_next(t_scanner *self)
 {
 	char	c;
-
+	
+	skip_whitespaces(&self->char_itr);
 	c = char_itr_peek(&self->char_itr);
 	if (!(c == EOF || c == '\n' || c == '\0'))
 	{

@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 16:59:00 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/15 16:59:02 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/07 12:47:29 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ typedef struct s_scanner
 }				t_scanner;
 
 t_scanner		scanner_value(t_char_itr char_itr);
-int				scanner_has_next(const t_scanner *self);
+int				scanner_has_next(t_scanner *self);
 t_token			scanner_peek(t_scanner *self);
 t_token			scanner_next(t_scanner *self);
 void			parse(t_scanner *scanner);
