@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 19:46:40 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/07 12:47:30 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/07 20:46:46 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ t_token	scanner_peek(t_scanner *self)
 			return (rel_path_token(self));
 		else if (ft_isalnum(*self->char_itr.cursor)
 			|| ft_strchr(NOBRKSYMS, *self->char_itr.cursor)
-			|| ft_strchr(QUOTEETC, *self->char_itr.cursor))
+			|| ft_strchr(QUOTEETC, *self->char_itr.cursor) || *self->char_itr.cursor == '$' )
 			return (non_delimited_token(self));
 		else
 			return (end_token(self));
