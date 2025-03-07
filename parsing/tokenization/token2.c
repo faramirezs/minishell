@@ -22,27 +22,27 @@ bool	escape_special_chars(t_scanner *self)
 	return (false);
 }
 
-static void handle_escaped_char(t_scanner *self, char **temp)
+static void	handle_escaped_char(t_scanner *self, char **temp)
 {
-    char escaped_str[2];
-    
-    self->char_itr.cursor++;  // Skip backslash
-    if (*self->char_itr.cursor == '\\'   
-        || *self->char_itr.cursor == '$'  // Keep backslash for \$
-        || *self->char_itr.cursor == '"'  // Keep backslash for \"
-        || *self->char_itr.cursor == '\'') // Keep backslash for \'
-    {
-        escaped_str[0] = *self->char_itr.cursor;
-        escaped_str[1] = '\0';
-        *temp = ft_strjoin_free_s1(*temp, escaped_str);
-    }
-    else  // Remove backslash for other characters
-    {
-        escaped_str[0] = *self->char_itr.cursor;
-        escaped_str[1] = '\0';
-        *temp = ft_strjoin_free_s1(*temp, escaped_str);
-    }
-    self->char_itr.cursor++;
+	char	escaped_str[2];
+
+	self->char_itr.cursor++;
+	if (*self->char_itr.cursor == '\\'
+		|| *self->char_itr.cursor == '$'
+		|| *self->char_itr.cursor == '"'
+		|| *self->char_itr.cursor == '\'') 
+	{
+		escaped_str[0] = *self->char_itr.cursor;
+		escaped_str[1] = '\0';
+		*temp = ft_strjoin_free_s1(*temp, escaped_str);
+	}
+	else
+	{
+		escaped_str[0] = *self->char_itr.cursor;
+		escaped_str[1] = '\0';
+		*temp = ft_strjoin_free_s1(*temp, escaped_str);
+	}
+	self->char_itr.cursor++;
 }
 
 static void	handle_quotes_and_escape(t_scanner *self, char **temp)
@@ -62,10 +62,7 @@ static void	handle_quotes_and_escape(t_scanner *self, char **temp)
 		self->next.lexeme.ptr = NULL;
 	}
 	else if (*self->char_itr.cursor == '\\' && *(self->char_itr.cursor + 1))
-		{
-			fprintf(stderr, "DEBUG: Processing input: '%s'\n", self->char_itr.cursor);
-			handle_escaped_char(self, temp);
-		}
+		handle_escaped_char(self, temp);
 }
 
 static void	append_normal_char(t_scanner *self, char **temp)
@@ -102,6 +99,11 @@ t_token	non_delimited_token(t_scanner *self)
 	char	*temp;
 
 	temp = ft_strdup("");
+	if (!self->char_itr.cursor)
+	{
+		free(temp);
+		return ((t_token){0});
+	}
 	while (*self->char_itr.cursor
 		&& !ft_strchr(" \t\n|><", *self->char_itr.cursor))
 	{

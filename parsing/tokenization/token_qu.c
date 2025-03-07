@@ -47,7 +47,8 @@ t_token	double_quote_token(t_scanner *self)
 	self->next.type = STRING_D_QUOTES;
 	self->next.lexeme.start = ++self->char_itr.cursor;
 	expanded = ft_strdup("");
-	while (*self->char_itr.cursor && *self->char_itr.cursor != '"')
+	while ((*self->char_itr.cursor || *self->char_itr.cursor == '\0')
+		&& *self->char_itr.cursor != '"')
 	{
 		if (*self->char_itr.cursor == '\0')
 		{
@@ -66,22 +67,22 @@ t_token	double_quote_token(t_scanner *self)
 	return ((self->next));
 }
 
-static void	handle_squote_readline(t_scanner *self, char **expanded)
-{
-	char	*continuation;
+// static void	handle_squote_readline(t_scanner *self, char **expanded)
+// {
+// 	char	*continuation;
 
-	continuation = readline("quote> ");
-	if (!continuation)
-	{
-		free(*expanded);
-		self->msh->ret_exit = 2;
-		self->next.type = UNKNOWN;
-		fprintf(stderr, "unexpected EOF while looking for matching `'\n");
-		return ;
-	}
-	*expanded = ft_strjoin_free_s1(*expanded, continuation);
-	free(continuation);
-}
+// 	continuation = readline("quote> ");
+// 	if (!continuation)
+// 	{
+// 		free(*expanded);
+// 		self->msh->ret_exit = 2;
+// 		self->next.type = UNKNOWN;
+// 		fprintf(stderr, "unexpected EOF while looking for matching `'\n");
+// 		return ;
+// 	}
+// 	*expanded = ft_strjoin_free_s1(*expanded, continuation);
+// 	free(continuation);
+// }
 
 t_token	single_quote_token(t_scanner *self)
 {
@@ -91,18 +92,17 @@ t_token	single_quote_token(t_scanner *self)
 	self->next.type = STRING_S_QUOTES;
 	self->next.lexeme.start = ++self->char_itr.cursor;
 	expanded = ft_strdup("");
-	while (*self->char_itr.cursor && *self->char_itr.cursor != '\'')
+	while ((*self->char_itr.cursor || *self->char_itr.cursor == '\0') 
+		&& *self->char_itr.cursor != '\'')
 	{
 		if (*self->char_itr.cursor == '\0')
 		{
-			handle_squote_readline(self, &expanded);
-			if (self->next.type == UNKNOWN)
-				return (self->next);
-			continue ;
+			free(expanded);
+			handle_unexpected_eof(self, "\'");
+			return (self->next);
 		}
 		sub = ft_substr(self->char_itr.cursor, 0, 1);
-		expanded = ft_strjoin_free_s1(expanded,
-				sub);
+		expanded = ft_strjoin_free_s1(expanded, sub);
 		free (sub);
 		sub = NULL;
 		self->char_itr.cursor++;
