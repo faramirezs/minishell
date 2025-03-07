@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/07 10:43:24 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/07 21:23:40 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ void	finalize_redir_node(t_args *cmd_args, t_tree_node *redir_node)
 	{
 		if (cmd_args && cmd_args->words != NULL)
 			redir_node->data.redir_u.cmd = parse_exec(cmd_args);
+		else
+			free_args(cmd_args);
 	}
 }
 

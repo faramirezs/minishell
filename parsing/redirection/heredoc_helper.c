@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:18:13 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/07 20:54:58 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/07 20:57:24 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,6 @@ char	*expand_env_vars(const char *line, t_context *msh)
 					var_value);
 		}
 		free(var_name);
-		//var_start = ft_strchr(var_start + 1, '$');
 		var_start = NULL;
 	}
 	return (expanded_line);

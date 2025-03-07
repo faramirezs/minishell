@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/07 19:52:04 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/07 21:16:17 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,10 @@ void	handle_redir_heredoc(t_redircmd *redir_node, t_scanner *scanner)
 			break ;
 		scanner->next = scanner_next(scanner);
 		if (scanner->next.type != HEREDOC)
+		{
+			free(scanner->next.lexeme.ptr);
 			break ;
+		}
 		if (!scanner_has_next(scanner))
 		{
 			fprintf(stderr, "Syntax error: nothing after redirection token\n");
