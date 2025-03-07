@@ -92,8 +92,26 @@ void	exec_child_process(t_tree_node *node, t_context *ctx)
 	}
 	if (ft_strcmp(node->data.exec_u.args[0], "./minishell") == 0)
 		exec_minishell(node, ctx);
+	// else
+	// 	execvp(node->data.exec_u.args[0], node->data.exec_u.args);
+	else if (node->data.exec_u.args[0][0] == '/' || 
+		node->data.exec_u.args[0][0] == '.')
+	{
+		execve(node->data.exec_u.args[0], node->data.exec_u.args, ctx->env);
+	}
 	else
+	{
+		if (!ms_get_env(ctx->env, "PATH"))
+		{
+			fprintf(stderr, "%s: No such file or directory\n", 
+			   node->data.exec_u.args[0]);
+			free_tree_node(&ctx->origin_node);
+			free_builtin_list(&ctx->builtins);
+			cleanup_context(ctx);
+			exit(127);
+		}
 		execvp(node->data.exec_u.args[0], node->data.exec_u.args);
+	}
 	perror("execvp");
 	free_tree_node(&ctx->origin_node);
 	free_builtin_list(&ctx->builtins);
