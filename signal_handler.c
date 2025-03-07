@@ -6,22 +6,13 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 11:32:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/07 18:37:30 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/07 18:45:34 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "headers/minishell.h"
 
 volatile sig_atomic_t	g_heredoc_interrupt = 0;
-
-/* void reset_terminal_after_signal(void)
-{
-    struct termios term;
-
-    tcgetattr(STDIN_FILENO, &term);
-    term.c_lflag |= ECHO | ICANON | ISIG;
-    tcsetattr(STDIN_FILENO, TCSANOW, &term);
-} */
 
 void	handle_sigint(int sig)
 {
@@ -30,8 +21,8 @@ void	handle_sigint(int sig)
 		g_heredoc_interrupt = 1;
 		rl_done = 1;
 		write(STDOUT_FILENO, "\n", 1);
-        rl_replace_line("", 0);
-        rl_on_new_line();
+        rl_replace_line ("", 0);
+        rl_on_new_line ();
 		fprintf(stderr,"Press any key to continue.\n");
 	}
 }

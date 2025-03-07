@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/07 18:02:16 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/07 19:01:56 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,12 @@ void	handle_redir_heredoc(t_redircmd *redir_node, t_scanner *scanner)
 			break ;
 		}
 		scanner->next = scanner_next(scanner);
+		free(redir_node->heredoc_content);
+		if(redir_node->target)
+		{
+			free(redir_node->target);
+			redir_node->target = NULL;
+		}
 		update_redir_node_target(redir_node, &scanner->next);
 	}
 	free_list(heredoc_list);
