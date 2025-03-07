@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/06 20:03:27 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/07 10:43:24 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void	finalize_redir_node(t_args *cmd_args, t_tree_node *redir_node)
 {
-	//invalid read when it can not find file or dir.
 	if(redir_node->data.redir_u.cmd == NULL)
 	{
 		if (cmd_args && cmd_args->words != NULL)
@@ -94,7 +93,6 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args,
 		free_args(&cmd_args);
 		free_tree_node(&redir_node);
 		return (node);
-		//cleanup(scanner, redir_node, EXIT_FAILURE);
 	}
 	return (parse_redir_loop(scanner, cmd_args, redir_node, first_redir));
 }

@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/06 19:04:21 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/07 10:59:23 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,5 @@ void	free_tree_node(t_tree_node **node)
 		free_exec_node(&(*node)->data.exec_u);
 	}
 	free(*node);
-	*node = NULL;
+	//*node = NULL;
 }

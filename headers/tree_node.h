@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 16:59:28 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/15 16:59:30 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/07 10:26:28 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ struct						s_redircmd
 	char					*heredoc_content;
 	int						heredoc_pipe[2];
 	pid_t					heredoc_pid;
+	t_context				*ctx;
+	t_tree_node				*root_node;
 };
 
 struct						s_execcmd

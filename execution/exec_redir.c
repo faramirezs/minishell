@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 16:59:59 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/06 20:20:45 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/07 10:28:29 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,8 @@ int	exec_redir(t_tree_node *node, t_context *ctx)
 	int			result;
 
 	rcmd = &node->data.redir_u;
+	rcmd->ctx = ctx;
+	rcmd->root_node = node;
 	result = 0;
 	if (save_std_fds(&saved_stdin, &saved_stdout, node) != 0)
 		return (1);

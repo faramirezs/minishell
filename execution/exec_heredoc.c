@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 16:59:59 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/06 20:17:43 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/07 10:54:43 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,10 @@ static int	handle_heredoc_child(t_redircmd *rcmd)
 	close(rcmd->heredoc_pipe[0]);
 	write_heredoc_content(rcmd->heredoc_pipe[1], rcmd->heredoc_content);
 	close(rcmd->heredoc_pipe[1]);
-
+	free_builtin_list(&rcmd->ctx->builtins);
+	cleanup_context(rcmd->ctx);
+	free_tree_node(&rcmd->root_node);
+	clear_history();
 	exit(0);
 }
 
