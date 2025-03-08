@@ -80,13 +80,13 @@ static void	exec_minishell(t_tree_node *node, t_context *ctx)
 		free(path);
 	}
 	path = ft_strjoin_free_s1(path, "/minishell");
-    execve(path, node->data.exec_u.args, ctx->env);
-    perror("execve");
-    free_tree_node(&node);
-    free_builtin_list(&ctx->builtins);
-    cleanup_context(ctx);
-    free(path);
-    exit(127);
+	execve(path, node->data.exec_u.args, ctx->env);
+	perror("execve");
+	free_tree_node(&node);
+	free_builtin_list(&ctx->builtins);
+	cleanup_context(ctx);
+	free(path);
+	exit(127);
 }
 
 // void	exec_child_process(t_tree_node *node, t_context *ctx)
@@ -111,28 +111,28 @@ static void	exec_minishell(t_tree_node *node, t_context *ctx)
 
 char *find_in_path(const char *cmd, char *path)
 {
-    char **paths;
-    char *full_path;
-    int i;
+	char	**paths;
+	char	*full_path;
+	int		i;
 
-    if (!path)
-        return (NULL);
-    paths = ft_split(path, ':');
-    i = 0;
-    while (paths[i])
-    {
-        full_path = ft_strjoin(paths[i], "/");
-        full_path = ft_strjoin_free_s1(full_path, cmd);
-        if (access(full_path, X_OK) == 0)
-        {
-            ft_free_tab(paths);
-            return (full_path);
-        }
-        free(full_path);
-        i++;
-    }
-    ft_free_tab(paths);
-    return (NULL);
+		if (!path)
+			return (NULL);
+		paths = ft_split(path, ':');
+		i = 0;
+		while (paths[i])
+		{
+			full_path = ft_strjoin(paths[i], "/");
+			full_path = ft_strjoin_free_s1(full_path, cmd);
+			if (access(full_path, X_OK) == 0)
+			{
+				ft_free_tab(paths);
+				return (full_path);
+			}
+			free(full_path);
+			i++;
+		}
+		ft_free_tab(paths);
+		return (NULL);
 }
 
 void	exec_child_process(t_tree_node *node, t_context *ctx)
@@ -166,13 +166,9 @@ void	exec_child_process(t_tree_node *node, t_context *ctx)
 			exit(127);
 		}
 		cmd_path = find_in_path(node->data.exec_u.args[0], ms_get_env(ctx->env, "PATH"));
-        if (cmd_path)
-            execve(cmd_path, node->data.exec_u.args, ctx->env);
-        free(cmd_path);
-		//execvp(node->data.exec_u.args[0], node->data.exec_u.args);
-		// free_tree_node(&ctx->origin_node);
-		// free_builtin_list(&ctx->builtins);
-		// cleanup_context(ctx);
+		if (cmd_path)
+			execve(cmd_path, node->data.exec_u.args, ctx->env);
+		free(cmd_path);
 	}
 	perror("execvp");
 	free_tree_node(&ctx->origin_node);

@@ -32,7 +32,6 @@ int	setup_pipe_redirection(t_context *ctx, int saved_stdin, int saved_stdout,
 			perror("dup2");
 			close(saved_stdin);
 			close(saved_stdout);
-			//cleanup(node, 1);
 		}
 		close(ctx->fd[0]);
 	}
