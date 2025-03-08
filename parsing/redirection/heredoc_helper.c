@@ -86,13 +86,12 @@ char	*expand_env_vars(const char *line, t_context *msh)
 	{
 		var_name = get_var_name(var_start);
 		var_value = ms_get_env(msh->env, var_name);
-		if (var_value)
-		{
-			expanded_line = replace_var_with_value(expanded_line, var_start,
+		if (!var_value)
+			var_value = ft_strdup("");
+		expanded_line = replace_var_with_value(expanded_line, var_start,
 					var_value);
-		}
 		free(var_name);
-		var_start = NULL;
+		var_start = ft_strchr(expanded_line, '$');
 	}
 	return (expanded_line);
 }
