@@ -1,55 +1,31 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   ft_memchr.c										:+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: jslusark <jslusark@student.42.fr>		  +#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/04/19 15:48:19 by jslusark		  #+#	#+#			 */
-/*   Updated: 2024/05/07 13:19:52 by jslusark		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_memchr.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/26 14:08:17 by alramire          #+#    #+#             */
+/*   Updated: 2024/05/06 11:53:54 by alramire         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
 void	*ft_memchr(const void *s, int c, size_t n)
 {
-	size_t				i;
-	const unsigned char	*stored_s;
+	size_t			i;
+	unsigned char	*uc_s;
+	unsigned char	uc_c;
 
+	uc_s = (unsigned char *)s;
+	uc_c = (unsigned char)c;
 	i = 0;
-	stored_s = (const unsigned char *)s;
 	while (i < n)
 	{
-		if (stored_s[i] == (unsigned char )c)
-			return ((void *)&stored_s[i]);
+		if (uc_s[i] == uc_c)
+			return ((void *)&uc_s[i]);
 		i++;
 	}
-	return (0);
+	return (NULL);
 }
-/* #include <stdio.h>
-int main() {
-	char str[] = "Hello, World!";  // Test string
-
-	// Test 1: Search for a character that exists
-	char *result1 = ft_memchr(str, 'W', sizeof(str));
-	printf("Test 1: %s\n", result1 ? result1 : "Character not found");
-
-	// Test 2: Search for a character that does not exist
-	char *result2 = ft_memchr(str, 'x', sizeof(str));
-	printf("Test 2: %s\n", result2 ? result2 : "Character not found");
-
-	// Test 3: Search with zero length
-	char *result3 = ft_memchr(str, 'H', 0);
-	printf("Test 3: %s\n", result3 ? result3 : "Character not found");
-
-	// Test 4: Search for a character at the edge of the range
-	char *result4 = ft_memchr(str, '!', sizeof(str));
-	printf("Test 4: %s\n", result4 ? result4 : "Character not found");
-
-	// Test 5: Search for the null terminator
-	char *result5 = ft_memchr(str, '\0', sizeof(str));
-	printf("Test 5: %s\n", result5 ? result5 : "Character not found");
-
-	return 0;
-} */

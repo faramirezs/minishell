@@ -1,54 +1,59 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   ft_atoi.c										  :+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: jslusark <jslusark@student.42.fr>		  +#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/04/19 15:47:49 by jslusark		  #+#	#+#			 */
-/*   Updated: 2024/05/07 11:31:43 by jslusark		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/26 18:04:09 by alramire          #+#    #+#             */
+/*   Updated: 2024/04/29 10:54:32 by alramire         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_atoi(const char *nptr)
+int	ft_isspace(int c)
 {
-	int		num;
-	int		sign;
-	size_t	i;
-
-	num = 0;
-	sign = 1;
-	i = 0;
-	while ((nptr[i] >= 9 && nptr[i] <= 13) || nptr[i] == ' ')
-		i++;
-	if (nptr[i] == '-' || nptr[i] == '+' )
-	{
-		if (nptr[i] == '-')
-			sign = -1;
-		i++;
-	}
-	while (ft_isdigit(nptr[i]))
-	{
-		num = (num * 10) + (nptr[i] - '0');
-		i++;
-	}
-	return (num * sign);
+	if (c == 32 || (c >= 9 && c <= 13))
+		return (1);
+	return (0);
 }
-/* #include <stdio.h>
-int	main(void)
+
+int	ft_atoi(const char *str)
 {
-	printf("%i <- mine\n", ft_atoi("123"));
-	printf("%i\n", atoi("123"));
-	printf("%i <- mine \n ", ft_atoi("-123abc"));
-	printf("%i\n", atoi("-123abc"));
-	printf("%i <- mine \n ", ft_atoi("-123"));
-	printf("%i\n", atoi("-123"));
-	printf("%i <- mine \n ", ft_atoi("   123abc456"));
-	printf("%i\n", atoi("   123abc456"));
-	printf("%i <- mine \n ", ft_atoi("-2147483648"));
-	printf("%i\n", atoi("-2147483648"));
-	printf("%i <- mine \n ", ft_atoi("000598ak00g"));
-	printf("%i\n", atoi("000598ak00g"));
+	int	i;
+	int	s;
+	int	n;
+
+	i = 0;
+	s = 1;
+	n = 0;
+	while (ft_isspace(str[i]))
+		i++;
+	if (str[i] == '+' && str[i + 1] != '-')
+		i++;
+	if (str[i] == 45)
+	{
+		s = s * -1;
+		i++;
+	}
+	while (str[i] && str[i] >= '0' && str[i] <= '9')
+	{
+		n = n * 10 + (str[i] - '0');
+		i++;
+	}
+	return (n * s);
+}
+
+/* int main()
+{
+
+    // Test Case 1: Convert a basic positive number
+    char *str1 = "42";
+    if (ft_atoi(str1) == 42) {
+        printf("\033[0;32m[PASS]\033[0m Correct conversion for '42'\n");
+    } else {
+        printf("\033[0;31m[FAIL]\033[0m Expected 42, got %d\n", ft_atoi(str1));
+    }
+
 } */

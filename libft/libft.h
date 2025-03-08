@@ -5,7 +5,7 @@
 /*													+:+ +:+		 +:+	 */
 /*   By: alramire <alramire@student.42.fr>		  +#+  +:+	   +#+		*/
 /*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/04/25 11:53:39 by jessica		   #+#	#+#			 */
+/*   Created: 2024/04/25 11:53:39 by alramire		   #+#	#+#			 */
 /*   Updated: 2024/11/27 13:12:37 by alramire		 ###   ########.fr	   */
 /*																			*/
 /* ************************************************************************** */
@@ -53,11 +53,9 @@ char	*ft_itoa(int n);
 void	ft_striteri(char *s, void (*f)(unsigned int, char*));
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 char	**ft_split(char const *s, char c);
-char	*ft_strndup(const char *s, size_t n); //Newly introduced function
+char	*ft_strndup(const char *s, size_t n);
 void	ft_free_tab(char **tab);
 char	*ft_strjoin_free_s1(char *s1, const char *s2);
-
-//jess added functions
 int		ft_strcmp(const char *s1, const char *s2);
 size_t	ft_strspn(const char *str, const char *accept);
 int		ft_isbinary(char *stash);

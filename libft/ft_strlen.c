@@ -1,32 +1,23 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   ft_strlen.c										:+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: jslusark <jslusark@student.42.fr>		  +#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/04/19 15:49:27 by jslusark		  #+#	#+#			 */
-/*   Updated: 2024/05/07 10:53:57 by jslusark		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/17 13:45:12 by alramire          #+#    #+#             */
+/*   Updated: 2024/05/06 11:30:37 by alramire         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_strlen(const char *s)
+size_t	ft_strlen(char const *s)
 {
-	size_t	len;
+	size_t	i;
 
-	len = 0;
-	while (s[len] != '\0')
-		len++;
-	return (len);
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
 }
-/* #include <stdio.h>
-int	main(void)
-{
-	printf("%zu\n", ft_strlen("123456")); //6
-	printf("%zu\n", ft_strlen("123")); //3
-	printf("%zu\n", ft_strlen("Hello World")); //11
-	printf("%zu\n", ft_strlen("/&90hsb\'s^-")); //11
-	printf("%zu\n", ft_strlen("X")); //1
-} //ok */

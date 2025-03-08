@@ -1,69 +1,68 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   ft_itoa.c										  :+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: jslusark <jslusark@student.42.fr>		  +#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/04/29 13:11:26 by jslusark		  #+#	#+#			 */
-/*   Updated: 2024/05/07 10:24:26 by jslusark		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_itoa.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/01 15:00:09 by alramire          #+#    #+#             */
+/*   Updated: 2024/05/06 11:54:20 by alramire         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	ft_sizecount(int n)
+static int	ft_n_size(long long n)
 {
-	int		size;
-	long	num;
+	int	len;
 
-	size = 1;
-	num = n;
-	if (n < 0)
+	len = 0;
+	if (n < 1)
 	{
-		num = -num;
-		size++;
+		len++;
 	}
-	while (num >= 10)
+	while (n)
 	{
-		num /= 10;
-		size++;
+		n = n / 10;
+		len++;
 	}
-	return (size);
+	return (len);
+}
+
+static char	*ft_tmp(int n)
+{
+	char	*str;
+
+	str = (char *)malloc(sizeof(char) * (n + 1));
+	if (!str)
+		return (NULL);
+	return (str);
 }
 
 char	*ft_itoa(int n)
 {
-	long	num;
-	int		size;
-	char	*str;
+	char		*s;
+	int			len;
+	long long	num;
 
-	num = n;
-	if (n < 0)
-		num = -num;
-	size = ft_sizecount(n);
-	str = (char *)malloc(size + 1);
-	if (!str)
+	num = (long long)n;
+	len = ft_n_size(n);
+	s = ft_tmp(len);
+	if (!s)
 		return (NULL);
 	if (n < 0)
-		str[0] = '-';
-	else if (n == 0)
-		str[0] = '0';
-	str[size--] = '\0';
-	while (num > 0)
 	{
-		str[size--] = num % 10 + '0';
-		num /= 10;
+		num = -num;
+		s[0] = 45;
 	}
-	return (str);
+	s[len] = '\0';
+	if (num == 0)
+		s[0] = '0';
+	while (num != 0)
+	{
+		s[len - 1] = ((num % 10) + '0');
+		num = num / 10;
+		len--;
+	}
+	return (s);
 }
-// #include <stdio.h>
-// #include <limits.h>
-// int	main(void)
-// {
-// 	printf("%s\n", ft_itoa(1300));
-// 	printf("%s\n", ft_itoa(100));
-// 	printf("%s\n", ft_itoa(-300)); //1316
-// 	printf("%s\n", ft_itoa(INT_MIN)); //-2147483648
-// 	printf("%s\n", ft_itoa(INT_MAX)); //2147483647
-// }

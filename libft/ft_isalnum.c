@@ -1,35 +1,18 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   ft_isalnum.c									   :+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: jslusark <jslusark@student.42.fr>		  +#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/04/19 15:47:55 by jslusark		  #+#	#+#			 */
-/*   Updated: 2024/05/07 10:22:06 by jslusark		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_isalnum.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/17 11:38:23 by alramire          #+#    #+#             */
+/*   Updated: 2024/05/06 11:27:57 by alramire         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
 int	ft_isalnum(int c)
 {
-	if (ft_isalpha(c) || ft_isdigit(c))
-	{
-		return (1);
-	}
-	return (0);
+	return (ft_isalpha(c) || ft_isdigit(c));
 }
-/* #include <stdio.h>
-int	main(void)
-{
-	printf("y %i\n", ft_isalnum('a'));
-	printf("n %i\n", ft_isalnum('/'));
-	printf("n %i\n", ft_isalnum('{'));
-	printf("y %i\n", ft_isalnum('1'));
-	printf("y %i\n", ft_isalnum('9'));
-	printf("y %i\n", ft_isalnum('Z'));
-	printf("y %i\n", ft_isalnum('z'));
-	printf("y %i\n", ft_isalnum('x'));
-	printf("y %i\n", ft_isalnum('Y'));
-} //ok */

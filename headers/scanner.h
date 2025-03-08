@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 16:59:00 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/07 12:47:29 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/08 13:26:48 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ t_token			rel_path_token(t_scanner *self);
 t_token			option_token(t_scanner *self);
 t_token			append_out_token(t_scanner *self);
 t_token			heredoc_token(t_scanner *self);
-int				check_start_uknown(const char *input);
 t_token			single_quote_token(t_scanner *self);
 t_token			double_quote_token(t_scanner *self);
 //char 			*get_env_vvalue(t_scanner *self);

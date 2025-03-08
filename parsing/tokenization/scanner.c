@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 19:46:40 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/07 20:46:46 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/08 13:26:57 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,12 +77,4 @@ t_token	scanner_peek(t_scanner *self)
 		else
 			return (end_token(self));
 	}
-}
-
-int	check_start_uknown(const char *input)
-{
-	if (ft_strchr(SYMBOLS, input[0]))
-		return (1);
-	else
-		return (0);
 }

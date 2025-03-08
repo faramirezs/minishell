@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 17:10:32 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/07 18:41:53 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/08 13:22:14 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@
 # define COLOR_BOLD "\001\033[1m\002"
 # define WHITESPACES " \t\r\n\a"
 # define SYMBOLS "\\;()#&`*~|"
-# define NOBRKSYMS "_.?:-+=^"
+# define NOBRKSYMS "&_.?:-+=^"
 # define QUOTEETC "\"'"
 
 extern volatile sig_atomic_t	g_heredoc_interrupt;

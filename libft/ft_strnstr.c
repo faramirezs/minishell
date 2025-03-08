@@ -1,64 +1,37 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   ft_strnstr.c									   :+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: jslusark <jslusark@student.42.fr>		  +#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/04/19 15:49:32 by jslusark		  #+#	#+#			 */
-/*   Updated: 2024/05/07 14:23:52 by jslusark		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_strnstr.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/26 14:50:35 by alramire          #+#    #+#             */
+/*   Updated: 2024/05/03 16:07:26 by alejandrora      ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strnstr(const char *big, const char *little, size_t len)
+char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 {
-	size_t		i;
-	int			s_len;
-	char		*b;
-	char		*l;
+	size_t	i;
+	size_t	j;
 
-	if (*little == '\0')
-		return ((char *)big);
 	i = 0;
-	b = (char *)big;
-	l = (char *)little;
-	s_len = ft_strlen(l);
-	while (b[i] != '\0' && (i + s_len) <= len)
+	if (needle[i] == 0)
+		return ((char *) haystack);
+	while (haystack[i] && i < len)
 	{
-		if (ft_strncmp((b + i), l, s_len) == 0)
+		j = 0;
+		while ((haystack[i + j] == needle[j] && haystack[i + j] && i + j < len))
 		{
-			return (b + i);
+			if (needle[j] == 0)
+				return ((char *) haystack + i);
+			j++;
+			if (j == ft_strlen(needle))
+				return ((char *) haystack + i);
 		}
 		i++;
 	}
 	return (NULL);
 }
-/* #include <stdio.h>
-int main(void) {
-	const char *largestring;
-	const char *smallstring;
-	char *ptr;
-
-	// Test 1: Finding a substring in the middle of the string within limits
-	largestring = "Foo Bar Baz";
-	smallstring = "Bar";
-	ptr = ft_strnstr(largestring, smallstring, 8);
-	printf("Test 1: %s\n", ptr ? ptr : "Not found");
-
-	// Test 2: Substring beyond the search limit
-	largestring = "Foo Bar Baz";
-	smallstring = "Baz";
-	ptr = ft_strnstr(largestring, smallstring, 8);
-	printf("Test 2: %s\n", ptr ? ptr : "Not found");
-
-	// Test 3: Empty 'little' string should return 'big'
-	largestring = "Foo Bar Baz";
-	smallstring = "";
-	ptr = ft_strnstr(largestring, smallstring, 8);
-	printf("Test 3: %s\n", ptr ? ptr : "Not found");
-
-	return 0;
-}
- */

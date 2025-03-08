@@ -1,112 +1,123 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   ft_split.c										 :+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: jslusark <jslusark@student.42.fr>		  +#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/04/29 11:44:06 by jslusark		  #+#	#+#			 */
-/*   Updated: 2024/05/07 15:53:25 by jslusark		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_split.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/29 16:27:01 by alramire          #+#    #+#             */
+/*   Updated: 2024/05/08 08:52:06 by alramire         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static size_t	count_words(const char *s, char c)
+static void	ft_free(char **strs, int n)
 {
-	size_t	count;
-	int		is_word;
+	int	i;
 
-	count = 0;
-	is_word = 0;
-	while (*s)
+	i = 0;
+	while (i < n)
 	{
-		if (*s != c && is_word == 0)
-		{
-			is_word = 1;
-			count++;
-		}
-		if (*s == c)
-			is_word = 0;
-		s++;
+		free(strs[i]);
+		i++;
 	}
-	return (count);
+	free(strs);
 }
 
-static char	*alloc_word(const char *start, int len)
+static int	ft_words(char const *s, char d)
 {
-	char	*word;
+	int	i;
+	int	j;
 
-	word = malloc(len + 1);
-	if (!word)
-		return (NULL);
-	ft_strlcpy(word, start, len + 1);
-	return (word);
+	i = 0;
+	j = 0;
+	while (s[i])
+	{
+		if ((s[i] != d && (s[i - 1] == d || i == 0)))
+			j++;
+		i++;
+	}
+	return (j);
 }
 
-static void	*ft_freeresult(char **result, size_t w_i)
+int	ft_words_chars(char const *s, char d, int word)
 {
-	while (w_i > 0)
-		free (result[--w_i]);
-	free (result);
-	return (NULL);
+	int	i;
+	int	k;
+
+	i = 0;
+	k = 0;
+	while (s[i])
+	{
+		if (s[i] != d && (i == 0 || s[i - 1] == d))
+			word--;
+		if (word == 0)
+		{
+			while (s[i] != d && s[i] != '\0')
+			{
+				k++;
+				i++;
+			}
+			break ;
+		}
+		while (s[i] != d && s[i] != '\0')
+			i++;
+		if (s[i] == d)
+			i++;
+	}
+	return (k);
+}
+
+char	**ft_writer(char const *s, char **tmp, char c, int words)
+{
+	int	i;
+	int	j;
+	int	k;
+
+	i = 0;
+	j = 0;
+	while (i < words)
+	{
+		while (s[j] == c)
+			j++;
+		k = 0;
+		while (s[j] != c && s[j] != '\0')
+		{
+			tmp[i][k] = s[j];
+			k++;
+			j++;
+		}
+		tmp[i][k] = '\0';
+		i++;
+	}
+	tmp[i] = NULL;
+	return (tmp);
 }
 
 char	**ft_split(char const *s, char c)
 {
-	char		**result;
-	const char	*w_start;
-	size_t		w_i;
+	int		words;
+	char	**tmp;
+	int		i;
 
-	result = malloc(sizeof(char *) * (count_words(s, c) + 1));
-	w_i = 0;
-	if (!result)
+	if (!s)
 		return (NULL);
-	while (*s)
+	words = ft_words(s, c);
+	tmp = (char **)malloc(sizeof(char *) * (words + 1));
+	if (!tmp)
+		return (NULL);
+	i = 0;
+	while (i < words)
 	{
-		while (*s == c)
-			s++;
-		w_start = s;
-		while (*s && *s != c)
-			s++;
-		if (s > w_start)
+		tmp[i] = (char *)malloc(ft_words_chars(s, c, i + 1) + 1);
+		if (!tmp[i])
 		{
-			result[w_i] = alloc_word(w_start, s - w_start);
-			if (!result[w_i])
-				return (ft_freeresult(result, w_i));
-			w_i++;
+			ft_free(tmp, i);
+			return (NULL);
 		}
+		i++;
 	}
-	result[w_i] = NULL;
-	return (result);
+	ft_writer(s, tmp, c, words);
+	return (tmp);
 }
-/* #include <stdio.h>
-void print_result(char **result) {
-	if (result) {
-		for (int i = 0; result[i] != NULL; i++) {
-			printf("'%s'\n", result[i]);
-			free(result[i]);  // Free each string after printing
-		}
-		free(result);  // Finally free the result array
-	}
-}
-int main(void) {
-	char **result;
-
-	// Test 1: Basic functionality
-	result = ft_split("hello world here", ' ');
-	printf("Test 1:\n");
-	print_result(result);
-
-	// Test 2: Delimiter at the start and end
-	result = ft_split(" test split case ", ' ');
-	printf("Test 2:\n");
-	print_result(result);
-
-	// Test 3: Consecutive delimiters
-	result = ft_split("hello  world  here", ' ');
-	printf("Test 3:\n");
-	print_result(result);
-
-	return 0;
-} */

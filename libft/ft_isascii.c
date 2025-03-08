@@ -1,33 +1,39 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   ft_isascii.c									   :+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: jslusark <jslusark@student.42.fr>		  +#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/04/19 15:48:10 by jslusark		  #+#	#+#			 */
-/*   Updated: 2024/05/07 10:22:53 by jslusark		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_isascii.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/17 13:24:53 by alramire          #+#    #+#             */
+/*   Updated: 2024/05/06 11:56:52 by alramire         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
 int	ft_isascii(int c)
 {
-	if (c >= 0 && c <= 127)
-	{
-		return (1);
-	}
-	return (0);
+	return ((c >= 0) && (c <= 127));
 }
-/*#include <stdio.h>
-int	main(void)
+
+/* int main()
 {
-	printf("y %i\n", ft_isascii('a'));
-	printf("n %i\n", ft_isascii(128));
-	printf("n %i\n", ft_isascii(190));
-	printf("y %i\n", ft_isascii('\t'));
-	printf("y %i\n", ft_isascii('9'));
-	printf("y %i\n", ft_isascii('\n'));
-	printf("n %i\n", ft_isascii(-10));
-}*/
+	char c;
+	char result;
+
+	c = 'a';
+	result = ft_isascii(c);
+	printf("The result is for %d is %d\n", c, result);
+
+
+	c = '2';
+	result = ft_isascii(c);
+	printf("The result is for %d is %d\n", c, result);
+
+
+	c = '*';
+	result = ft_isascii(c);
+	printf("The result is for %d is %d\n", c, result);
+	return (0);
+} */

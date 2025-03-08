@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_qu.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mestefan <mestefan@student.42berlin.d      +#+  +:+       +#+        */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 21:21:11 by mestefan          #+#    #+#             */
-/*   Updated: 2025/02/15 21:24:37 by mestefan         ###   ########.fr       */
+/*   Updated: 2025/03/08 12:02:21 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ static void	handle_dquote_expansions(t_scanner *self, char **expanded)
 	{
 		var = handle_expansions(self);
 		*expanded = ft_strjoin_free_s1(*expanded, var.lexeme.start);
+		free(var.lexeme.ptr);
+		var.lexeme.ptr = NULL;
 	}
 	else
 	{

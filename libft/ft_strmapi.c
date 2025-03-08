@@ -1,33 +1,33 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   ft_strmapi.c									   :+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: jslusark <jslusark@student.42.fr>		  +#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/04/29 11:44:37 by jslusark		  #+#	#+#			 */
-/*   Updated: 2024/05/07 14:14:20 by jslusark		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_strmapi.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alejandroramirez <alejandroramirez@stud    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/03 17:53:32 by alramire          #+#    #+#             */
+/*   Updated: 2024/05/04 20:03:44 by alejandrora      ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 {
+	int				len;
+	char			*tmp;
 	unsigned int	i;
-	char			*new_s;
 
 	i = 0;
-	if (!s)
+	len = ft_strlen(s);
+	tmp = (char *)malloc(len + 1);
+	if (!tmp)
 		return (NULL);
-	new_s = (char *)malloc(sizeof(char) * (ft_strlen(s)+1));
-	if (!new_s)
-		return (NULL);
-	while (s[i] != '\0')
+	while (s[i])
 	{
-		new_s[i] = f(i, s[i]);
+		tmp[i] = (*f)(i, s[i]);
 		i++;
 	}
-	new_s[i] = '\0';
-	return (new_s);
+	tmp[i] = '\0';
+	return (tmp);
 }

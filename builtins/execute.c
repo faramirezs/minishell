@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 01:11:34 by mestefan          #+#    #+#             */
-/*   Updated: 2025/03/03 18:17:20 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/08 13:27:59 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@ int	is_builtin(t_tree_node *node)
 	if (node->type == N_EXEC && node->data.exec_u.args[0] != NULL)
 	{
 		cmd = node->data.exec_u.args[0];
-		if (strcmp(cmd, "cd") == 0 || strcmp(cmd, "echo") == 0
-			|| strcmp(cmd, "pwd") == 0 || strcmp(cmd, "export") == 0
-			|| strcmp(cmd, "unset") == 0 || strcmp(cmd, "env") == 0
-			|| strcmp(cmd, "exit") == 0)
+		if (ft_strcmp(cmd, "cd") == 0 || ft_strcmp(cmd, "echo") == 0
+			|| ft_strcmp(cmd, "pwd") == 0 || ft_strcmp(cmd, "export") == 0
+			|| ft_strcmp(cmd, "unset") == 0 || ft_strcmp(cmd, "env") == 0
+			|| ft_strcmp(cmd, "exit") == 0)
 			return (1);
 	}
 	return (0);
