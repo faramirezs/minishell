@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/07 21:28:09 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/08 15:04:27 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	finalize_redir_node(t_args *cmd_args, t_tree_node *redir_node)
 {
-	if(redir_node->data.redir_u.cmd == NULL)
+	if (redir_node->data.redir_u.cmd == NULL)
 	{
 		if (cmd_args && cmd_args->words != NULL)
 			redir_node->data.redir_u.cmd = parse_exec(cmd_args);
@@ -90,7 +90,7 @@ t_tree_node	*parse_redir(t_scanner *scanner, t_args *cmd_args,
 
 	redir_node = create_redir_node(scanner);
 	node = NULL;
-	if(parse_redir_target(scanner, redir_node, initialize_args_count()))
+	if (parse_redir_target(scanner, redir_node, initialize_args_count()))
 	{
 		free_args(&cmd_args);
 		free_tree_node(&redir_node);

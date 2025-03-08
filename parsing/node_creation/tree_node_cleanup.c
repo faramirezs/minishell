@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 17:35:15 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/07 10:59:23 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/08 15:07:24 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	free_redir_node(t_redircmd *redir_u)
 	{
 		cleanup_heredoc(redir_u);
 	}
-	if(redir_u->target)
+	if (redir_u->target)
 	{
 		free(redir_u->target);
 		redir_u->target = NULL;
@@ -60,5 +60,4 @@ void	free_tree_node(t_tree_node **node)
 		free_exec_node(&(*node)->data.exec_u);
 	}
 	free(*node);
-	//*node = NULL;
 }
