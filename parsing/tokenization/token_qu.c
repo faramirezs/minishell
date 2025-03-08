@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 21:21:11 by mestefan          #+#    #+#             */
-/*   Updated: 2025/03/08 12:02:21 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/08 19:10:03 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,23 +69,6 @@ t_token	double_quote_token(t_scanner *self)
 	return ((self->next));
 }
 
-// static void	handle_squote_readline(t_scanner *self, char **expanded)
-// {
-// 	char	*continuation;
-
-// 	continuation = readline("quote> ");
-// 	if (!continuation)
-// 	{
-// 		free(*expanded);
-// 		self->msh->ret_exit = 2;
-// 		self->next.type = UNKNOWN;
-// 		fprintf(stderr, "unexpected EOF while looking for matching `'\n");
-// 		return ;
-// 	}
-// 	*expanded = ft_strjoin_free_s1(*expanded, continuation);
-// 	free(continuation);
-// }
-
 t_token	single_quote_token(t_scanner *self)
 {
 	char	*expanded;
@@ -109,9 +92,8 @@ t_token	single_quote_token(t_scanner *self)
 		sub = NULL;
 		self->char_itr.cursor++;
 	}
-	self->char_itr.cursor++;
 	self->next.lexeme.start = expanded;
 	self->next.lexeme.ptr = expanded;
 	self->next.lexeme.length = ft_strlen(expanded);
-	return (self->next);
+	return (self->char_itr.cursor++, self->next);
 }

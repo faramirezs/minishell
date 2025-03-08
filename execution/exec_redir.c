@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 16:59:59 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/07 13:03:27 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/08 19:46:14 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,7 @@ int	apply_redirection(t_redircmd *rcmd, int saved_stdin,
 		{
 			close(saved_stdin);
 			close(saved_stdout);
-			//cleanup(node, EXIT_FAILURE);
 		}
-		//Should I free tree node here?
 	}
 	else if (rcmd->redir_type == REDIR_OUT || rcmd->redir_type == APPEND_OUT)
 		return (redirect_output(rcmd, saved_stdin, saved_stdout, node));

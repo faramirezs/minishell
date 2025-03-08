@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:18:13 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/07 20:57:24 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/08 19:17:15 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,8 @@ char	*expand_env_vars(const char *line, t_context *msh)
 		var_value = ms_get_env(msh->env, var_name);
 		if (!var_value)
 			var_value = ft_strdup("");
-		expanded_line = replace_var_with_value(expanded_line, var_start,
-					var_value);
+		expanded_line = replace_var_with_value(expanded_line, 
+				var_start, var_value);
 		free(var_name);
 		var_start = ft_strchr(expanded_line, '$');
 	}

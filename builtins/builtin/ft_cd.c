@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mestefan <mestefan@student.42berlin.d      +#+  +:+       +#+        */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 20:23:23 by mestefan          #+#    #+#             */
-/*   Updated: 2025/02/15 20:23:31 by mestefan         ###   ########.fr       */
+/*   Updated: 2025/03/08 18:37:30 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	handle_cd(struct s_tree_node *node, t_context *msh)
 		return (1);
 	}
 	dir = node->data.exec_u.args[1];
-	if (!dir)
+	if (!dir || ft_strcmp(dir, "~") == 0)
 	{
 		dir = ms_get_env(msh->env, "HOME");
 		if (!dir || *dir == '\0')

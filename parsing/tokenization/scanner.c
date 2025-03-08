@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 19:46:40 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/08 13:26:57 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/08 19:13:45 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_scanner	scanner_value(t_char_itr char_itr)
 int	scanner_has_next(t_scanner *self)
 {
 	char	c;
-	
+
 	skip_whitespaces(&self->char_itr);
 	c = char_itr_peek(&self->char_itr);
 	if (!(c == EOF || c == '\n' || c == '\0'))
@@ -65,14 +65,13 @@ t_token	scanner_peek(t_scanner *self)
 			return (handle_expansions(self));
 		else if (*self->char_itr.cursor == '/')
 			return (abs_path_token(self));
-		else if (*self->char_itr.cursor == '.'
-			&& ((*(self->char_itr.cursor + 1) == '/')
-				|| (*(self->char_itr.cursor + 1) == '.'
+		else if (*self->char_itr.cursor == '.' && ((*(self->char_itr.cursor
+						+ 1) == '/') || (*(self->char_itr.cursor + 1) == '.'
 					&& *(self->char_itr.cursor + 2) == '/')))
 			return (rel_path_token(self));
-		else if (ft_isalnum(*self->char_itr.cursor)
-			|| ft_strchr(NOBRKSYMS, *self->char_itr.cursor)
-			|| ft_strchr(QUOTEETC, *self->char_itr.cursor) || *self->char_itr.cursor == '$' )
+		else if (ft_isalnum(*self->char_itr.cursor) || ft_strchr(NOBRKSYMS,
+				*self->char_itr.cursor) || ft_strchr(QUOTEETC,
+				*self->char_itr.cursor) || *self->char_itr.cursor == '$')
 			return (non_delimited_token(self));
 		else
 			return (end_token(self));

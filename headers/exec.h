@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 17:12:47 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/06 19:11:48 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/08 19:31:23 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,4 +26,6 @@ int		setup_pipe_redirection(t_context *ctx, int saved_stdin,
 			int saved_stdout, t_tree_node *node);
 int		save_std_fds(int *saved_stdin, int *saved_stdout, t_tree_node *node);
 void	restore_std_fds(int saved_stdin, int saved_stdout, t_tree_node *node);
+void	exec_child_process(t_tree_node *node, t_context *ctx);
+
 #endif

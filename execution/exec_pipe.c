@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 16:59:59 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/07 21:50:08 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/08 19:17:51 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	exec_pipe(t_tree_node *node, t_context *ctx)
 	pid_t		left_pid;
 	pid_t		right_pid;
 
-	if(!node->data.pipe_u.right)
+	if (!node->data.pipe_u.right)
 		return (1);
 	left_ctx = *ctx;
 	right_ctx = *ctx;

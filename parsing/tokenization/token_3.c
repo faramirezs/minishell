@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 21:24:58 by mestefan          #+#    #+#             */
-/*   Updated: 2025/03/07 19:58:28 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/08 19:16:07 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,16 +77,12 @@ t_token	handle_expansions(t_scanner *self)
 	self->char_itr.cursor++;
 	if (!ft_isalnum(*self->char_itr.cursor) && *self->char_itr.cursor != '?'
 		&& *self->char_itr.cursor != '_')
-	{	
+	{
 		token.type = WORD;
 		token.lexeme.start = ft_strdup("$");
 		token.lexeme.length = 1;
 		token.lexeme.ptr = (void *)token.lexeme.start;
 		return (token);
-		/* return ((token.type = WORD,
-				token.lexeme.start = ft_strdup("$"),
-				token.lexeme.length = 1,
-				token.lexeme.ptr = (void *)token.lexeme.start, token)); */
 	}
 	value = get_expansion_value(self);
 	if (*self->char_itr.cursor && (ft_isalnum(*self->char_itr.cursor)

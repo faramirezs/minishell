@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 16:59:59 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/06 19:54:53 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/08 19:47:21 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,9 @@ int	setup_pipe_redirection(t_context *ctx, int saved_stdin, int saved_stdout,
 		if (dup2(ctx->fd[1], STDOUT_FILENO) == -1)
 		{
 			perror("dup2");
-			//remove fprintf
 			fprintf(stderr, "setup_pipe\n");
 			close(saved_stdin);
 			close(saved_stdout);
-			//cleanup(node, 1);
 		}
 		close(ctx->fd[1]);
 	}
@@ -59,7 +57,6 @@ int	save_std_fds(int *saved_stdin, int *saved_stdout, t_tree_node *node)
 	if (*saved_stdin == -1 || *saved_stdout == -1)
 	{
 		perror("dup");
-		//cleanup(node, 1);
 		return (1);
 	}
 	return (0);
@@ -74,7 +71,6 @@ void	restore_std_fds(int saved_stdin, int saved_stdout, t_tree_node *node)
 		fprintf(stderr, "restore_std_fds1\n");
 		close(saved_stdin);
 		close(saved_stdout);
-		//cleanup(node, 1);
 	}
 	if (dup2(saved_stdout, STDOUT_FILENO) == -1)
 	{
@@ -82,7 +78,6 @@ void	restore_std_fds(int saved_stdin, int saved_stdout, t_tree_node *node)
 		fprintf(stderr, "restore_std_fds\n");
 		close(saved_stdin);
 		close(saved_stdout);
-		//cleanup(node, 1);
 	}
 	close(saved_stdin);
 	close(saved_stdout);

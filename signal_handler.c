@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 11:32:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/07 18:45:34 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/08 19:48:11 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ void	handle_sigint(int sig)
 		g_heredoc_interrupt = 1;
 		rl_done = 1;
 		write(STDOUT_FILENO, "\n", 1);
-        rl_replace_line ("", 0);
-        rl_on_new_line ();
-		fprintf(stderr,"Press any key to continue.\n");
+		rl_replace_line ("", 0);
+		rl_on_new_line ();
+		fprintf(stderr, "Press any key to continue.\n");
 	}
 }
 

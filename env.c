@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mestefan <mestefan@student.42berlin.d      +#+  +:+       +#+        */
+/*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 20:46:07 by mestefan          #+#    #+#             */
-/*   Updated: 2025/02/15 20:46:15 by mestefan         ###   ########.fr       */
+/*   Updated: 2025/03/08 18:28:39 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,10 @@ char	*ms_get_env(char **env, const char *key)
 		if (equals)
 		{
 			if (ft_strncmp(env[i], key, key_len) == 0)
-				return (equals + 1);
+			{
+				if (env[i][key_len] == '=')
+					return (equals + 1);
+			}
 		}
 		i++;
 	}
