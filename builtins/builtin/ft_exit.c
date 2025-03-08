@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 01:20:29 by mestefan          #+#    #+#             */
-/*   Updated: 2025/03/04 15:16:38 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/08 13:59:37 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ static int	ms_check_exit_arg(const char *arg, int *exit_code)
 		*exit_code = 1;
 		return (1);
 	}
+	//replace
 	num = strtoll(arg, &endptr, 10);
 	*exit_code = (int)(num % 256);
 	if (*exit_code < 0)

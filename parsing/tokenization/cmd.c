@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 18:10:49 by alramire          #+#    #+#             */
-/*   Updated: 2025/02/15 18:11:12 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/08 13:57:33 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	compare_token(const t_token *token, const char *str)
 {
-	return (strncmp(token->lexeme.start, str, token->lexeme.length));
+	return (ft_strncmp(token->lexeme.start, str, token->lexeme.length));
 }
 
 void	check_cmd(t_scanner *self)

@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:18:13 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/07 12:54:05 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/08 13:56:11 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static t_list	*create_node(const char *line)
 	node = malloc(sizeof(t_list));
 	if (!node)
 		return (NULL);
-	node->line = strdup(line);
+	node->line = ft_strdup(line);
 	node->next = NULL;
 	return (node);
 }
