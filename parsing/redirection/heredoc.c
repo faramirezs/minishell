@@ -6,7 +6,7 @@
 /*   By: alramire <alramire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:36:54 by alramire          #+#    #+#             */
-/*   Updated: 2025/03/08 15:14:41 by alramire         ###   ########.fr       */
+/*   Updated: 2025/03/08 15:56:00 by alramire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,29 +52,22 @@ void	update_redir_node_target(t_redircmd *redir_node, t_token *next_token)
 	redir_node->target_type = determine_target_type(redir_node->target);
 }
 
-static void	process_next_heredoc(t_redircmd *redir_node, t_scanner *scanner)
+static int	process_next_heredoc_token(t_scanner *scanner)
 {
 	if (!scanner_has_next(scanner))
-		return ;
+		return (0);
 	scanner->next = scanner_next(scanner);
 	if (scanner->next.type != HEREDOC)
 	{
 		free(scanner->next.lexeme.ptr);
-		return ;
+		return (0);
 	}
 	if (!scanner_has_next(scanner))
 	{
 		fprintf(stderr, "Syntax error: nothing after redirection token\n");
-		return ;
+		return (0);
 	}
-	scanner->next = scanner_next(scanner);
-	free(redir_node->heredoc_content);
-	if (redir_node->target)
-	{
-		free(redir_node->target);
-		redir_node->target = NULL;
-	}
-	update_redir_node_target(redir_node, &scanner->next);
+	return (1);
 }
 
 void	handle_redir_heredoc(t_redircmd *redir_node, t_scanner *scanner)
@@ -85,34 +78,8 @@ void	handle_redir_heredoc(t_redircmd *redir_node, t_scanner *scanner)
 	while (redir_node->redir_type == HEREDOC)
 	{
 		process_heredoc_input(redir_node, scanner, &heredoc_list);
-		process_next_heredoc(redir_node, scanner);
-		if (!scanner_has_next(scanner) || scanner->next.type != HEREDOC)
+		if (!process_next_heredoc_token(scanner))
 			break ;
-	}
-	free_list(heredoc_list);
-}
-
-/* void	handle_redir_heredoc(t_redircmd *redir_node, t_scanner *scanner)
-{
-	t_list	*heredoc_list;
-
-	heredoc_list = NULL;
-	while (redir_node->redir_type == HEREDOC)
-	{
-		process_heredoc_input(redir_node, scanner, &heredoc_list);
-		if (!scanner_has_next(scanner))
-			break ;
-		scanner->next = scanner_next(scanner);
-		if (scanner->next.type != HEREDOC)
-		{
-			free(scanner->next.lexeme.ptr);
-			break ;
-		}
-		if (!scanner_has_next(scanner))
-		{
-			fprintf(stderr, "Syntax error: nothing after redirection token\n");
-			break ;
-		}
 		scanner->next = scanner_next(scanner);
 		free(redir_node->heredoc_content);
 		if (redir_node->target)
@@ -123,4 +90,4 @@ void	handle_redir_heredoc(t_redircmd *redir_node, t_scanner *scanner)
 		update_redir_node_target(redir_node, &scanner->next);
 	}
 	free_list(heredoc_list);
-} */
+}
