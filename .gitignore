@@ -1,1 +1,14 @@
+# build outputs
+minishell
 *.o
+*.a
+a.out
+*.out
+
+# valgrind and debug dumps
+vgcore.*
+debug_output.txt
+
+# macOS and NFS noise
+.DS_Store
+.nfs*

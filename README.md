@@ -136,4 +136,4 @@ Signals:
 Output noise and repository state:
 
 - `exec_command` in `execution/exec.c` prints `Executing $PATH function` for every external command. An empty line forks a failed `execvp` of an empty command and prints `execvp: No such file or directory`.
-- The tree still tracks build and debugging leftovers: the compiled `minishell` binary, `libft/libft.a`, the core dumps `vgcore.119296`, `vgcore.120810` and `vgcore.139432`, the NFS files `.nfs00000000106503b900000002` and `.nfs00000000106503ba00000001`, `.DS_Store`, and scratch files such as `output.txt`, `newfile.txt`, `root_processes.txt`, `sorted.txt`, `debug_output.txt`, `result.txt`, `test_input.txt`, `file.txt`, `11.txt`, `0`, `cat` and `target`. `make clean` and `make fclean` do not remove them.
+- The tree no longer tracks build and debugging leftovers: the compiled `minishell`, `libft/libft.a`, the valgrind core dumps, the NFS files, `.DS_Store` and the scratch text files are gone, and `.gitignore` covers `minishell`, `*.o`, `*.a`, `*.out`, `vgcore.*`, `.DS_Store` and `.nfs*`. `make clean` removes the objects, `make fclean` also removes the binary.
